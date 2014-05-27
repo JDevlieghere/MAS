@@ -33,21 +33,11 @@
 \newpage
 
 \section{Introduction}
+\subfile{subfiles/introduction.tex}
 \subsection{Objectives}
-\subsubsection{Cost Function}
-The cost function is based on the function used in Gendreau et al. \cite{gendreau2006neighborhood}. The cost function used in this document minimizes a weighted sum of four different criteria instead of three.
-\begin{enumerate}
-	\item The total travel time,
-	\item The sum of lateness over all pick-up and delivery locations
-	\item The sum of overtime over all vehicles
-	\item The sum of the cost of emitting a radio signal, which is quadratic in its radius.
-\end{enumerate}
-
-$$
-C = \sum_{k \in M}{T_k} + \alpha \sum_{v \in V} \text{max} \left\{ 0, t_v - l_v \right\} + \beta \sum_{k \in M} \text{max} \left\{0, t_k - l_0 \right\} + \gamma \sum_{k \in V} \text{max} \left\{ c_r \right\}
-$$
-
+\subfile{subfiles/objectives.tex}
 \subsection{Hypotheses}
+\subfile{subfiles/hypotheses.tex}
 
 \section{Multi-Agent System Design}
 \subsection{Design}

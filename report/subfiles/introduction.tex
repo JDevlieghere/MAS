@@ -1,0 +1,14 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+This research paper will describe a pick up delivery problem and a Multi-Agent solution to it.
+For easy comparison with Genreau et al. we will be using their dataset.
+Since their dataset uses specifice coordinates we will be using an empty plane instead of a road map as the area on which the delivery trucks drive.
+
+In our paper parcels are discovered by a radio signal they emit as soon as they are available for pickup.
+Every truck in range gets to bid in an auction for the parcel. 
+If there is only a single truck within range it recieves the pickup task automatically and instantly.
+Initally as soon as the auction is complete the truck that recieved the task is blindly commited to this task. 
+
+As an extention we will look at the case in which trucks that are in eachother neighborhood can reauction their given tasks to improve both their schedules.
+This can be seen as more open-minded commitment in which the opportunity of being near another truck can be used to reschdule the task and become a more efficient solution.
+\end{document}
