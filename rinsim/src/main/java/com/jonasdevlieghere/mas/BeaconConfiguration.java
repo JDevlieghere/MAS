@@ -1,14 +1,42 @@
 package com.jonasdevlieghere.mas;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import rinde.sim.core.Simulator;
+import rinde.sim.core.model.Model;
+import rinde.sim.pdptw.common.AddParcelEvent;
 import rinde.sim.pdptw.common.AddVehicleEvent;
 import rinde.sim.pdptw.common.DynamicPDPTWProblem;
 import rinde.sim.pdptw.experiment.DefaultMASConfiguration;
+import rinde.sim.util.SupplierRng;
 
 
 public class BeaconConfiguration extends DefaultMASConfiguration {
 
+
+    @Override
+    public ImmutableList<? extends SupplierRng<? extends Model<?>>> getModels() {
+        return ImmutableList.of(BeaconModel.supplier());
+    }
+
     @Override
     public DynamicPDPTWProblem.Creator<AddVehicleEvent> getVehicleCreator() {
-        return null;
+        return new DynamicPDPTWProblem.Creator<AddVehicleEvent>() {
+            @Override
+            public boolean create(Simulator sim, AddVehicleEvent event) {
+                return sim.register(new DeliveryTruck(event.vehicleDTO));
+            }
+        };
+    }
+
+    @Override
+    public Optional<? extends DynamicPDPTWProblem.Creator<AddParcelEvent>> getParcelCreator() {
+        return Optional.of(new DynamicPDPTWProblem.Creator<AddParcelEvent>() {
+            @Override
+            public boolean create(Simulator sim, AddParcelEvent event) {
+                // all parcels are accepted by default
+                return sim.register(new BeaconParcel(event.parcelDTO));
+            }
+        });
     }
 }
