@@ -11,12 +11,16 @@ Research Methodology
 
 ## Cost Functions
 
-
+ - Verbeteren met uitwisselen paketten
+ -
 
 ## Objectives
 
- - Minimizing the cost functions
+ - Relatie tussen radius en communicatie
+ - Relatie tussen communcatie trucks
 
 ## Questions
 
 ## Hypotheses
+
+ - Hypothese:
