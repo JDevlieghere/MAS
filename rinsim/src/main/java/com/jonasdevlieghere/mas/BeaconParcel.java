@@ -17,6 +17,11 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
     public void setModel(BeaconModel model) {}
 
     @Override
+    public double getRadius() {
+        return 1;
+    }
+
+    @Override
     public Point getPosition() {
         return this.pos;
     }

@@ -1,8 +1,7 @@
 package com.jonasdevlieghere.mas;
 
 import com.google.common.base.Predicate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -34,15 +33,25 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
         if(deliverParcel(time))
             return;
 
-        List<BeaconParcel> parcels = this.beaconModel.getParcelBeacons();
-        for (BeaconParcel parcel : parcels){
-            if (pm.getParcelState(((DefaultParcel) parcel)) == PDPModel.ParcelState.AVAILABLE)
-                    rm.moveTo(this, parcel.getPosition(), time);
+        if(discoverParcel(time))
+            return;
+    }
+
+    private boolean discoverParcel(TimeLapse time){
+        final PDPModel pm = pdpModel.get();
+        final RoadModel rm = roadModel.get();
+
+        List<BeaconParcel> parcels = this.beaconModel.getDetectableParcels(this);
+        if(!parcels.isEmpty() && pm.getVehicleState(this) == PDPModel.VehicleState.IDLE){
+            rm.moveTo(this, parcels.get(0).getPosition(), time);
+            return true;
         }
+        return false;
     }
 
     private boolean deliverParcel(TimeLapse time) {
         final PDPModel pm = pdpModel.get();
+
         for (final Parcel parcel : pm.getContents(this)) {
             if (parcel.getDestination().equals(getPosition()) && pm.getVehicleState(this) == PDPModel.VehicleState.IDLE){
                 pm.deliver(this, parcel, time);
@@ -83,6 +92,11 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
     @Override
     public void setModel(BeaconModel model) {
         this.beaconModel = model;
+    }
+
+    @Override
+    public double getRadius() {
+        return 1;
     }
 
     @Override

@@ -8,6 +8,7 @@ import rinde.sim.core.model.ModelProvider;
 import rinde.sim.core.model.ModelReceiver;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.road.RoadModel;
+import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.util.SupplierRng;
 
 import java.util.ArrayList;
@@ -22,12 +23,13 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
     private double minY;
     private double maxY;
     private PDPModel pdpModel;
+    private RoadModel roadModel;
 
     public BeaconModel(){
         this.beacons = new CopyOnWriteArrayList<Beacon>();
     }
 
-    public List<DeliveryTruck> getTruckBeacons() {
+    private List<DeliveryTruck> getTruckBeacons() {
         final List<DeliveryTruck> trucks = new ArrayList<DeliveryTruck>();
         for (final Beacon beacon : beacons) {
             if (beacon instanceof DeliveryTruck) {
@@ -37,12 +39,22 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
         return trucks;
     }
 
-    public List<BeaconParcel> getParcelBeacons() {
+    private List<BeaconParcel> getParcelBeacons() {
         final List<BeaconParcel> parcels = new ArrayList<BeaconParcel>();
         for (final Beacon beacon : beacons) {
             if (beacon instanceof BeaconParcel) {
                 parcels.add((BeaconParcel) beacon);
             }
+        }
+        return parcels;
+    }
+
+    public List<BeaconParcel> getDetectableParcels(DeliveryTruck truck) {
+        final List<BeaconParcel> parcels = new ArrayList<BeaconParcel>();
+        for (final BeaconParcel parcel : getParcelBeacons()) {
+            if(Point.distance(truck.getPosition(), parcel.getPosition()) <= truck.getRadius() + parcel.getRadius()
+                    && pdpModel.getParcelState(((DefaultParcel) parcel)) == PDPModel.ParcelState.AVAILABLE)
+                parcels.add((BeaconParcel) parcel);
         }
         return parcels;
     }
@@ -68,7 +80,8 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
     @Override
     public void registerModelProvider(ModelProvider modelProvider) {
         pdpModel = modelProvider.getModel(PDPModel.class);
-        final ImmutableList<Point> bounds = modelProvider.getModel(RoadModel.class).getBounds();
+        roadModel = modelProvider.getModel(RoadModel.class);
+        final ImmutableList<Point> bounds = roadModel.getBounds();
         minX = bounds.get(0).x;
         maxX = bounds.get(1).x;
         minY = bounds.get(0).y;
