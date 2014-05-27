@@ -3,9 +3,9 @@ package com.jonasdevlieghere.mas;
 import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.pdptw.common.ParcelDTO;
 
-public class Parcel extends DefaultParcel {
+public class BeaconParcel extends DefaultParcel {
 
-    public Parcel(ParcelDTO pDto) {
+    public BeaconParcel(ParcelDTO pDto) {
         super(pDto);
     }
 }

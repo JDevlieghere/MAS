@@ -10,9 +10,9 @@ import rinde.sim.pdptw.common.VehicleDTO;
 
 import javax.annotation.Nullable;
 
-public class Truck extends DefaultVehicle {
+public class DeliveryTruck extends DefaultVehicle {
 
-    public Truck(VehicleDTO pDto) {
+    public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
     }
 

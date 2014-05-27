@@ -5,7 +5,7 @@ import rinde.sim.pdptw.common.DynamicPDPTWProblem;
 import rinde.sim.pdptw.experiment.DefaultMASConfiguration;
 
 
-public class Configuration extends DefaultMASConfiguration {
+public class BeaconConfiguration extends DefaultMASConfiguration {
 
     @Override
     public DynamicPDPTWProblem.Creator<AddVehicleEvent> getVehicleCreator() {
