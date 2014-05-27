@@ -1,0 +1,9 @@
+Format: (columns)
+
+1: request arrival time
+2: pick-up service time
+3 and 4: x and y position for the pick-up
+5 and 6: service window time of the pick-up
+7: delivery service time
+8 and 9:x and y position for the delivery 
+10 and 11: service window time of the delivery
