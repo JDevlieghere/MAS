@@ -10,6 +10,7 @@ import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.road.RoadModel;
 import rinde.sim.util.SupplierRng;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -24,6 +25,26 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
 
     public BeaconModel(){
         this.beacons = new CopyOnWriteArrayList<Beacon>();
+    }
+
+    public List<DeliveryTruck> getTruckBeacons() {
+        final List<DeliveryTruck> trucks = new ArrayList<DeliveryTruck>();
+        for (final Beacon beacon : beacons) {
+            if (beacon instanceof DeliveryTruck) {
+                trucks.add((DeliveryTruck) beacon);
+            }
+        }
+        return trucks;
+    }
+
+    public List<BeaconParcel> getParcelBeacons() {
+        final List<BeaconParcel> parcels = new ArrayList<BeaconParcel>();
+        for (final Beacon beacon : beacons) {
+            if (beacon instanceof BeaconParcel) {
+                parcels.add((BeaconParcel) beacon);
+            }
+        }
+        return parcels;
     }
 
     @Override
