@@ -2,6 +2,9 @@ package com.jonasdevlieghere.mas;
 
 import com.google.common.base.Predicate;
 
+import com.jonasdevlieghere.mas.action.Action;
+import com.jonasdevlieghere.mas.action.ActionStatus;
+import com.jonasdevlieghere.mas.action.PickupAction;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -27,16 +30,19 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
-        if(pickupParcel(time))
-            return;
-
-        if(deliverParcel(time))
-            return;
+        execute(new PickupAction(rm, pm, this), time);
 
         if(discoverParcel(time))
             return;
 
         moveToNearestDelivery(time);
+    }
+
+    private boolean execute(Action action, TimeLapse time){
+        action.execute(time);
+        if(action.getStatus() == ActionStatus.SUCCESS)
+            return true;
+        return false;
     }
 
     private boolean discoverParcel(TimeLapse time){
@@ -85,34 +91,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
         if(parcel != null){
             rm.moveTo(this, parcel.getDestination(), time);
         }
-    }
-
-    private boolean pickupParcel(TimeLapse time){
-        final RoadModel rm = roadModel.get();
-        final PDPModel pm = pdpModel.get();
-
-        final DefaultParcel nearest = (DefaultParcel) RoadModels.findClosestObject(
-                rm.getPosition(this), rm, new Predicate<RoadUser>() {
-                    @Override
-                    public boolean apply(RoadUser input) {
-                        return input instanceof DefaultParcel
-                                && pm.getParcelState(((DefaultParcel) input)) == PDPModel.ParcelState.AVAILABLE;
-                    }
-                }
-        );
-        if (nearest != null && rm.equalPosition(nearest, this)
-                && pm.getTimeWindowPolicy().canPickup(nearest.getPickupTimeWindow(),
-                time.getTime(), nearest.getPickupDuration())) {
-            final double newSize = getPDPModel().getContentsSize(this)
-                    + nearest.getMagnitude();
-
-            if (newSize <= getCapacity()) {
-                pm.pickup(this, nearest, time);
-                System.out.println("Picked up parcel by " + this);
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
