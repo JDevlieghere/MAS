@@ -28,7 +28,7 @@ public class AuctionAction extends Action {
         Set<BeaconParcel> auctionableParcels = getTruck().getAuctionableParcels();
         for(BeaconParcel bp : auctionableParcels){
             //for each Agent
-            getTruck().broadcast(Message new Message())
+            //getTruck().broadcast(Message new Message();
         }
     }
 }
