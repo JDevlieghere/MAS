@@ -22,7 +22,7 @@ public class FetchAction extends Action {
         final RoadModel rm = getRoadModel();
         BeaconParcel parcel = getNearestPickup();
         if(parcel != null){
-            rm.moveTo(getTruck(), parcel.getDestination(), time);
+            rm.moveTo(getTruck(), parcel.getPosition(), time);
             setStatus(ActionStatus.SUCCESS);
         }else{
             setStatus(ActionStatus.FAILURE);

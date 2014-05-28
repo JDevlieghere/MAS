@@ -45,4 +45,10 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
     public boolean hasAuctioneer(){
         return this.hasAuctioneer;
     }
+
+    @Override
+    public String toString() {
+        return "Beacon Parcel " +
+                pos;
+    }
 }

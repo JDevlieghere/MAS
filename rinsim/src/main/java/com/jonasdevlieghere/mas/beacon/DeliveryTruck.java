@@ -220,7 +220,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     private void send(CommunicationUser recipient, Message message){
         ca.send(recipient, message);
-
     }
 
     private void broadcast(Message message){
