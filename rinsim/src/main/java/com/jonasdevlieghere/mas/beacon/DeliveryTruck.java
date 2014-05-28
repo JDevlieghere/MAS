@@ -45,9 +45,10 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         super(pDto);
         this.mailbox = new Mailbox();
         this.lock = new ReentrantLock();
-        discoveredParcels = new HashSet<BeaconParcel>();
-        auctionableParcels = new HashMap<BeaconParcel,AuctionStatus>();
+        this.discoveredParcels = new HashSet<BeaconParcel>();
+        this.auctionableParcels = new HashMap<BeaconParcel,AuctionStatus>();
         this.communicatedWith = new HashSet<DeliveryTruck>();
+        this.pickupQueue = new HashSet<BeaconParcel>();
     }
 
     @Override

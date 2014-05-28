@@ -23,15 +23,7 @@ public class PickupAction extends Action {
     public void execute(TimeLapse time) {
         final RoadModel rm = getRoadModel();
         final PDPModel pm = getPDPModel();
-        final DefaultParcel nearest = (DefaultParcel) RoadModels.findClosestObject(
-                rm.getPosition(getTruck()), rm, new Predicate<RoadUser>() {
-                    @Override
-                    public boolean apply(RoadUser input) {
-                        return input instanceof DefaultParcel
-                                && pm.getParcelState(((DefaultParcel) input)) == PDPModel.ParcelState.AVAILABLE;
-                    }
-                }
-        );
+        final DefaultParcel nearest = getNearestParcel();
 
         if (nearest != null && rm.equalPosition(nearest, getTruck())
                 && pm.getTimeWindowPolicy().canPickup(nearest.getPickupTimeWindow(),
@@ -48,6 +40,21 @@ public class PickupAction extends Action {
         }else{
             setStatus(ActionStatus.FAILURE);
         }
+    }
+
+    private DefaultParcel getNearestParcel(){
+        final RoadModel rm = getRoadModel();
+        final PDPModel pm = getPDPModel();
+
+        return (DefaultParcel) RoadModels.findClosestObject(
+                rm.getPosition(getTruck()), rm, new Predicate<RoadUser>() {
+                    @Override
+                    public boolean apply(RoadUser input) {
+                        return input instanceof DefaultParcel
+                                && pm.getParcelState(((DefaultParcel) input)) == PDPModel.ParcelState.AVAILABLE;
+                    }
+                }
+        );
     }
 
 }
