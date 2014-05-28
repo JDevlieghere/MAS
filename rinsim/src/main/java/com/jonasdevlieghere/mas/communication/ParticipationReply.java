@@ -12,18 +12,19 @@ import rinde.sim.core.model.communication.Message;
  */
 public class ParticipationReply extends Message {
     private ParticipationRequest request;
-    private boolean reply;
+    private double distance;
 
-    public ParticipationReply(CommunicationUser sender, ParticipationRequest request, boolean reply){
+    public ParticipationReply(CommunicationUser sender, ParticipationRequest request, double distance){
         super(sender);
         this.request = request;
+        this.distance = distance;
     }
 
     public ParticipationRequest getRequest(){
         return request;
     }
 
-    public boolean getReply(){
-        return reply;
+    public double getDistance(){
+        return distance;
     }
 }

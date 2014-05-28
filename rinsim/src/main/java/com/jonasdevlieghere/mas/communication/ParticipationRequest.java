@@ -14,8 +14,9 @@ import rinde.sim.core.model.pdp.Parcel;
 public class ParticipationRequest extends Message{
     private Parcel parcel;
 
-    public ParticipationRequest(CommunicationUser sender){
+    public ParticipationRequest(CommunicationUser sender, Parcel auctionableParcel){
         super(sender);
+        setAuctionableParcel(auctionableParcel);
     }
 
     public void setAuctionableParcel(Parcel parcel){

@@ -1,8 +1,8 @@
 package com.jonasdevlieghere.mas.action;
 
-import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.road.RoadModel;
@@ -23,7 +23,11 @@ public class DiscoverAction extends Action {
 
         List<BeaconParcel> parcels = bm.getDetectableParcels(getTruck());
         if(!parcels.isEmpty() && pm.getVehicleState(getTruck()) == PDPModel.VehicleState.IDLE){
-            System.out.println("Designated 1 from "+ getTruck().getPosition().toString() + " is :"+ parcels.get(0).ping());
+            BeaconParcel parcel = parcels.get(0);
+            if(parcel.ping()){
+                     getTruck().addAuctionableParcel(parcel);
+            };
+            getTruck().addDiscoveredParcel(parcel);
             rm.moveTo(getTruck(), parcels.get(0).getPosition(), time);
             setStatus(ActionStatus.SUCCESS);
         }else{
