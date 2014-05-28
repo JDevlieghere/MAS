@@ -1,12 +1,8 @@
 package com.jonasdevlieghere.mas.beacon;
 
 import com.jonasdevlieghere.mas.action.*;
-import com.jonasdevlieghere.mas.communication.Assignment;
-import com.jonasdevlieghere.mas.communication.AuctionStatus;
-import com.jonasdevlieghere.mas.communication.ParticipationReply;
-import com.jonasdevlieghere.mas.communication.ParticipationRequest;
+import com.jonasdevlieghere.mas.communication.*;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
-import org.apache.commons.math3.random.MersenneTwister;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.communication.CommunicationAPI;
@@ -14,7 +10,6 @@ import rinde.sim.core.model.communication.CommunicationUser;
 import rinde.sim.core.model.communication.Mailbox;
 import rinde.sim.core.model.communication.Message;
 import rinde.sim.core.model.pdp.PDPModel;
-import rinde.sim.core.model.pdp.Parcel;
 import rinde.sim.core.model.road.RoadModel;
 import rinde.sim.pdptw.common.DefaultVehicle;
 import rinde.sim.pdptw.common.VehicleDTO;
@@ -38,6 +33,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
      */
     private Set<BeaconParcel> pickupQueue;
 
+    private MessageStore messageStore;
     private Set<DeliveryTruck> communicatedWith;
     private Map<BeaconParcel,AuctionStatus> auctionableParcels;
     private Set<BeaconParcel> discoveredParcels;
@@ -46,9 +42,10 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         super(pDto);
         this.mailbox = new Mailbox();
         this.lock = new ReentrantLock();
-        discoveredParcels = new HashSet<BeaconParcel>();
-        auctionableParcels = new HashMap<BeaconParcel,AuctionStatus>();
+        this.discoveredParcels = new HashSet<BeaconParcel>();
+        this.auctionableParcels = new HashMap<BeaconParcel,AuctionStatus>();
         this.communicatedWith = new HashSet<DeliveryTruck>();
+        this.messageStore = new MessageStore();
     }
 
     @Override
@@ -56,7 +53,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
-
+        messageStore.addMessages(mailbox.getMessages());
 
         if(!auctionableParcels.isEmpty()){
             auctioneer();
@@ -86,11 +83,10 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     }
 
     private void bid() {
-        Queue<Message> messages = mailbox.getMessages();
-        while (!messages.isEmpty()){
-            Message message = messages.poll();
+        Set<Message> messages = messageStore.popAllOfType(ParticipationRequest.class);
+        for(Message msg : messages){
             try {
-                ParticipationRequest request = (ParticipationRequest) message;
+                ParticipationRequest request = (ParticipationRequest) msg;
                 CommunicationUser sender = request.getSender();
                 double distance = Point.distance(this.getPosition(), request.getAuctionableParcel().getDestination());
                 send(request.getSender(), new ParticipationReply(this, request, distance));
@@ -109,21 +105,20 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
                     auctionableParcels.put(bpEntry.getKey(),AuctionStatus.PENDING);
                     break;
                 case PENDING:
-                    Queue<Message> messages = mailbox.getMessages();
+                    Set<Message> messages = messageStore.popAllOfType(ParticipationRequest.class);
                     DeliveryTruck bestTruck = this;
-                    while (!messages.isEmpty()){
-                        Message message = messages.poll();
+                    for(Message msg : messages){
                         double bestDistance = Point.distance(this.getPosition(), bpEntry.getKey().getDestination());
                         try {
-                            ParticipationReply reply = (ParticipationReply) message;
+                            ParticipationReply reply = (ParticipationReply) msg;
                             if (reply.getRequest().equals(bpEntry.getKey())){
-                                 if(reply.getDistance() < bestDistance){
-                                     bestDistance = reply.getDistance();
-                                     bestTruck = (DeliveryTruck) reply.getSender();
-                                 }
+                                if(reply.getDistance() < bestDistance){
+                                    bestDistance = reply.getDistance();
+                                    bestTruck = (DeliveryTruck) reply.getSender();
+                                }
                             }
                         } catch (ClassCastException e){
-                              // NOOP
+                            // NOOP
                         }
                     }
                     if(bestTruck == this){
