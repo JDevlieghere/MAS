@@ -23,9 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser {
 
-    public static final String C_BLACK = "color.black";
-    public static final String C_YELLOW = "color.yellow";
-    public static final String C_GREEN = "color.green";
+    private static final double RADIUS = 0.5;
 
     private static final double MIN_RELIABILITY = .10;
     private static final double MAX_RELIABILITY = .80;
@@ -49,6 +47,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         this.lock = new ReentrantLock();
         discoveredParcels = new HashSet<BeaconParcel>();
         auctionableParcels = new HashMap<BeaconParcel,AuctionStatus>();
+        this.communicatedWith = new HashSet<DeliveryTruck>();
     }
 
     @Override
@@ -145,7 +144,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     @Override
     public double getRadius() {
-        return 1;
+        return RADIUS;
     }
 
     @Override
@@ -175,10 +174,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     public Map<BeaconParcel,AuctionStatus> getAuctionableParcels(){
         return new HashMap<BeaconParcel,AuctionStatus>(auctionableParcels);
-    }
-
-    public int getNoReceived() {
-        return 0;
     }
 
     public Set<DeliveryTruck> getCommunicatedWith() {

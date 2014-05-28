@@ -7,8 +7,10 @@ import rinde.sim.pdptw.common.ParcelDTO;
 
 public class BeaconParcel extends DefaultParcel implements Beacon {
 
+    private static final double RADIUS = 0.5;
+
     private Point pos;
-    private boolean auctioneerDesignated = false;
+    private boolean hasAuctioneer = false;
 
     public BeaconParcel(ParcelDTO pDto) {
         super(pDto);
@@ -20,7 +22,7 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
 
     @Override
     public double getRadius() {
-        return 1;
+        return RADIUS;
     }
 
     @Override
@@ -29,10 +31,18 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
     }
 
     public boolean ping(){
-        if(!auctioneerDesignated){
-            auctioneerDesignated = true;
+        if(!hasAuctioneer()){
+            setHasAuctioneer(true);
             return true;
         }
         return false;
+    }
+
+    private void setHasAuctioneer(boolean value){
+        this.hasAuctioneer = value;
+    }
+
+    public boolean hasAuctioneer(){
+        return this.hasAuctioneer;
     }
 }

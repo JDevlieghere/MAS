@@ -12,6 +12,7 @@ import rinde.sim.core.model.pdp.Parcel;
  * To change this template use File | Settings | File Templates.
  */
 public class ParticipationRequest extends Message{
+
     private Parcel parcel;
 
     public ParticipationRequest(CommunicationUser sender, Parcel auctionableParcel){

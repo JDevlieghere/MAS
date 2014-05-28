@@ -11,6 +11,7 @@ import rinde.sim.core.model.communication.Message;
  * To change this template use File | Settings | File Templates.
  */
 public class ParticipationReply extends Message {
+
     private ParticipationRequest request;
     private double distance;
 
@@ -27,4 +28,5 @@ public class ParticipationReply extends Message {
     public double getDistance(){
         return distance;
     }
+
 }
