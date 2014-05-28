@@ -33,8 +33,9 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private final ReentrantLock lock;
 
     /**
-     * Parcels for Delivery
+     * Parcels ready for pickup by this DeliveryTruck
      */
+    private Set<BeaconParcel> pickupQueue;
 
     private Set<DeliveryTruck> communicatedWith;
     private Map<BeaconParcel,AuctionStatus> auctionableParcels;
@@ -68,6 +69,9 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
             return;
 
         if(isSuccess(new DeliverAction(rm, pm ,this), time))
+            return;
+
+        if(isSuccess(new FetchAction(rm, pm ,this), time))
             return;
 
         if(isSuccess(new DiscoverAction(rm, pm, bm, this), time))
@@ -112,6 +116,18 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(action.getStatus() == ActionStatus.SUCCESS)
             return true;
         return false;
+    }
+
+    private void queuePickup(BeaconParcel parcel){
+        this.pickupQueue.add(parcel);
+    }
+
+    public Set<BeaconParcel> getPickupQueue(){
+        return new HashSet<BeaconParcel>(this.pickupQueue);
+    }
+
+    public void unqueuePickup(BeaconParcel parcel){
+        this.pickupQueue.remove(parcel);
     }
 
     @Override
