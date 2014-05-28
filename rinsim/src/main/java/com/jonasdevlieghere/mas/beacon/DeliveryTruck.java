@@ -76,12 +76,11 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(isSuccess(new FetchAction(rm, pm ,this), time))
             return;
 
-        if(isSuccess(new DiscoverAction(rm, pm, bm, this), time))
-            return;
-
         if(isSuccess(new TransportAction(rm, pm, this), time))
             return;
 
+        if(isSuccess(new DiscoverAction(rm, pm, bm, this), time))
+            return;
     }
 
     private void processAssignments() {
