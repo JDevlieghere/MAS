@@ -9,6 +9,5 @@ package com.jonasdevlieghere.mas.communication;
  */
 public enum AuctionStatus {
     UNAUCTIONED,
-    PENDING,
-    AUCTIONED
+    PENDING
 }
