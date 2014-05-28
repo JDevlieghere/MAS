@@ -86,11 +86,15 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private void bid() {
         Set<Message> messages = messageStore.popAllOfType(ParticipationRequest.class);
         for(Message msg : messages){
+            System.out.println("Biddin");
             try {
                 ParticipationRequest request = (ParticipationRequest) msg;
-                CommunicationUser sender = request.getSender();
-                double distance = Point.distance(this.getPosition(), request.getAuctionableParcel().getDestination());
-                send(sender, new ParticipationReply(this, request, distance));
+                if(discoveredParcels.contains(request.getAuctionableParcel())){
+                    CommunicationUser sender = request.getSender();
+                    double distance = Point.distance(this.getPosition(), request.getAuctionableParcel().getDestination());
+                    send(sender,new ParticipationReply(this,request,distance));
+                    discoveredParcels.remove(request.getAuctionableParcel());
+                }
             } catch (ClassCastException e){
                 // NOOP
             }
@@ -99,13 +103,16 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     }
 
     private void auctioneer() {
+        Set<BeaconParcel> toRemove = new HashSet<BeaconParcel>();
         for(Map.Entry<BeaconParcel,AuctionStatus> bpEntry: auctionableParcels.entrySet()){
             switch (bpEntry.getValue()){
                 case UNAUCTIONED:
+                    System.out.println("UNAUC");
                     broadcast(new ParticipationRequest(this, bpEntry.getKey()));
                     auctionableParcels.put(bpEntry.getKey(),AuctionStatus.PENDING);
                     break;
                 case PENDING:
+                    toRemove.add(bpEntry.getKey());
                     Set<Message> messages = messageStore.popAllOfType(ParticipationRequest.class);
                     DeliveryTruck bestTruck = this;
                     for(Message msg : messages){
@@ -124,8 +131,9 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
                     }
                     if(bestTruck == this){
                         queuePickup(bpEntry.getKey());
+                    } else {
+                        send(bestTruck, new Assignment(this, bpEntry.getKey()));
                     }
-                    send(bestTruck, new Assignment(this, bpEntry.getKey()));
                     break;
             }
         }
