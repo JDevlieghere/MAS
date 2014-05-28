@@ -21,9 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser {
 
-    public static final String C_BLACK = "color.black";
-    public static final String C_YELLOW = "color.yellow";
-    public static final String C_GREEN = "color.green";
+    private static final double RADIUS = 0.5;
 
     private static final double MIN_RELIABILITY = .10;
     private static final double MAX_RELIABILITY = .80;
@@ -43,6 +41,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         this.reliability =  MIN_RELIABILITY + ((new MersenneTwister(123)).nextDouble() * (MAX_RELIABILITY - MIN_RELIABILITY));
         this.mailbox = new Mailbox();
         this.lock = new ReentrantLock();
+        this.communicatedWith = new HashSet<DeliveryTruck>();
     }
 
     @Override
@@ -100,7 +99,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     @Override
     public double getRadius() {
-        return 1;
+        return RADIUS;
     }
 
     @Override
@@ -123,17 +122,8 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         return roadModel.get().getPosition(this);
     }
 
-    @Override
-    public String toString() {
-        return "DeliveryTruck ("+getPDPModel().getContentsSize(this)+"/"+this.getCapacity()+")";
-    }
-
     public Set<BeaconParcel> getAuctionableParcels(){
         return new HashSet<BeaconParcel>(auctionableParcels);
-    }
-
-    public int getNoReceived() {
-        return 0;
     }
 
     public Set<DeliveryTruck> getCommunicatedWith() {

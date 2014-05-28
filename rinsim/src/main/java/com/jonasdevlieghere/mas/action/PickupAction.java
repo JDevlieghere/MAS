@@ -30,8 +30,6 @@ public class PickupAction extends Action {
                 }
         );
 
-        setStatus(ActionStatus.FAILURE);
-
         if (nearest != null && rm.equalPosition(nearest, getTruck())
                 && pm.getTimeWindowPolicy().canPickup(nearest.getPickupTimeWindow(),
                 time.getTime(), nearest.getPickupDuration())) {
@@ -40,7 +38,11 @@ public class PickupAction extends Action {
             if (newSize <= getTruck().getCapacity()) {
                 pm.pickup(getTruck(), nearest, time);
                 setStatus(ActionStatus.SUCCESS);
+            }else{
+                setStatus(ActionStatus.FAILURE);
             }
+        }else{
+            setStatus(ActionStatus.FAILURE);
         }
     }
 }

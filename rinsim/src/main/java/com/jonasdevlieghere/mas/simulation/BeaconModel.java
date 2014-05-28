@@ -32,7 +32,7 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
         this.beacons = new CopyOnWriteArrayList<Beacon>();
     }
 
-    private List<DeliveryTruck> getTruckBeacons() {
+    public List<DeliveryTruck> getTruckBeacons() {
         final List<DeliveryTruck> trucks = new ArrayList<DeliveryTruck>();
         for (final Beacon beacon : beacons) {
             if (beacon instanceof DeliveryTruck) {
@@ -42,7 +42,7 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
         return trucks;
     }
 
-    private List<BeaconParcel> getParcelBeacons() {
+    public List<BeaconParcel> getParcelBeacons() {
         final List<BeaconParcel> parcels = new ArrayList<BeaconParcel>();
         for (final Beacon beacon : beacons) {
             if (beacon instanceof BeaconParcel) {
