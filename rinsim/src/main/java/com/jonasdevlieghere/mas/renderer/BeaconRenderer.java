@@ -1,5 +1,6 @@
-package com.jonasdevlieghere.mas.simulation;
+package com.jonasdevlieghere.mas.renderer;
 
+import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 import rinde.sim.core.model.ModelProvider;

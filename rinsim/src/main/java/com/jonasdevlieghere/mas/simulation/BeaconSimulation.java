@@ -2,6 +2,7 @@ package com.jonasdevlieghere.mas.simulation;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import com.jonasdevlieghere.mas.renderer.BeaconRenderer;
 import rinde.sim.core.Simulator;
 import rinde.sim.pdptw.common.DefaultDepot;
 import rinde.sim.pdptw.common.RouteRenderer;
@@ -32,6 +33,7 @@ public class BeaconSimulation {
                 schema.add(DeliveryTruck.class, "/graphics/perspective/deliverytruck.png");
                 schema.add(DefaultDepot.class, "/graphics/flat/warehouse-32.png");
                 schema.add(BeaconParcel.class, "/graphics/perspective/deliverypackage2.png");
+
                 final View.Builder viewBuilder = View.create(sim)
                         .with(
                                 new PlaneRoadModelRenderer(),

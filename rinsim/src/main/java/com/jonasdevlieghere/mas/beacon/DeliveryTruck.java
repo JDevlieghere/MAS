@@ -2,19 +2,45 @@ package com.jonasdevlieghere.mas.beacon;
 
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import com.jonasdevlieghere.mas.action.*;
+import org.apache.commons.math3.random.MersenneTwister;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
+import rinde.sim.core.model.communication.CommunicationAPI;
+import rinde.sim.core.model.communication.CommunicationUser;
+import rinde.sim.core.model.communication.Mailbox;
+import rinde.sim.core.model.communication.Message;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.pdp.Parcel;
 import rinde.sim.core.model.road.RoadModel;
 import rinde.sim.pdptw.common.DefaultVehicle;
 import rinde.sim.pdptw.common.VehicleDTO;
 
-public class DeliveryTruck extends DefaultVehicle implements Beacon {
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser {
+
+    public static final String C_BLACK = "color.black";
+    public static final String C_YELLOW = "color.yellow";
+    public static final String C_GREEN = "color.green";
+
+    private static final double MIN_RELIABILITY = .10;
+    private static final double MAX_RELIABILITY = .80;
 
     private BeaconModel bm;
+    private CommunicationAPI ca;
+
+    private double reliability;
+    private final Mailbox mailbox;
+    private final ReentrantLock lock;
+    private Set<DeliveryTruck> communicatedWith;
+
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
+        this.reliability =  MIN_RELIABILITY + ((new MersenneTwister(123)).nextDouble() * (MAX_RELIABILITY - MIN_RELIABILITY));
+        this.mailbox = new Mailbox();
+        this.lock = new ReentrantLock();
     }
 
     @Override
@@ -76,6 +102,21 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
     }
 
     @Override
+    public double getReliability() {
+        return this.reliability;
+    }
+
+    @Override
+    public void receive(Message message) {
+        mailbox.receive(message);
+    }
+
+    @Override
+    public void setCommunicationAPI(CommunicationAPI api) {
+        this.ca = api;
+    }
+
+    @Override
     public Point getPosition() {
         return roadModel.get().getPosition(this);
     }
@@ -84,4 +125,16 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
     public String toString() {
         return "DeliveryTruck ("+getPDPModel().getContentsSize(this)+"/"+this.getCapacity()+")";
     }
+
+    public int getNoReceived() {
+        return 0;
+    }
+
+    public Set<DeliveryTruck> getCommunicatedWith() {
+        lock.lock();
+        final Set<DeliveryTruck> result = new HashSet<DeliveryTruck>(communicatedWith);
+        lock.unlock();
+        return result;
+    }
+
 }
