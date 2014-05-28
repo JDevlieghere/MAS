@@ -50,9 +50,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
-        if(isSuccess(new AuctionAction(rm, pm, bm, this), time))
-            return;
-
         if(isSuccess(new PickupAction(rm, pm, this), time))
             return;
 
@@ -131,7 +128,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         return "DeliveryTruck ("+getPDPModel().getContentsSize(this)+"/"+this.getCapacity()+")";
     }
 
-    private Set<BeaconParcel> getAuctionableParcels(){
+    public Set<BeaconParcel> getAuctionableParcels(){
         return new HashSet<BeaconParcel>(auctionableParcels);
     }
 
