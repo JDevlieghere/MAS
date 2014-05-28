@@ -153,7 +153,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     private void queuePickup(BeaconParcel parcel){
         this.pickupQueue.add(parcel);
-        System.out.println(this + ": Added Parcel to Pickup Queue (" +parcel+ ")");
     }
 
     public Set<BeaconParcel> getPickupQueue(){
@@ -208,11 +207,9 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     private void send(CommunicationUser recipient, Message message){
         ca.send(recipient, message);
-
     }
 
     private void broadcast(Message message){
          ca.broadcast(message);
     }
-
 }
