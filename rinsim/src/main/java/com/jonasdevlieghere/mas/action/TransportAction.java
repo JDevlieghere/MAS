@@ -42,4 +42,9 @@ public class TransportAction extends Action {
         }
         return bestParcel;
     }
+
+    @Override
+    public String toString(){
+        return "TransportAction [" + this.getStatus() + "]";
+    }
 }

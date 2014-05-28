@@ -38,6 +38,7 @@ public class BeaconConfiguration extends DefaultMASConfiguration {
         return Optional.of(new DynamicPDPTWProblem.Creator<AddParcelEvent>() {
             @Override
             public boolean create(Simulator sim, AddParcelEvent event) {
+                // all parcels are accepted by default
                 return sim.register(new BeaconParcel(event.parcelDTO));
             }
         });

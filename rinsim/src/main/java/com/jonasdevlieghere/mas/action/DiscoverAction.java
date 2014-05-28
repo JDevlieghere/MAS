@@ -34,4 +34,9 @@ public class DiscoverAction extends Action {
             setStatus(ActionStatus.FAILURE);
         }
     }
+
+    @Override
+    public String toString(){
+        return "DiscoverAction [" + this.getStatus() + "]";
+    }
 }

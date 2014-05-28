@@ -24,4 +24,9 @@ public class DeliverAction extends Action {
             }
         }
     }
+
+    @Override
+    public String toString(){
+        return "DeliverAction [" + this.getStatus() + "]";
+    }
 }

@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class BeaconRenderer implements ModelRenderer {
 
-    protected final static RGB RED = new RGB(255, 0, 0);
+    protected final static RGB BLACK = new RGB(0, 0, 0);
     protected final static RGB GREEN = new RGB(0, 255, 0);
 
     protected BeaconModel beaconModel;
@@ -52,21 +52,19 @@ public class BeaconRenderer implements ModelRenderer {
         final List<DeliveryTruck> trucks = beaconModel.getTruckBeacons();
         synchronized (trucks) {
             for(DeliveryTruck truck : trucks){
-//                Point position = truck.getPosition();
-//
-//                final int x = (int) (vp.origin.x + (position.x - vp.rect.min.x) * vp.scale);
-//                final int y = (int) (vp.origin.y + (position.y - vp.rect.min.y) * vp.scale);
-//
-//                final Set<DeliveryTruck> otherTrucks = truck.getCommunicatedWith();
-//                for(final DeliveryTruck otherTruck: otherTrucks){
-//                    Point otherPosition = otherTruck.getPosition();
-//                    final int otherX = (int) (vp.origin.x + (otherPosition.x - vp.rect.min.x) * vp.scale);
-//                    final int otehrY = (int) (vp.origin.y + (otherPosition.y - vp.rect.min.y) * vp.scale);
-//                    RGB rgb = RED;
-//                    gc.setForeground(new Color(gc.getDevice(), rgb));
-//                    gc.setAlpha(225);
-//                    gc.drawLine(x, y, otherX, otehrY);
-//                }
+                Point position = truck.getPosition();
+
+                final int x = (int) (vp.origin.x + (position.x - vp.rect.min.x) * vp.scale);
+                final int y = (int) (vp.origin.y + (position.y - vp.rect.min.y) * vp.scale);
+                final int r = (int) (truck.getRadius() * vp.scale);
+
+                RGB rgb = BLACK;
+                gc.setBackground(new Color(gc.getDevice(), rgb));
+                gc.setForeground(new Color(gc.getDevice(), rgb));
+                gc.setAlpha(10);
+                gc.fillOval(x - r, y - r, 2 * r, 2 * r);
+                gc.setAlpha(50);
+                gc.drawOval(x - r, y - r, r * 2, r * 2);
             }
         }
 
