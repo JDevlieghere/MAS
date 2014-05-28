@@ -13,7 +13,7 @@ import rinde.sim.pdptw.common.DefaultParcel;
 public class PickupAction extends Action {
 
     public PickupAction(RoadModel rm, PDPModel pm, DeliveryTruck truck) {
-        super(rm, pm, truck);
+        super(rm, pm, null, truck);
     }
 
     @Override

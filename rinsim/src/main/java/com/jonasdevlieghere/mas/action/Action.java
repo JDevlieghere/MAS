@@ -1,5 +1,6 @@
 package com.jonasdevlieghere.mas.action;
 
+import com.jonasdevlieghere.mas.BeaconModel;
 import com.jonasdevlieghere.mas.DeliveryTruck;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -10,11 +11,13 @@ public abstract class Action {
     private ActionStatus status;
     private final RoadModel rm;
     private final PDPModel pm;
-    private final DeliveryTruck truck;
+    private final BeaconModel bm;
+    private DeliveryTruck truck;
 
-    public Action(RoadModel rm, PDPModel pm, DeliveryTruck truck){
+    public Action(RoadModel rm, PDPModel pm,  BeaconModel bm, DeliveryTruck truck){
         this.rm = rm;
         this.pm = pm;
+        this.bm = bm;
         this.truck = truck;
         setStatus(ActionStatus.PENDING);
     }
@@ -35,6 +38,10 @@ public abstract class Action {
 
     public PDPModel getPDPModel(){
         return this.pm;
+    }
+
+    public BeaconModel getBeaconModel() {
+        return this.bm;
     }
 
     public DeliveryTruck getTruck(){

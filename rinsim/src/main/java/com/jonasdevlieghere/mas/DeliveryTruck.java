@@ -1,9 +1,6 @@
 package com.jonasdevlieghere.mas;
 
-import com.jonasdevlieghere.mas.action.Action;
-import com.jonasdevlieghere.mas.action.ActionStatus;
-import com.jonasdevlieghere.mas.action.DeliverAction;
-import com.jonasdevlieghere.mas.action.PickupAction;
+import com.jonasdevlieghere.mas.action.*;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -16,7 +13,7 @@ import java.util.List;
 
 public class DeliveryTruck extends DefaultVehicle implements Beacon {
 
-    private BeaconModel beaconModel;
+    private BeaconModel bm;
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
     }
@@ -32,7 +29,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
         if(isSuccess(new DeliverAction(rm, pm ,this), time))
             return;
 
-        if(discoverParcel(time))
+        if(isSuccess(new DiscoverAction(rm, pm, bm, this), time))
             return;
 
         moveToNearestDelivery(time);
@@ -42,19 +39,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
         action.execute(time);
         if(action.getStatus() == ActionStatus.SUCCESS)
             return true;
-        return false;
-    }
-
-    private boolean discoverParcel(TimeLapse time){
-        final PDPModel pm = pdpModel.get();
-        final RoadModel rm = roadModel.get();
-
-        List<BeaconParcel> parcels = this.beaconModel.getDetectableParcels(this);
-        if(!parcels.isEmpty() && pm.getVehicleState(this) == PDPModel.VehicleState.IDLE){
-            System.out.println("Designated 1 from "+ this.getPosition().toString() + " is :"+ parcels.get(0).ping());
-            rm.moveTo(this, parcels.get(0).getPosition(), time);
-            return true;
-        }
         return false;
     }
 
@@ -84,7 +68,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
 
     @Override
     public void setModel(BeaconModel model) {
-        this.beaconModel = model;
+        this.bm = model;
     }
 
     @Override

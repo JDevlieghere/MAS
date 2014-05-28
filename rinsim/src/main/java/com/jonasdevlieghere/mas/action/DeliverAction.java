@@ -9,7 +9,7 @@ import rinde.sim.core.model.road.RoadModel;
 public class DeliverAction extends Action {
 
     public DeliverAction(RoadModel rm, PDPModel pm, DeliveryTruck truck) {
-        super(rm, pm, truck);
+        super(rm, pm, null, truck);
     }
 
     @Override
