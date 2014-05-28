@@ -1,6 +1,7 @@
 package com.jonasdevlieghere.mas.beacon;
 
 import com.jonasdevlieghere.mas.action.*;
+import com.jonasdevlieghere.mas.communication.Assignment;
 import com.jonasdevlieghere.mas.communication.AuctionStatus;
 import com.jonasdevlieghere.mas.communication.ParticipationReply;
 import com.jonasdevlieghere.mas.communication.ParticipationRequest;
@@ -56,6 +57,8 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
+
+
         if(!auctionableParcels.isEmpty()){
             auctioneer();
             return;
@@ -84,32 +87,54 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     }
 
     private void bid() {
+        Queue<Message> messages = mailbox.getMessages();
+        while (!messages.isEmpty()){
+            Message message = messages.poll();
+            try {
+                ParticipationRequest request = (ParticipationRequest) message;
+                CommunicationUser sender = request.getSender();
+                double distance = Point.distance(this.getPosition(), request.getAuctionableParcel().getDestination());
+                send(request.getSender(), new ParticipationReply(this, request, distance));
+            } catch (ClassCastException e){
+                // NOOP
+            }
+        }
+        return;
     }
 
     private void auctioneer() {
         for(Map.Entry<BeaconParcel,AuctionStatus> bpEntry: auctionableParcels.entrySet()){
             switch (bpEntry.getValue()){
                 case UNAUCTIONED:
-                    ca.broadcast(new ParticipationRequest(this, bpEntry.getKey()));
+                    broadcast(new ParticipationRequest(this, bpEntry.getKey()));
+                    auctionableParcels.put(bpEntry.getKey(),AuctionStatus.PENDING);
                     break;
                 case PENDING:
                     Queue<Message> messages = mailbox.getMessages();
+                    DeliveryTruck bestTruck = this;
                     while (!messages.isEmpty()){
                         Message message = messages.poll();
-                        DeliveryTruck bestTruck = this;
                         double bestDistance = Point.distance(this.getPosition(), bpEntry.getKey().getDestination());
                         try {
                             ParticipationReply reply = (ParticipationReply) message;
                             if (reply.getRequest().equals(bpEntry.getKey())){
-
+                                 if(reply.getDistance() < bestDistance){
+                                     bestDistance = reply.getDistance();
+                                     bestTruck = (DeliveryTruck) reply.getSender();
+                                 }
                             }
                         } catch (ClassCastException e){
                               // NOOP
                         }
                     }
+                    if(bestTruck == this){
+                        //TODO
+                    }
+                    send(bestTruck, new Assignment(this, bpEntry.getKey()));
                     break;
             }
         }
+        return;
     }
 
     private boolean isSuccess(Action action, TimeLapse time){
@@ -171,5 +196,14 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     public void addAuctionableParcel(BeaconParcel parcel) {
         auctionableParcels.put(parcel,AuctionStatus.UNAUCTIONED);
+    }
+
+    private void send(CommunicationUser recipient, Message message){
+        ca.send(recipient, message);
+
+    }
+
+    private void broadcast(Message message){
+         ca.broadcast(message);
     }
 }
