@@ -1,18 +1,14 @@
 package com.jonasdevlieghere.mas;
 
-import com.google.common.base.Predicate;
-
 import com.jonasdevlieghere.mas.action.Action;
 import com.jonasdevlieghere.mas.action.ActionStatus;
+import com.jonasdevlieghere.mas.action.DeliverAction;
 import com.jonasdevlieghere.mas.action.PickupAction;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.pdp.Parcel;
 import rinde.sim.core.model.road.RoadModel;
-import rinde.sim.core.model.road.RoadModels;
-import rinde.sim.core.model.road.RoadUser;
-import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.pdptw.common.DefaultVehicle;
 import rinde.sim.pdptw.common.VehicleDTO;
 
@@ -30,7 +26,11 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
-        execute(new PickupAction(rm, pm, this), time);
+        if(isSuccess(new PickupAction(rm, pm, this), time))
+            return;
+
+        if(isSuccess(new DeliverAction(rm, pm ,this), time))
+            return;
 
         if(discoverParcel(time))
             return;
@@ -38,7 +38,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
         moveToNearestDelivery(time);
     }
 
-    private boolean execute(Action action, TimeLapse time){
+    private boolean isSuccess(Action action, TimeLapse time){
         action.execute(time);
         if(action.getStatus() == ActionStatus.SUCCESS)
             return true;
@@ -54,17 +54,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
             System.out.println("Designated 1 from "+ this.getPosition().toString() + " is :"+ parcels.get(0).ping());
             rm.moveTo(this, parcels.get(0).getPosition(), time);
             return true;
-        }
-        return false;
-    }
-
-    private boolean deliverParcel(TimeLapse time) {
-        final PDPModel pm = pdpModel.get();
-        for (final Parcel parcel : pm.getContents(this)) {
-            if (parcel.getDestination().equals(getPosition()) && pm.getVehicleState(this) == PDPModel.VehicleState.IDLE){
-                pm.deliver(this, parcel, time);
-                return true;
-            }
         }
         return false;
     }

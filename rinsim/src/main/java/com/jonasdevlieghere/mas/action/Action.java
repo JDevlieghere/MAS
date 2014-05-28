@@ -1,21 +1,21 @@
 package com.jonasdevlieghere.mas.action;
 
+import com.jonasdevlieghere.mas.DeliveryTruck;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.road.RoadModel;
-import rinde.sim.pdptw.common.DefaultVehicle;
 
 public abstract class Action {
 
     private ActionStatus status;
     private final RoadModel rm;
     private final PDPModel pm;
-    private final DefaultVehicle vehicle;
+    private final DeliveryTruck truck;
 
-    public Action(RoadModel rm, PDPModel pm, DefaultVehicle vehicle){
+    public Action(RoadModel rm, PDPModel pm, DeliveryTruck truck){
         this.rm = rm;
         this.pm = pm;
-        this.vehicle = vehicle;
+        this.truck = truck;
         setStatus(ActionStatus.PENDING);
     }
 
@@ -37,7 +37,7 @@ public abstract class Action {
         return this.pm;
     }
 
-    public DefaultVehicle getVehicle(){
-        return this.vehicle;
+    public DeliveryTruck getTruck(){
+        return this.truck;
     }
 }

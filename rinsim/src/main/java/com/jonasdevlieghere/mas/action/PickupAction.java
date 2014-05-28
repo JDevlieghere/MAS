@@ -21,7 +21,7 @@ public class PickupAction extends Action {
         final RoadModel rm = getRoadModel();
         final PDPModel pm = getPDPModel();
         final DefaultParcel nearest = (DefaultParcel) RoadModels.findClosestObject(
-                rm.getPosition(getVehicle()), rm, new Predicate<RoadUser>() {
+                rm.getPosition(getTruck()), rm, new Predicate<RoadUser>() {
                     @Override
                     public boolean apply(RoadUser input) {
                         return input instanceof DefaultParcel
@@ -32,13 +32,13 @@ public class PickupAction extends Action {
 
         setStatus(ActionStatus.FAILURE);
 
-        if (nearest != null && rm.equalPosition(nearest, getVehicle())
+        if (nearest != null && rm.equalPosition(nearest, getTruck())
                 && pm.getTimeWindowPolicy().canPickup(nearest.getPickupTimeWindow(),
                 time.getTime(), nearest.getPickupDuration())) {
-            final double newSize = getPDPModel().getContentsSize(getVehicle())
+            final double newSize = getPDPModel().getContentsSize(getTruck())
                     + nearest.getMagnitude();
-            if (newSize <= getVehicle().getCapacity()) {
-                pm.pickup(getVehicle(), nearest, time);
+            if (newSize <= getTruck().getCapacity()) {
+                pm.pickup(getTruck(), nearest, time);
                 setStatus(ActionStatus.SUCCESS);
             }
         }
