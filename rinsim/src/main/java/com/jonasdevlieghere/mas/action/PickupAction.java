@@ -57,4 +57,9 @@ public class PickupAction extends Action {
         );
     }
 
+    @Override
+    public String toString(){
+        return "PickupAction [" + this.getStatus() + "]";
+    }
+
 }

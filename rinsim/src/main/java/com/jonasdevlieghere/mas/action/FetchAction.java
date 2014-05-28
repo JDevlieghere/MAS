@@ -41,4 +41,10 @@ public class FetchAction extends Action {
         }
         return bestParcel;
     }
+
+    @Override
+    public String toString(){
+        return "FetchAction [" + this.getStatus() + "]";
+    }
+
 }
