@@ -4,8 +4,10 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import org.apache.commons.math3.random.MersenneTwister;
 import rinde.sim.core.Simulator;
 import rinde.sim.core.model.Model;
+import rinde.sim.core.model.communication.CommunicationModel;
 import rinde.sim.pdptw.common.AddParcelEvent;
 import rinde.sim.pdptw.common.AddVehicleEvent;
 import rinde.sim.pdptw.common.DynamicPDPTWProblem;
@@ -18,7 +20,7 @@ public class BeaconConfiguration extends DefaultMASConfiguration {
 
     @Override
     public ImmutableList<? extends SupplierRng<? extends Model<?>>> getModels() {
-        return ImmutableList.of(BeaconModel.supplier());
+        return ImmutableList.of(BeaconModel.supplier(), new CommunicationModelSupplier());
     }
 
     @Override
@@ -40,5 +42,11 @@ public class BeaconConfiguration extends DefaultMASConfiguration {
                 return sim.register(new BeaconParcel(event.parcelDTO));
             }
         });
+    }
+
+    private static final class CommunicationModelSupplier implements SupplierRng<CommunicationModel> {
+        @Override public CommunicationModel get(long seed) {
+            return new CommunicationModel(new MersenneTwister(seed), true);
+        }
     }
 }

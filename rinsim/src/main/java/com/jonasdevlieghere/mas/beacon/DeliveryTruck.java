@@ -90,7 +90,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
                 ParticipationRequest request = (ParticipationRequest) msg;
                 CommunicationUser sender = request.getSender();
                 double distance = Point.distance(this.getPosition(), request.getAuctionableParcel().getDestination());
-                send(request.getSender(), new ParticipationReply(this, request, distance));
+                send(sender, new ParticipationReply(this, request, distance));
             } catch (ClassCastException e){
                 // NOOP
             }
@@ -123,7 +123,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
                         }
                     }
                     if(bestTruck == this){
-                        //TODO
+                        queuePickup(bpEntry.getKey());
                     }
                     send(bestTruck, new Assignment(this, bpEntry.getKey()));
                     break;
