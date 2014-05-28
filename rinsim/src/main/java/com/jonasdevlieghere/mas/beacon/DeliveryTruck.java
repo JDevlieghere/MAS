@@ -115,8 +115,8 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
                     toRemove.add(bpEntry.getKey());
                     Set<Message> messages = messageStore.popAllOfType(ParticipationRequest.class);
                     DeliveryTruck bestTruck = this;
+                    double bestDistance = Point.distance(this.getPosition(), bpEntry.getKey().getDestination());
                     for(Message msg : messages){
-                        double bestDistance = Point.distance(this.getPosition(), bpEntry.getKey().getDestination());
                         try {
                             ParticipationReply reply = (ParticipationReply) msg;
                             if (reply.getRequest().equals(bpEntry.getKey())){
@@ -136,6 +136,9 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
                     }
                     break;
             }
+        }
+        for(BeaconParcel bp : toRemove){
+            auctionableParcels.remove(bp);
         }
         return;
     }
