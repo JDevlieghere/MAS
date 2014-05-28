@@ -1,7 +1,7 @@
 package com.jonasdevlieghere.mas.beacon;
 
-import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import com.jonasdevlieghere.mas.action.*;
+import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -10,9 +10,14 @@ import rinde.sim.core.model.road.RoadModel;
 import rinde.sim.pdptw.common.DefaultVehicle;
 import rinde.sim.pdptw.common.VehicleDTO;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class DeliveryTruck extends DefaultVehicle implements Beacon {
 
     private BeaconModel bm;
+    private Set<BeaconParcel> auctionableParcels = new HashSet<BeaconParcel>();
+
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
     }
@@ -21,6 +26,9 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
     protected void tickImpl(TimeLapse time) {
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
+
+        if(isSuccess(new AuctionAction(rm, pm, bm, this), time))
+            return;
 
         if(isSuccess(new PickupAction(rm, pm, this), time))
             return;
@@ -83,5 +91,9 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
     @Override
     public String toString() {
         return "DeliveryTruck ("+getPDPModel().getContentsSize(this)+"/"+this.getCapacity()+")";
+    }
+
+    public Set<BeaconParcel> getAuctionableParcels(){
+        return new HashSet<BeaconParcel>(auctionableParcels);
     }
 }
