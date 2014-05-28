@@ -1,5 +1,6 @@
-package com.jonasdevlieghere.mas;
+package com.jonasdevlieghere.mas.beacon;
 
+import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import com.jonasdevlieghere.mas.action.*;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
@@ -8,8 +9,6 @@ import rinde.sim.core.model.pdp.Parcel;
 import rinde.sim.core.model.road.RoadModel;
 import rinde.sim.pdptw.common.DefaultVehicle;
 import rinde.sim.pdptw.common.VehicleDTO;
-
-import java.util.List;
 
 public class DeliveryTruck extends DefaultVehicle implements Beacon {
 

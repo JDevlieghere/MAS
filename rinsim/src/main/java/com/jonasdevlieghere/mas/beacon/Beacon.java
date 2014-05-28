@@ -1,6 +1,7 @@
-package com.jonasdevlieghere.mas;
+package com.jonasdevlieghere.mas.beacon;
 
 
+import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.graph.Point;
 
 public interface Beacon {

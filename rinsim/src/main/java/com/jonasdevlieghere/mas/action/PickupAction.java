@@ -2,7 +2,7 @@ package com.jonasdevlieghere.mas.action;
 
 
 import com.google.common.base.Predicate;
-import com.jonasdevlieghere.mas.DeliveryTruck;
+import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.road.RoadModel;

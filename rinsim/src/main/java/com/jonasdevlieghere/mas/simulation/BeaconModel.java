@@ -1,7 +1,10 @@
-package com.jonasdevlieghere.mas;
+package com.jonasdevlieghere.mas.simulation;
 
 
 import com.google.common.collect.ImmutableList;
+import com.jonasdevlieghere.mas.beacon.Beacon;
+import com.jonasdevlieghere.mas.beacon.BeaconParcel;
+import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.Model;
 import rinde.sim.core.model.ModelProvider;

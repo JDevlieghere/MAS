@@ -1,7 +1,9 @@
-package com.jonasdevlieghere.mas;
+package com.jonasdevlieghere.mas.simulation;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.jonasdevlieghere.mas.beacon.BeaconParcel;
+import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import rinde.sim.core.Simulator;
 import rinde.sim.core.model.Model;
 import rinde.sim.pdptw.common.AddParcelEvent;

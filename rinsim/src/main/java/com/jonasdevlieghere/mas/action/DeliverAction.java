@@ -1,6 +1,6 @@
 package com.jonasdevlieghere.mas.action;
 
-import com.jonasdevlieghere.mas.DeliveryTruck;
+import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.pdp.Parcel;
