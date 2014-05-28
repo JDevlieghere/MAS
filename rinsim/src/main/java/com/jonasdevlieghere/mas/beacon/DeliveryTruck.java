@@ -131,6 +131,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
                     }
                     if(bestTruck == this){
                         queuePickup(bpEntry.getKey());
+                        discoveredParcels.remove(bpEntry.getKey());
                     } else {
                         send(bestTruck, new Assignment(this, bpEntry.getKey()));
                     }
