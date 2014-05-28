@@ -63,6 +63,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         
         if(!discoveredParcels.isEmpty()){
             bid();
+            processAssignments();
             return;
         }
 
@@ -83,6 +84,18 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     }
 
+    private void processAssignments() {
+        Set<Message> messages = messageStore.popAllOfType(Assignment.class);
+        for(Message msg : messages){
+            try {
+                Assignment assignment = (Assignment) msg;
+                queuePickup((BeaconParcel) assignment.getParcel());
+                discoveredParcels.remove(assignment.getParcel());
+            } catch (ClassCastException e){
+                // NOOP
+            }
+        }
+    }
     private void bid() {
         Set<Message> messages = messageStore.popAllOfType(ParticipationRequest.class);
         for(Message msg : messages){
