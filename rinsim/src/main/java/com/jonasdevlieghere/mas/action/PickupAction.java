@@ -2,6 +2,7 @@ package com.jonasdevlieghere.mas.action;
 
 
 import com.google.common.base.Predicate;
+import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -9,6 +10,8 @@ import rinde.sim.core.model.road.RoadModel;
 import rinde.sim.core.model.road.RoadModels;
 import rinde.sim.core.model.road.RoadUser;
 import rinde.sim.pdptw.common.DefaultParcel;
+
+import java.util.Set;
 
 public class PickupAction extends Action {
 
@@ -32,11 +35,12 @@ public class PickupAction extends Action {
 
         if (nearest != null && rm.equalPosition(nearest, getTruck())
                 && pm.getTimeWindowPolicy().canPickup(nearest.getPickupTimeWindow(),
-                time.getTime(), nearest.getPickupDuration())) {
+                time.getTime(), nearest.getPickupDuration()) && getTruck().getPickupQueue().contains(nearest)) {
             final double newSize = getPDPModel().getContentsSize(getTruck())
                     + nearest.getMagnitude();
             if (newSize <= getTruck().getCapacity()) {
                 pm.pickup(getTruck(), nearest, time);
+                getTruck().unqueuePickup((BeaconParcel) nearest);
                 setStatus(ActionStatus.SUCCESS);
             }else{
                 setStatus(ActionStatus.FAILURE);
@@ -45,4 +49,5 @@ public class PickupAction extends Action {
             setStatus(ActionStatus.FAILURE);
         }
     }
+
 }

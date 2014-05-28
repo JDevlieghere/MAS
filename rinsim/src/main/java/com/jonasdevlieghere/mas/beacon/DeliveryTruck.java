@@ -25,25 +25,25 @@ import java.util.concurrent.locks.ReentrantLock;
 public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser {
 
     private static final double RADIUS = 0.5;
-
-    private static final double MIN_RELIABILITY = .10;
-    private static final double MAX_RELIABILITY = .80;
+    private static final double RELIABILITY = 1;
 
     private BeaconModel bm;
     private CommunicationAPI ca;
 
-    private double reliability;
     private final Mailbox mailbox;
     private final ReentrantLock lock;
+
+    /**
+     * Parcels ready for pickup by this DeliveryTruck
+     */
+    private Set<BeaconParcel> pickupQueue;
+
     private Set<DeliveryTruck> communicatedWith;
     private Map<BeaconParcel,AuctionStatus> auctionableParcels;
     private Set<BeaconParcel> discoveredParcels;
 
-
-
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
-        this.reliability =  MIN_RELIABILITY + ((new MersenneTwister(123)).nextDouble() * (MAX_RELIABILITY - MIN_RELIABILITY));
         this.mailbox = new Mailbox();
         this.lock = new ReentrantLock();
         discoveredParcels = new HashSet<BeaconParcel>();
@@ -74,10 +74,15 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(isSuccess(new DeliverAction(rm, pm ,this), time))
             return;
 
+        if(isSuccess(new FetchAction(rm, pm ,this), time))
+            return;
+
         if(isSuccess(new DiscoverAction(rm, pm, bm, this), time))
             return;
 
-        moveToNearestDelivery(time);
+        if(isSuccess(new TransportAction(rm, pm, this), time))
+            return;
+
     }
 
     private void bid() {
@@ -138,28 +143,16 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         return false;
     }
 
-    private BeaconParcel getNearestDelivery() {
-        final PDPModel pm = pdpModel.get();
-
-        double minDistance = Double.POSITIVE_INFINITY;
-        BeaconParcel bestParcel = null;
-        for (final Parcel parcel : pm.getContents(this)) {
-            double distance = Point.distance(this.getPosition(), parcel.getDestination());
-            if (distance < minDistance){
-                minDistance = distance;
-                bestParcel = (BeaconParcel)parcel;
-            }
-        }
-        return bestParcel;
+    private void queuePickup(BeaconParcel parcel){
+        this.pickupQueue.add(parcel);
     }
 
-    private void moveToNearestDelivery(TimeLapse time){
-        final RoadModel rm = roadModel.get();
+    public Set<BeaconParcel> getPickupQueue(){
+        return new HashSet<BeaconParcel>(this.pickupQueue);
+    }
 
-        BeaconParcel parcel = getNearestDelivery();
-        if(parcel != null){
-            rm.moveTo(this, parcel.getDestination(), time);
-        }
+    public void unqueuePickup(BeaconParcel parcel){
+        this.pickupQueue.remove(parcel);
     }
 
     @Override
@@ -174,7 +167,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     @Override
     public double getReliability() {
-        return this.reliability;
+        return RELIABILITY;
     }
 
     @Override
@@ -192,20 +185,8 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         return roadModel.get().getPosition(this);
     }
 
-    @Override
-    public String toString() {
-        return "DeliveryTruck ("+getPDPModel().getContentsSize(this)+"/"+this.getCapacity()+")";
-    }
-
     public Map<BeaconParcel,AuctionStatus> getAuctionableParcels(){
         return new HashMap<BeaconParcel,AuctionStatus>(auctionableParcels);
-    }
-
-    public Set<DeliveryTruck> getCommunicatedWith() {
-        lock.lock();
-        final Set<DeliveryTruck> result = new HashSet<DeliveryTruck>(communicatedWith);
-        lock.unlock();
-        return result;
     }
 
     public void addDiscoveredParcel(BeaconParcel parcel) {
