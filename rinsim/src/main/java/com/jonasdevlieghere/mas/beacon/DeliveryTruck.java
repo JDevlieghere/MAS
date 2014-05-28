@@ -24,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser {
 
-    private static final double RADIUS = 0.5;
+    private static final double RADIUS = 0.7;
     private static final double RELIABILITY = 1;
 
     private BeaconModel bm;
