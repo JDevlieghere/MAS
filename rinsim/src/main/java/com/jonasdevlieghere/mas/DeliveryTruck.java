@@ -35,6 +35,8 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
 
         if(discoverParcel(time))
             return;
+
+        moveToNearestDelivery(time);
     }
 
     private boolean discoverParcel(TimeLapse time){
@@ -51,7 +53,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
 
     private boolean deliverParcel(TimeLapse time) {
         final PDPModel pm = pdpModel.get();
-
         for (final Parcel parcel : pm.getContents(this)) {
             if (parcel.getDestination().equals(getPosition()) && pm.getVehicleState(this) == PDPModel.VehicleState.IDLE){
                 pm.deliver(this, parcel, time);
@@ -59,6 +60,30 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
             }
         }
         return false;
+    }
+
+    private BeaconParcel getNearestDelivery() {
+        final PDPModel pm = pdpModel.get();
+
+        double minDistance = Double.POSITIVE_INFINITY;
+        BeaconParcel bestParcel = null;
+        for (final Parcel parcel : pm.getContents(this)) {
+            double distance = Point.distance(this.getPosition(), parcel.getDestination());
+            if (distance < minDistance){
+                minDistance = distance;
+                bestParcel = (BeaconParcel)parcel;
+            }
+        }
+        return bestParcel;
+    }
+
+    private void moveToNearestDelivery(TimeLapse time){
+        final RoadModel rm = roadModel.get();
+
+        BeaconParcel parcel = getNearestDelivery();
+        if(parcel != null){
+            rm.moveTo(this, parcel.getDestination(), time);
+        }
     }
 
     private boolean pickupParcel(TimeLapse time){
