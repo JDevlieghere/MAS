@@ -45,6 +45,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon {
 
         List<BeaconParcel> parcels = this.beaconModel.getDetectableParcels(this);
         if(!parcels.isEmpty() && pm.getVehicleState(this) == PDPModel.VehicleState.IDLE){
+            System.out.println("Designated 1 from "+ this.getPosition().toString() + " is :"+ parcels.get(0).ping());
             rm.moveTo(this, parcels.get(0).getPosition(), time);
             return true;
         }
