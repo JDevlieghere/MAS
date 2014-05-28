@@ -3,6 +3,7 @@ package com.jonasdevlieghere.mas.simulation;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import com.jonasdevlieghere.mas.renderer.BeaconRenderer;
+import com.jonasdevlieghere.mas.renderer.MessagingRenderer;
 import rinde.sim.core.Simulator;
 import rinde.sim.pdptw.common.DefaultDepot;
 import rinde.sim.pdptw.common.RouteRenderer;
@@ -40,6 +41,7 @@ public class BeaconSimulation {
                                 new RoadUserRenderer(schema, false),
                                 new RouteRenderer(),
                                 new BeaconRenderer(),
+                                new MessagingRenderer(),
                                 new PDPModelRenderer(false)
                         );
                 if (testing) {
