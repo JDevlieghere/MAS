@@ -1,6 +1,8 @@
 package com.jonasdevlieghere.mas.simulation;
 
+import com.jonasdevlieghere.mas.beacon.Beacon;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
+import com.jonasdevlieghere.mas.beacon.BeaconStatus;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
@@ -37,7 +39,7 @@ public class BeaconRenderer implements ModelRenderer {
                 final int y = (int) (vp.origin.y + (position.y - vp.rect.min.y) * vp.scale);
                 final int r = (int) (parcel.getRadius() * vp.scale);
 
-                if(!parcel.hasAuctioneer()) {
+                if(parcel.getStatus() == BeaconStatus.ACTIVE) {
                     RGB rgb = GREEN;
                     gc.setBackground(new Color(gc.getDevice(), rgb));
                     gc.setForeground(new Color(gc.getDevice(), rgb));
@@ -45,6 +47,7 @@ public class BeaconRenderer implements ModelRenderer {
                     gc.fillOval(x - r, y - r, 2 * r, 2 * r);
                     gc.setAlpha(50);
                     gc.drawOval(x - r, y - r, r * 2, r * 2);
+                    gc.setAlpha(255);
                 }
             }
         }
@@ -65,6 +68,7 @@ public class BeaconRenderer implements ModelRenderer {
                 gc.fillOval(x - r, y - r, 2 * r, 2 * r);
                 gc.setAlpha(50);
                 gc.drawOval(x - r, y - r, r * 2, r * 2);
+                gc.setAlpha(255);
             }
         }
 

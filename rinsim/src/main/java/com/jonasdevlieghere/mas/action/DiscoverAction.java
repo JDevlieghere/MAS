@@ -17,7 +17,6 @@ public class DiscoverAction extends Action {
 
     @Override
     public void execute(TimeLapse time) {
-        final RoadModel rm = getRoadModel();
         final PDPModel pm = getPDPModel();
         final BeaconModel bm = getBeaconModel();
 

@@ -19,7 +19,7 @@ import rinde.sim.pdptw.common.VehicleDTO;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
+public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser {
 
     private static final double RADIUS = 0.7;
     private static final double RELIABILITY = 1;
@@ -136,7 +136,7 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
                     auctionableParcels.put(bpEntry.getKey(),AuctionStatus.PENDING);
                     break;
                 case PENDING:
-                    auctionableParcels.put(bpEntry.getKey(),AuctionStatus.AUCTIONING);
+                    auctionableParcels.put(bpEntry.getKey(), AuctionStatus.AUCTIONING);
                     break;
                 case AUCTIONING:
                     toRemove.add(bpEntry.getKey());
@@ -216,6 +216,21 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
     @Override
     public Point getPosition() {
         return roadModel.get().getPosition(this);
+    }
+
+    @Override
+    public BeaconStatus getStatus() {
+        return null;
+    }
+
+    @Override
+    public void setStatus(BeaconStatus status) {
+
+    }
+
+    @Override
+    public void setModel(BeaconModel model) {
+        this.bm = model;
     }
 
     public Map<BeaconParcel,AuctionStatus> getAuctionableParcels(){

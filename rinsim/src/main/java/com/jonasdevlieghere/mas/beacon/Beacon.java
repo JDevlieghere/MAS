@@ -15,7 +15,4 @@ public interface Beacon {
     public BeaconStatus getStatus();
 
     public void setStatus(BeaconStatus status);
-
-    public boolean hasAuctioneer();
-
 }
