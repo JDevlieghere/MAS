@@ -1,6 +1,10 @@
 package com.jonasdevlieghere.mas.beacon;
 
 import com.jonasdevlieghere.mas.action.*;
+import com.jonasdevlieghere.mas.activity.Activity;
+import com.jonasdevlieghere.mas.activity.Auctioneering;
+import com.jonasdevlieghere.mas.activity.Bidding;
+import com.jonasdevlieghere.mas.activity.ProcessAssignments;
 import com.jonasdevlieghere.mas.communication.*;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import org.apache.commons.math3.random.MersenneTwister;
@@ -42,6 +46,8 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
     private Map<BeaconParcel,AuctionStatus> auctionableParcels;
     private Set<BeaconParcel> discoveredParcels;
 
+    private ArrayList<Activity> activities;
+
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
         this.mailbox = new Mailbox();
@@ -52,6 +58,10 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
         this.messageStore = new MessageStore();
         this.pickupQueue = new HashSet<BeaconParcel>();
         this.rand = new MersenneTwister(123);
+        activities = new ArrayList<Activity>();
+        activities.add(new Auctioneering());
+        activities.add(new Bidding());
+        activities.add(new ProcessAssignments());
     }
 
     @Override
@@ -59,11 +69,14 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
-        messageStore.addMessages(mailbox.getMessages());
+        for(Activity a : activities){
+            a.execute();
+            if(a.endsTick())
+                return;
+        }
 
         if(!auctionableParcels.isEmpty()){
             auctioneer();
-            //return;
         }
         
         if(!discoveredParcels.isEmpty()){

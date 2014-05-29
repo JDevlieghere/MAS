@@ -52,10 +52,6 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
         return getStatus() == BeaconStatus.IN_AUCTION;
     }
 
-    public boolean isActive(){
-        return getStatus() == BeaconStatus.INACTIVE;
-    }
-
     @Override
     public String toString() {
         return "Beacon Parcel " +
