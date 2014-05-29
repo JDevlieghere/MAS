@@ -1,7 +1,7 @@
 package com.jonasdevlieghere.mas.activity;
 
-import com.jonasdevlieghere.mas.beacon.ActionUser;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
+import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import com.jonasdevlieghere.mas.communication.Assignment;
 import com.jonasdevlieghere.mas.communication.MessageStore;
 import rinde.sim.core.model.communication.Message;
@@ -18,7 +18,6 @@ import java.util.List;
 public class AssignmentsActivity extends Activity {
 
     private MessageStore messageStore;
-    private ActionUser truck;
 
     public AssignmentsActivity(ActivityUser user, MessageStore messageStore){
         super(user);
@@ -28,6 +27,7 @@ public class AssignmentsActivity extends Activity {
     @Override
     public void execute() {
         List<Message> messages = messageStore.retrieve(Assignment.class);
+        DeliveryTruck truck = (DeliveryTruck)getUser();
         for(Message msg : messages){
             try {
                 Assignment assignment = (Assignment) msg;
