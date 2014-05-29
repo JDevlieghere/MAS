@@ -12,4 +12,10 @@ public interface Beacon {
 
     public Point getPosition();
 
+    public BeaconStatus getStatus();
+
+    public void setStatus(BeaconStatus status);
+
+    public boolean hasAuctioneer();
+
 }

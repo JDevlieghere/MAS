@@ -10,11 +10,12 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
     private static final double RADIUS = 0.7;
 
     private Point pos;
-    private boolean hasAuctioneer = false;
+    private BeaconStatus status;
 
     public BeaconParcel(ParcelDTO pDto) {
         super(pDto);
         this.pos = pDto.pickupLocation;
+        setStatus(BeaconStatus.ACTIVE);
     }
 
     @Override
@@ -30,20 +31,29 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
         return this.pos;
     }
 
+    @Override
+    public BeaconStatus getStatus() {
+        return this.status;
+    }
+
     public boolean ping(){
-        if(!hasAuctioneer()){
-            setHasAuctioneer(true);
+        if(getStatus() == BeaconStatus.ACTIVE){
+            setStatus(BeaconStatus.IN_AUCTION);
             return true;
         }
         return false;
     }
 
-    private void setHasAuctioneer(boolean value){
-        this.hasAuctioneer = value;
+    public void setStatus(BeaconStatus status) {
+        this.status = status;
     }
 
     public boolean hasAuctioneer(){
-        return this.hasAuctioneer;
+        return getStatus() == BeaconStatus.IN_AUCTION;
+    }
+
+    public boolean isActive(){
+        return getStatus() == BeaconStatus.INACTIVE;
     }
 
     @Override

@@ -155,6 +155,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
                         send(bestTruck, new Assignment(this, bpEntry.getKey()));
                     }
                     discoveredParcels.remove(bpEntry.getKey());
+                    bpEntry.getKey().setStatus(BeaconStatus.INACTIVE);
                     break;
             }
         }
