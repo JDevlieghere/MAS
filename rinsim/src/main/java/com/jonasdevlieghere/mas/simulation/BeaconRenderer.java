@@ -1,8 +1,8 @@
 package com.jonasdevlieghere.mas.simulation;
 
-import com.jonasdevlieghere.mas.beacon.ActionUser;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconStatus;
+import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
@@ -50,9 +50,9 @@ public class BeaconRenderer implements ModelRenderer {
             }
         }
 
-        final List<ActionUser> trucks = beaconModel.getTruckBeacons();
+        final List<DeliveryTruck> trucks = beaconModel.getTruckBeacons();
         synchronized (trucks) {
-            for(ActionUser truck : trucks){
+            for(DeliveryTruck truck : trucks){
                 Point position = truck.getPosition();
 
                 final int x = (int) (vp.origin.x + (position.x - vp.rect.min.x) * vp.scale);

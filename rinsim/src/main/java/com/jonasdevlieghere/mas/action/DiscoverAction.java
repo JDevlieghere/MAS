@@ -10,7 +10,7 @@ import java.util.List;
 
 public class DiscoverAction extends Action {
 
-    public DiscoverAction(RoadModel rm, PDPModel pm, BeaconModel bm, com.jonasdevlieghere.mas.beacon.ActionUser truck) {
+    public DiscoverAction(RoadModel rm, PDPModel pm, BeaconModel bm, DeliveryTruck truck) {
         super(rm, pm, bm, truck);
     }
 
@@ -18,14 +18,15 @@ public class DiscoverAction extends Action {
     public void execute(TimeLapse time) {
         final PDPModel pm = getPDPModel();
         final BeaconModel bm = getBeaconModel();
+        DeliveryTruck truck = (DeliveryTruck)getUser();
 
-        List<BeaconParcel> parcels = bm.getDetectableParcels(getUser());
-        if(!parcels.isEmpty() && pm.getVehicleState(getUser()) == PDPModel.VehicleState.IDLE){
+        List<BeaconParcel> parcels = bm.getDetectableParcels(truck);
+        if(!parcels.isEmpty() && pm.getVehicleState(truck) == PDPModel.VehicleState.IDLE){
             BeaconParcel parcel = parcels.get(0);
             if(parcel.ping()){
-                getUser().addAuctionableParcel(parcel);
+                truck.addAuctionableParcel(parcel);
             }
-            getUser().addDiscoveredParcel(parcel);
+            truck.addDiscoveredParcel(parcel);
             setStatus(ActionStatus.SUCCESS);
         }else{
             setStatus(ActionStatus.FAILURE);

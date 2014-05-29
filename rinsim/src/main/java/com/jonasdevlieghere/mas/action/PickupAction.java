@@ -12,7 +12,7 @@ import rinde.sim.pdptw.common.DefaultParcel;
 
 public class PickupAction extends Action {
 
-    public PickupAction(RoadModel rm, PDPModel pm, com.jonasdevlieghere.mas.beacon.ActionUser truck) {
+    public PickupAction(RoadModel rm, PDPModel pm, DeliveryTruck truck) {
         super(rm, pm, null, truck);
     }
 
@@ -21,15 +21,16 @@ public class PickupAction extends Action {
         final RoadModel rm = getRoadModel();
         final PDPModel pm = getPDPModel();
         final DefaultParcel nearest = getNearestParcel();
+        DeliveryTruck truck = (DeliveryTruck)getUser();
 
-        if (nearest != null && rm.equalPosition(nearest, getUser())
+        if (nearest != null && rm.equalPosition(nearest, truck)
                 && pm.getTimeWindowPolicy().canPickup(nearest.getPickupTimeWindow(),
-                time.getTime(), nearest.getPickupDuration()) && getUser().getPickupQueue().contains(nearest)) {
-            final double newSize = getPDPModel().getContentsSize(getUser())
+                time.getTime(), nearest.getPickupDuration()) && truck.getPickupQueue().contains(nearest)) {
+            final double newSize = getPDPModel().getContentsSize(truck)
                     + nearest.getMagnitude();
-            if (newSize <= getUser().getCapacity()) {
-                pm.pickup(getUser(), nearest, time);
-                getUser().unqueuePickup((BeaconParcel) nearest);
+            if (newSize <= truck.getCapacity()) {
+                pm.pickup(truck, nearest, time);
+                truck.unqueuePickup((BeaconParcel) nearest);
                 setStatus(ActionStatus.SUCCESS);
             }else{
                 setStatus(ActionStatus.FAILURE);
@@ -42,9 +43,10 @@ public class PickupAction extends Action {
     private DefaultParcel getNearestParcel(){
         final RoadModel rm = getRoadModel();
         final PDPModel pm = getPDPModel();
+        DeliveryTruck truck = (DeliveryTruck)getUser();
 
         return (DefaultParcel) RoadModels.findClosestObject(
-                rm.getPosition(getUser()), rm, new Predicate<RoadUser>() {
+                rm.getPosition(truck), rm, new Predicate<RoadUser>() {
                     @Override
                     public boolean apply(RoadUser input) {
                         return input instanceof DefaultParcel

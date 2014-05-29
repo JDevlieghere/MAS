@@ -1,6 +1,5 @@
 package com.jonasdevlieghere.mas.action;
 
-import com.jonasdevlieghere.mas.beacon.ActionUser;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -44,7 +43,7 @@ public abstract class Action {
         return this.bm;
     }
 
-    public com.jonasdevlieghere.mas.beacon.ActionUser getUser(){
+    public ActionUser getUser(){
         return this.user;
     }
 }
