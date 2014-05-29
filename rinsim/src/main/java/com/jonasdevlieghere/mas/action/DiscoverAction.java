@@ -25,10 +25,9 @@ public class DiscoverAction extends Action {
         if(!parcels.isEmpty() && pm.getVehicleState(getTruck()) == PDPModel.VehicleState.IDLE){
             BeaconParcel parcel = parcels.get(0);
             if(parcel.ping()){
-                     getTruck().addAuctionableParcel(parcel);
-            };
+                getTruck().addAuctionableParcel(parcel);
+            }
             getTruck().addDiscoveredParcel(parcel);
-            rm.moveTo(getTruck(), parcels.get(0).getPosition(), time);
             setStatus(ActionStatus.SUCCESS);
         }else{
             setStatus(ActionStatus.FAILURE);

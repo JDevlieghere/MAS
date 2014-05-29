@@ -34,10 +34,12 @@ public class TransportAction extends Action {
         BeaconParcel bestParcel = null;
         for (final Parcel parcel : pm.getContents(getTruck())) {
             double distance = Point.distance(getTruck().getPosition(), parcel.getDestination());
-            if (distance < minDistance && pm.getTimeWindowPolicy().canDeliver(parcel.getPickupTimeWindow(),
-                    time.getTime(), parcel.getPickupDuration()) && getTruck().getPickupQueue().contains(parcel)){
-                minDistance = distance;
-                bestParcel = (BeaconParcel)parcel;
+            if (distance < minDistance){
+                if(pm.getTimeWindowPolicy().canDeliver(parcel.getDeliveryTimeWindow(),
+                        time.getTime(), parcel.getPickupDuration()) ) {
+                    minDistance = distance;
+                    bestParcel = (BeaconParcel) parcel;
+                }
             }
         }
         return bestParcel;
