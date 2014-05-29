@@ -4,14 +4,10 @@ package com.jonasdevlieghere.mas.activity;
  * Created with IntelliJ IDEA.
  * User: dieter
  * Date: 5/29/14
- * Time: 2:57 PM
+ * Time: 3:29 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class Activity {
-    private ActivityStatus status;
-
-    public abstract void execute();
-
-    public abstract ActivityStatus getStatus();
-
+public enum ActivityStatus {
+    NORMAL,
+    END_TICK
 }

@@ -14,7 +14,7 @@ public class Bidding extends Activity {
     }
 
     @Override
-    public boolean endsTick() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public ActivityStatus getStatus() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
