@@ -58,14 +58,15 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
         if(!auctionableParcels.isEmpty()){
             auctioneer();
-            return;
+            //return;
         }
         
         if(!discoveredParcels.isEmpty()){
             bid();
-            processAssignments();
             return;
         }
+
+        processAssignments();
 
         if(isSuccess(new PickupAction(rm, pm, this), time))
             return;
@@ -89,26 +90,26 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
             try {
                 Assignment assignment = (Assignment) msg;
                 queuePickup((BeaconParcel) assignment.getParcel());
-                discoveredParcels.remove(assignment.getParcel());
             } catch (ClassCastException e){
-                // NOOP
+                // NOP
             }
         }
+        return;
     }
     private void bid() {
         Set<Message> messages = messageStore.popAllOfType(ParticipationRequest.class);
         for(Message msg : messages){
-            System.out.println("Biddin from " + this.getPosition().toString());
             try {
                 ParticipationRequest request = (ParticipationRequest) msg;
                 if(discoveredParcels.contains(request.getAuctionableParcel())){
+                    System.out.println("Biddin from " + this.getPosition().toString() + " for " + request.getAuctionableParcel());
                     CommunicationUser sender = request.getSender();
                     double distance = Point.distance(this.getPosition(), request.getAuctionableParcel().getDestination());
                     send(sender,new ParticipationReply(this,request,distance));
                     discoveredParcels.remove(request.getAuctionableParcel());
                 }
             } catch (ClassCastException e){
-                // NOOP
+                // NOP
             }
         }
         return;
@@ -116,38 +117,44 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     private void auctioneer() {
         Set<BeaconParcel> toRemove = new HashSet<BeaconParcel>();
+        Set<Message> messages = messageStore.popAllOfType(ParticipationReply.class);
+        System.out.println(auctionableParcels.size());
         for(Map.Entry<BeaconParcel,AuctionStatus> bpEntry: auctionableParcels.entrySet()){
             switch (bpEntry.getValue()){
                 case UNAUCTIONED:
-                    System.out.println("UNAUC");
+                    System.out.println("UNAUC " + bpEntry.getKey());
                     broadcast(new ParticipationRequest(this, bpEntry.getKey()));
                     auctionableParcels.put(bpEntry.getKey(),AuctionStatus.PENDING);
                     break;
                 case PENDING:
+                    auctionableParcels.put(bpEntry.getKey(),AuctionStatus.AUCTIONING);
+                    break;
+                case AUCTIONING:
                     toRemove.add(bpEntry.getKey());
-                    Set<Message> messages = messageStore.popAllOfType(ParticipationReply.class);
-                    System.out.println("PENDING:" + messages.size());
+                    System.out.println("PENDING for "+ bpEntry.getKey().toString()+":" + messages.size());
                     DeliveryTruck bestTruck = this;
                     double bestDistance = Point.distance(this.getPosition(), bpEntry.getKey().getDestination());
+                    System.out.println("Initial best:" + bestDistance);
                     for(Message msg : messages){
                         try {
                             ParticipationReply reply = (ParticipationReply) msg;
                             if (reply.getRequest().getAuctionableParcel().equals(bpEntry.getKey())){
+                                System.out.println("Reply recieved with dist " + reply.getDistance());
                                 if(reply.getDistance() < bestDistance){
                                     bestDistance = reply.getDistance();
                                     bestTruck = (DeliveryTruck) reply.getSender();
                                 }
                             }
                         } catch (ClassCastException e){
-                            // NOOP
+                            // NOP
                         }
                     }
                     if(bestTruck == this){
                         queuePickup(bpEntry.getKey());
-                        discoveredParcels.remove(bpEntry.getKey());
                     } else {
                         send(bestTruck, new Assignment(this, bpEntry.getKey()));
                     }
+                    discoveredParcels.remove(bpEntry.getKey());
                     break;
             }
         }
