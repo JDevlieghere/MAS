@@ -125,7 +125,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
                     break;
                 case PENDING:
                     toRemove.add(bpEntry.getKey());
-                    Set<Message> messages = messageStore.popAllOfType(ParticipationRequest.class);
+                    Set<Message> messages = messageStore.popAllOfType(ParticipationReply.class);
                     DeliveryTruck bestTruck = this;
                     double bestDistance = Point.distance(this.getPosition(), bpEntry.getKey().getDestination());
                     for(Message msg : messages){
