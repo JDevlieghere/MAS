@@ -1,10 +1,7 @@
 package com.jonasdevlieghere.mas.beacon;
 
 import com.jonasdevlieghere.mas.action.*;
-import com.jonasdevlieghere.mas.activity.Activity;
-import com.jonasdevlieghere.mas.activity.Auctioneering;
-import com.jonasdevlieghere.mas.activity.Bidding;
-import com.jonasdevlieghere.mas.activity.ProcessAssignments;
+import com.jonasdevlieghere.mas.activity.*;
 import com.jonasdevlieghere.mas.communication.*;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import org.apache.commons.math3.random.MersenneTwister;
@@ -22,7 +19,7 @@ import rinde.sim.pdptw.common.VehicleDTO;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser {
+public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser, ActionUser, ActivityUser {
 
     /**
      * Constants
@@ -88,19 +85,19 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
         processAssignments();
 
-        if(isSuccess(new PickupAction(rm, pm, this), time))
+        if(endsTick(new PickupAction(rm, pm, this), time))
             return;
 
-        if(isSuccess(new DeliverAction(rm, pm ,this), time))
+        if(endsTick(new DeliverAction(rm, pm ,this), time))
             return;
 
-        if(isSuccess(new FetchAction(rm, pm ,this), time))
+        if(endsTick(new FetchAction(rm, pm ,this), time))
             return;
 
-        if(isSuccess(new TransportAction(rm, pm, this), time))
+        if(endsTick(new TransportAction(rm, pm, this), time))
             return;
 
-        if(isSuccess(new DiscoverAction(rm, pm, bm, this), time))
+        if(endsTick(new DiscoverAction(rm, pm, bm, this), time))
             return;
 
 //        if(isSuccess(new ExploreAction(rm, pm, this, this.rand), time))
@@ -189,13 +186,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         return;
     }
 
-    private boolean isSuccess(Action action, TimeLapse time){
-        action.execute(time);
-        if(action.getStatus() == ActionStatus.SUCCESS)
-            return true;
-        return false;
-    }
-
     private void queuePickup(BeaconParcel parcel){
         this.pickupQueue.add(parcel);
     }
@@ -266,5 +256,21 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     private void broadcast(Message message){
          ca.broadcast(message);
+    }
+
+    @Override
+    public boolean endsTick(Action action, TimeLapse time) {
+        action.execute(time);
+        if(action.getStatus() == ActionStatus.SUCCESS)
+            return true;
+        return false;
+    }
+
+    @Override
+    public boolean endsTick(Activity activity, TimeLapse time) {
+        activity.execute();
+        if(activity.getStatus() == ActivityStatus.END_TICK)
+            return true;
+        return false;
     }
 }
