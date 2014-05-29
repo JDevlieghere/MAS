@@ -2,8 +2,7 @@ package com.jonasdevlieghere.mas.action;
 
 
 import com.google.common.base.Predicate;
-import com.jonasdevlieghere.mas.beacon.BeaconParcel;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import com.jonasdevlieghere.mas.beacon.*;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.road.RoadModel;
@@ -11,11 +10,9 @@ import rinde.sim.core.model.road.RoadModels;
 import rinde.sim.core.model.road.RoadUser;
 import rinde.sim.pdptw.common.DefaultParcel;
 
-import java.util.Set;
-
 public class PickupAction extends Action {
 
-    public PickupAction(RoadModel rm, PDPModel pm, DeliveryTruck truck) {
+    public PickupAction(RoadModel rm, PDPModel pm, com.jonasdevlieghere.mas.beacon.ActionUser truck) {
         super(rm, pm, null, truck);
     }
 
@@ -25,14 +22,14 @@ public class PickupAction extends Action {
         final PDPModel pm = getPDPModel();
         final DefaultParcel nearest = getNearestParcel();
 
-        if (nearest != null && rm.equalPosition(nearest, getTruck())
+        if (nearest != null && rm.equalPosition(nearest, getUser())
                 && pm.getTimeWindowPolicy().canPickup(nearest.getPickupTimeWindow(),
-                time.getTime(), nearest.getPickupDuration()) && getTruck().getPickupQueue().contains(nearest)) {
-            final double newSize = getPDPModel().getContentsSize(getTruck())
+                time.getTime(), nearest.getPickupDuration()) && getUser().getPickupQueue().contains(nearest)) {
+            final double newSize = getPDPModel().getContentsSize(getUser())
                     + nearest.getMagnitude();
-            if (newSize <= getTruck().getCapacity()) {
-                pm.pickup(getTruck(), nearest, time);
-                getTruck().unqueuePickup((BeaconParcel) nearest);
+            if (newSize <= getUser().getCapacity()) {
+                pm.pickup(getUser(), nearest, time);
+                getUser().unqueuePickup((BeaconParcel) nearest);
                 setStatus(ActionStatus.SUCCESS);
             }else{
                 setStatus(ActionStatus.FAILURE);
@@ -47,7 +44,7 @@ public class PickupAction extends Action {
         final PDPModel pm = getPDPModel();
 
         return (DefaultParcel) RoadModels.findClosestObject(
-                rm.getPosition(getTruck()), rm, new Predicate<RoadUser>() {
+                rm.getPosition(getUser()), rm, new Predicate<RoadUser>() {
                     @Override
                     public boolean apply(RoadUser input) {
                         return input instanceof DefaultParcel

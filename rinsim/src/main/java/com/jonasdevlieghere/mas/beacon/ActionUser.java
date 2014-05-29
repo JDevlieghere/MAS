@@ -19,7 +19,7 @@ import rinde.sim.pdptw.common.VehicleDTO;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser, ActionUser, ActivityUser {
+public class ActionUser extends DefaultVehicle implements Beacon, CommunicationUser, com.jonasdevlieghere.mas.action.ActionUser, ActivityUser {
 
     /**
      * Constants
@@ -49,7 +49,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
      */
     private MessageStore messageStore;
 
-    public DeliveryTruck(VehicleDTO pDto) {
+    public ActionUser(VehicleDTO pDto) {
         super(pDto);
         this.lock = new ReentrantLock();
         this.messageStore = new MessageStore();

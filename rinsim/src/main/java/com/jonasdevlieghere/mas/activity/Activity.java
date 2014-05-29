@@ -1,12 +1,5 @@
 package com.jonasdevlieghere.mas.activity;
 
-import com.jonasdevlieghere.mas.action.ActionStatus;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
-import com.jonasdevlieghere.mas.simulation.BeaconModel;
-import org.omg.PortableInterceptor.ACTIVE;
-import rinde.sim.core.model.pdp.PDPModel;
-import rinde.sim.core.model.road.RoadModel;
-
 /**
  * Created with IntelliJ IDEA.
  * User: dieter
@@ -20,7 +13,7 @@ public abstract class Activity {
     private ActivityUser user;
 
     public Activity(ActivityUser user){
-        setUser(user);
+        this.user = user;
         setStatus(ActivityStatus.NORMAL);
     }
 
@@ -37,10 +30,6 @@ public abstract class Activity {
 
     public ActivityUser getUser() {
         return user;
-    }
-
-    public void setUser(ActivityUser user) {
-        this.user = user;
     }
 
 }

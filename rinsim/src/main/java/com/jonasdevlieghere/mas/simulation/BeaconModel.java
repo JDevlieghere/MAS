@@ -2,17 +2,16 @@ package com.jonasdevlieghere.mas.simulation;
 
 
 import com.google.common.collect.ImmutableList;
+import com.jonasdevlieghere.mas.beacon.ActionUser;
 import com.jonasdevlieghere.mas.beacon.Beacon;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconStatus;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.Model;
 import rinde.sim.core.model.ModelProvider;
 import rinde.sim.core.model.ModelReceiver;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.road.RoadModel;
-import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.util.SupplierRng;
 
 import java.util.ArrayList;
@@ -33,11 +32,11 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
         this.beacons = new CopyOnWriteArrayList<Beacon>();
     }
 
-    public List<DeliveryTruck> getTruckBeacons() {
-        final List<DeliveryTruck> trucks = new ArrayList<DeliveryTruck>();
+    public List<ActionUser> getTruckBeacons() {
+        final List<ActionUser> trucks = new ArrayList<ActionUser>();
         for (final Beacon beacon : beacons) {
-            if (beacon instanceof DeliveryTruck) {
-                trucks.add((DeliveryTruck) beacon);
+            if (beacon instanceof ActionUser) {
+                trucks.add((ActionUser) beacon);
             }
         }
         return trucks;
@@ -53,7 +52,7 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
         return parcels;
     }
 
-    public List<BeaconParcel> getDetectableParcels(DeliveryTruck truck) {
+    public List<BeaconParcel> getDetectableParcels(ActionUser truck) {
         final List<BeaconParcel> parcels = new ArrayList<BeaconParcel>();
         for (final BeaconParcel parcel : getParcelBeacons()) {
             if(parcel.getStatus() == BeaconStatus.ACTIVE

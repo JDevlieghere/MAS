@@ -2,8 +2,8 @@ package com.jonasdevlieghere.mas.simulation;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.jonasdevlieghere.mas.beacon.ActionUser;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import org.apache.commons.math3.random.MersenneTwister;
 import rinde.sim.core.Simulator;
 import rinde.sim.core.model.Model;
@@ -28,7 +28,7 @@ public class BeaconConfiguration extends DefaultMASConfiguration {
         return new DynamicPDPTWProblem.Creator<AddVehicleEvent>() {
             @Override
             public boolean create(Simulator sim, AddVehicleEvent event) {
-                return sim.register(new DeliveryTruck(event.vehicleDTO));
+                return sim.register(new ActionUser(event.vehicleDTO));
             }
         };
     }

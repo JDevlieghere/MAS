@@ -1,7 +1,7 @@
 package com.jonasdevlieghere.mas.simulation;
 
+import com.jonasdevlieghere.mas.beacon.ActionUser;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import rinde.sim.core.Simulator;
 import rinde.sim.pdptw.common.DefaultDepot;
 import rinde.sim.pdptw.common.RouteRenderer;
@@ -29,7 +29,7 @@ public class BeaconSimulation {
             @Override
             public void createUI(Simulator sim) {
                 final UiSchema schema = new UiSchema(false);
-                schema.add(DeliveryTruck.class, "/graphics/perspective/deliverytruck.png");
+                schema.add(ActionUser.class, "/graphics/perspective/deliverytruck.png");
                 schema.add(DefaultDepot.class, "/graphics/flat/warehouse-32.png");
                 schema.add(BeaconParcel.class, "/graphics/perspective/deliverypackage2.png");
 
