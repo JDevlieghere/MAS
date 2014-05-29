@@ -51,7 +51,11 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private Map<BeaconParcel,AuctionStatus> auctionableParcels;
     private Set<BeaconParcel> discoveredParcels;
 
-    private ArrayList<Activity> activities;
+    private Activity auctioneering;
+    private Activity bidding;
+    private Activity processAssignments;
+
+
 
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
@@ -61,10 +65,9 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         this.messageStore = new MessageStore();
         this.pickupQueue = new HashSet<BeaconParcel>();
         this.rand = new MersenneTwister(123);
-        activities = new ArrayList<Activity>();
-        activities.add(new Auctioneering());
-        activities.add(new Bidding());
-        activities.add(new ProcessAssignments());
+        auctioneering = new Auctioneering();
+        bidding = new Bidding();
+        processAssignments = new ProcessAssignments();
     }
 
     @Override
@@ -72,11 +75,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
-        for(Activity a : activities){
-            a.execute();
-            if(a.endsTick())
-                return;
-        }
+
 
         if(!auctionableParcels.isEmpty()){
             auctioneer();
