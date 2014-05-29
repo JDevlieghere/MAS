@@ -98,7 +98,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private void bid() {
         Set<Message> messages = messageStore.popAllOfType(ParticipationRequest.class);
         for(Message msg : messages){
-            System.out.println("Biddin");
+            System.out.println("Biddin from " + this.getPosition().toString());
             try {
                 ParticipationRequest request = (ParticipationRequest) msg;
                 if(discoveredParcels.contains(request.getAuctionableParcel())){
@@ -126,12 +126,13 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
                 case PENDING:
                     toRemove.add(bpEntry.getKey());
                     Set<Message> messages = messageStore.popAllOfType(ParticipationReply.class);
+                    System.out.println("PENDING:" + messages.size());
                     DeliveryTruck bestTruck = this;
                     double bestDistance = Point.distance(this.getPosition(), bpEntry.getKey().getDestination());
                     for(Message msg : messages){
                         try {
                             ParticipationReply reply = (ParticipationReply) msg;
-                            if (reply.getRequest().equals(bpEntry.getKey())){
+                            if (reply.getRequest().getAuctionableParcel().equals(bpEntry.getKey())){
                                 if(reply.getDistance() < bestDistance){
                                     bestDistance = reply.getDistance();
                                     bestTruck = (DeliveryTruck) reply.getSender();
