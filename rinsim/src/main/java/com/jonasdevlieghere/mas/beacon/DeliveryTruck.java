@@ -24,7 +24,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     /**
      * Constants
      */
-    private static final double RADIUS = 0.7;
+    private static final double RADIUS = 10;
     private static final double RELIABILITY = 1;
 
     /**
@@ -160,6 +160,11 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     public void broadcast(Message message){
          ca.broadcast(message);
+    }
+
+    @Override
+    public String toString() {
+        return "DeliveryTruck("+this.hashCode()+"){Pickups: " +this.getPickupQueue().size()+ ", Parcels: "+getPDPModel().getContents(this).size()+"}";
     }
 
     @Override
