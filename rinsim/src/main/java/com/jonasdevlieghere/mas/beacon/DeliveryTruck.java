@@ -194,11 +194,6 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
     }
 
     @Override
-    public void setModel(BeaconModel model) {
-        this.bm = model;
-    }
-
-    @Override
     public double getRadius() {
         return RADIUS;
     }
