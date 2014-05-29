@@ -115,4 +115,12 @@ public class AuctionActivity extends Activity{
     public ActivityStatus getStatus() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    public void addAuctionableParcel(BeaconParcel parcel) {
+        auctionableParcels.put(parcel, AuctionStatus.UNAUCTIONED);
+    }
+
+    public void addDiscoveredParcel(BeaconParcel parcel) {
+        discoveredParcels.add(parcel);
+    }
 }

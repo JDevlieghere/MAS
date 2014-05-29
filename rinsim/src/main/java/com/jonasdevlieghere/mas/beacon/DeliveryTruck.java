@@ -45,17 +45,15 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private Set<BeaconParcel> pickupQueue;
 
     private MessageStore messageStore;
-    private Map<BeaconParcel,AuctionStatus> auctionableParcels;
     private Set<BeaconParcel> discoveredParcels;
 
-    private Activity auction;
+    private AuctionActivity auction;
     private Activity processAssignments;
 
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
         this.lock = new ReentrantLock();
         this.discoveredParcels = new HashSet<BeaconParcel>();
-        this.auctionableParcels = new HashMap<BeaconParcel,AuctionStatus>();
         this.messageStore = new MessageStore();
         this.pickupQueue = new HashSet<BeaconParcel>();
         this.rand = new MersenneTwister(123);
@@ -71,7 +69,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         auction.execute();
         if(endsTick(auction, time))
             return;
-
 
         processAssignments.execute();
         if(endsTick(processAssignments, time))
@@ -149,16 +146,12 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         this.bm = model;
     }
 
-    public Map<BeaconParcel,AuctionStatus> getAuctionableParcels(){
-        return new HashMap<BeaconParcel,AuctionStatus>(auctionableParcels);
-    }
-
     public void addDiscoveredParcel(BeaconParcel parcel) {
-        discoveredParcels.add(parcel);
+        auction.addDiscoveredParcel(parcel);
     }
 
     public void addAuctionableParcel(BeaconParcel parcel) {
-        auctionableParcels.put(parcel,AuctionStatus.UNAUCTIONED);
+        auction.addAuctionableParcel(parcel);
     }
 
     public void send(CommunicationUser recipient, Message message){
