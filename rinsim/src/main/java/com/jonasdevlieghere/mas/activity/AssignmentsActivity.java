@@ -20,7 +20,7 @@ public class AssignmentsActivity extends Activity {
     private MessageStore messageStore;
     private ActionUser truck;
 
-    public AssignmentsActivity(ActivityUser user, MessageStore messageStore, ActionUser truck){
+    public AssignmentsActivity(ActivityUser user, MessageStore messageStore){
         super(user);
         this.messageStore = messageStore;
     }

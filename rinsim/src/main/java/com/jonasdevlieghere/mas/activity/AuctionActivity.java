@@ -24,17 +24,22 @@ public class AuctionActivity extends Activity{
     private Map<BeaconParcel,AuctionStatus> auctionableParcels;
     private Set<BeaconParcel> discoveredParcels;
 
-    public AuctionActivity(ActivityUser user, MessageStore messageStore, ActionUser truck){
+    public AuctionActivity(ActivityUser user, MessageStore messageStore){
         super(user);
         this.messageStore = messageStore;
-        this.truck = truck;
         this.discoveredParcels = new HashSet<BeaconParcel>();
         this.auctionableParcels = new HashMap<BeaconParcel,AuctionStatus>();
     }
 
     @Override
     public void execute() {
-
+        if(!auctionableParcels.isEmpty()){
+            auction();
+        }
+        if(!discoveredParcels.isEmpty()){
+            bid();
+            setStatus(ActivityStatus.END_TICK);
+        }
     }
 
     public void auction(){
