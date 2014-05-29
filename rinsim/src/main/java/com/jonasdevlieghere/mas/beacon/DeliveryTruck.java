@@ -72,7 +72,17 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
+        auctioneering.execute();
+        if(endsTick(auctioneering, time))
+            return;
 
+        bidding.execute();
+        if(endsTick(bidding, time))
+            return;
+
+        processAssignments.execute();
+        if(endsTick(processAssignments, time))
+            return;
 
         if(!auctionableParcels.isEmpty()){
             auctioneer();
@@ -116,6 +126,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         }
         return;
     }
+
     private void bid() {
         List<Message> messages = messageStore.retrieve(ParticipationRequest.class);
         for(Message msg : messages){
