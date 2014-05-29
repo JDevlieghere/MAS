@@ -4,6 +4,7 @@ package com.jonasdevlieghere.mas.simulation;
 import com.google.common.collect.ImmutableList;
 import com.jonasdevlieghere.mas.beacon.Beacon;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
+import com.jonasdevlieghere.mas.beacon.BeaconStatus;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.Model;
@@ -55,9 +56,10 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
     public List<BeaconParcel> getDetectableParcels(DeliveryTruck truck) {
         final List<BeaconParcel> parcels = new ArrayList<BeaconParcel>();
         for (final BeaconParcel parcel : getParcelBeacons()) {
-            if(Point.distance(truck.getPosition(), parcel.getPosition()) <= truck.getRadius() + parcel.getRadius()
-                    && pdpModel.getParcelState(((DefaultParcel) parcel)) == PDPModel.ParcelState.AVAILABLE)
-                parcels.add((BeaconParcel) parcel);
+            if(parcel.getStatus() == BeaconStatus.ACTIVE
+                    && Point.distance(truck.getPosition(), parcel.getPosition()) <= truck.getRadius() + parcel.getRadius()
+                    && pdpModel.getParcelState((parcel)) == PDPModel.ParcelState.AVAILABLE)
+                parcels.add(parcel);
         }
         return parcels;
     }

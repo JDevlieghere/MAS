@@ -13,7 +13,6 @@ import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.communication.CommunicationAPI;
 import rinde.sim.core.model.communication.CommunicationUser;
-import rinde.sim.core.model.communication.Mailbox;
 import rinde.sim.core.model.communication.Message;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.road.RoadModel;
@@ -23,17 +22,24 @@ import rinde.sim.pdptw.common.VehicleDTO;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
+public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser {
 
+    /**
+     * Constants
+     */
     private static final double RADIUS = 0.7;
     private static final double RELIABILITY = 1;
 
+    /**
+     * Models
+     */
     private BeaconModel bm;
     private CommunicationAPI ca;
 
-    private final Mailbox mailbox;
+    /**
+     * Utilities
+     */
     private final ReentrantLock lock;
-
     private final RandomGenerator rand;
 
     /**
@@ -42,7 +48,6 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
     private Set<BeaconParcel> pickupQueue;
 
     private MessageStore messageStore;
-    private Set<DeliveryTruck> communicatedWith;
     private Map<BeaconParcel,AuctionStatus> auctionableParcels;
     private Set<BeaconParcel> discoveredParcels;
 
@@ -50,11 +55,9 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
 
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
-        this.mailbox = new Mailbox();
         this.lock = new ReentrantLock();
         this.discoveredParcels = new HashSet<BeaconParcel>();
         this.auctionableParcels = new HashMap<BeaconParcel,AuctionStatus>();
-        this.communicatedWith = new HashSet<DeliveryTruck>();
         this.messageStore = new MessageStore();
         this.pickupQueue = new HashSet<BeaconParcel>();
         this.rand = new MersenneTwister(123);
@@ -101,12 +104,12 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
         if(isSuccess(new DiscoverAction(rm, pm, bm, this), time))
             return;
 
-        if(isSuccess(new ExploreAction(rm, pm, this, this.rand), time))
-            return;
+//        if(isSuccess(new ExploreAction(rm, pm, this, this.rand), time))
+//            return;
     }
 
     private void processAssignments() {
-        Set<Message> messages = messageStore.popAllOfType(Assignment.class);
+        List<Message> messages = messageStore.retrieve(Assignment.class);
         for(Message msg : messages){
             try {
                 Assignment assignment = (Assignment) msg;
@@ -118,7 +121,7 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
         return;
     }
     private void bid() {
-        Set<Message> messages = messageStore.popAllOfType(ParticipationRequest.class);
+        List<Message> messages = messageStore.retrieve(ParticipationRequest.class);
         for(Message msg : messages){
             try {
                 ParticipationRequest request = (ParticipationRequest) msg;
@@ -139,7 +142,7 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
 
     private void auctioneer() {
         Set<BeaconParcel> toRemove = new HashSet<BeaconParcel>();
-        Set<Message> messages = messageStore.popAllOfType(ParticipationReply.class);
+        List<Message> messages = messageStore.retrieve(ParticipationReply.class);
         System.out.println(auctionableParcels.size());
         for(Map.Entry<BeaconParcel,AuctionStatus> bpEntry: auctionableParcels.entrySet()){
             switch (bpEntry.getValue()){
@@ -149,7 +152,7 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
                     auctionableParcels.put(bpEntry.getKey(),AuctionStatus.PENDING);
                     break;
                 case PENDING:
-                    auctionableParcels.put(bpEntry.getKey(),AuctionStatus.AUCTIONING);
+                    auctionableParcels.put(bpEntry.getKey(), AuctionStatus.AUCTIONING);
                     break;
                 case AUCTIONING:
                     toRemove.add(bpEntry.getKey());
@@ -218,7 +221,7 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
 
     @Override
     public void receive(Message message) {
-        mailbox.receive(message);
+        messageStore.store(message);
     }
 
     @Override
@@ -229,6 +232,21 @@ public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
     @Override
     public Point getPosition() {
         return roadModel.get().getPosition(this);
+    }
+
+    @Override
+    public BeaconStatus getStatus() {
+        return null;
+    }
+
+    @Override
+    public void setStatus(BeaconStatus status) {
+
+    }
+
+    @Override
+    public void setModel(BeaconModel model) {
+        this.bm = model;
     }
 
     public Map<BeaconParcel,AuctionStatus> getAuctionableParcels(){

@@ -2,30 +2,21 @@ package com.jonasdevlieghere.mas.communication;
 
 import rinde.sim.core.model.communication.Message;
 
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: dieter
- * Date: 5/28/14
- * Time: 3:14 PM
- * To change this template use File | Settings | File Templates.
- */
 public class MessageStore {
-    private Set<Message> messages;
+    private List<Message> messages;
 
     public MessageStore(){
-        messages = new HashSet<Message>();
+        messages = new ArrayList<Message>();
     }
 
-    public void addMessages(Queue<Message> messages){
-        this.messages.addAll(messages);
+    public void store(Message message){
+        this.messages.add(message);
     }
 
-    public Set<Message> popAllOfType(Class clazz){
-        HashSet<Message> result = new HashSet<Message>();
+    public List<Message> retrieve(Class clazz){
+        List<Message> result = new ArrayList<Message>();
         for(Message msg : messages){
             if(clazz.isInstance(msg)){
                 result.add(msg);
