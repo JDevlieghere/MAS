@@ -21,15 +21,22 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser {
 
+    /**
+     * Constants
+     */
     private static final double RADIUS = 0.7;
     private static final double RELIABILITY = 1;
 
+    /**
+     * Models
+     */
     private BeaconModel bm;
     private CommunicationAPI ca;
 
-    private final Mailbox mailbox;
+    /**
+     * Utilities
+     */
     private final ReentrantLock lock;
-
     private final RandomGenerator rand;
 
     /**
@@ -38,17 +45,14 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private Set<BeaconParcel> pickupQueue;
 
     private MessageStore messageStore;
-    private Set<DeliveryTruck> communicatedWith;
     private Map<BeaconParcel,AuctionStatus> auctionableParcels;
     private Set<BeaconParcel> discoveredParcels;
 
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
-        this.mailbox = new Mailbox();
         this.lock = new ReentrantLock();
         this.discoveredParcels = new HashSet<BeaconParcel>();
         this.auctionableParcels = new HashMap<BeaconParcel,AuctionStatus>();
-        this.communicatedWith = new HashSet<DeliveryTruck>();
         this.messageStore = new MessageStore();
         this.pickupQueue = new HashSet<BeaconParcel>();
         this.rand = new MersenneTwister(123);
@@ -59,11 +63,8 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
-        messageStore.addMessages(mailbox.getMessages());
-
         if(!auctionableParcels.isEmpty()){
             auctioneer();
-            //return;
         }
         
         if(!discoveredParcels.isEmpty()){
@@ -93,7 +94,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     }
 
     private void processAssignments() {
-        Set<Message> messages = messageStore.popAllOfType(Assignment.class);
+        List<Message> messages = messageStore.retrieve(Assignment.class);
         for(Message msg : messages){
             try {
                 Assignment assignment = (Assignment) msg;
@@ -105,7 +106,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         return;
     }
     private void bid() {
-        Set<Message> messages = messageStore.popAllOfType(ParticipationRequest.class);
+        List<Message> messages = messageStore.retrieve(ParticipationRequest.class);
         for(Message msg : messages){
             try {
                 ParticipationRequest request = (ParticipationRequest) msg;
@@ -126,7 +127,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     private void auctioneer() {
         Set<BeaconParcel> toRemove = new HashSet<BeaconParcel>();
-        Set<Message> messages = messageStore.popAllOfType(ParticipationReply.class);
+        List<Message> messages = messageStore.retrieve(ParticipationReply.class);
         System.out.println(auctionableParcels.size());
         for(Map.Entry<BeaconParcel,AuctionStatus> bpEntry: auctionableParcels.entrySet()){
             switch (bpEntry.getValue()){
@@ -205,7 +206,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     @Override
     public void receive(Message message) {
-        mailbox.receive(message);
+        messageStore.store(message);
     }
 
     @Override
