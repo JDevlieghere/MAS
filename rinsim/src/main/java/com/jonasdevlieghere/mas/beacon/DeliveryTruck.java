@@ -44,24 +44,17 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
      */
     private Set<BeaconParcel> pickupQueue;
 
+    /**
+     * Message Storage
+     */
     private MessageStore messageStore;
-    private Map<BeaconParcel,AuctionStatus> auctionableParcels;
-    private Set<BeaconParcel> discoveredParcels;
-
-    private ArrayList<Activity> activities;
 
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
         this.lock = new ReentrantLock();
-        this.discoveredParcels = new HashSet<BeaconParcel>();
-        this.auctionableParcels = new HashMap<BeaconParcel,AuctionStatus>();
         this.messageStore = new MessageStore();
         this.pickupQueue = new HashSet<BeaconParcel>();
         this.rand = new MersenneTwister(123);
-        activities = new ArrayList<Activity>();
-        activities.add(new Auctioneering());
-        activities.add(new Bidding());
-        activities.add(new ProcessAssignments());
     }
 
     @Override
@@ -69,30 +62,29 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
-        for(Activity a : activities){
-            a.execute();
-            if(a.endsTick())
-                return;
-        }
+//        for(Activity a : activities){
+//            a.execute();
+//            if(a.endsTick())
+//                return;
+//        }
+//
+//        if(!auctionableParcels.isEmpty()){
+//            auctioneer();
+//        }
+//
+//        if(!discoveredParcels.isEmpty()){
+//            bid();
+//            return;
+//        }
 
-        if(!auctionableParcels.isEmpty()){
-            auctioneer();
-        }
-        
-        if(!discoveredParcels.isEmpty()){
-            bid();
-            return;
-        }
-
-        processAssignments();
 
         if(endsTick(new PickupAction(rm, pm, this), time))
             return;
 
-        if(endsTick(new DeliverAction(rm, pm ,this), time))
+        if(endsTick(new DeliverAction(rm, pm, this), time))
             return;
 
-        if(endsTick(new FetchAction(rm, pm ,this), time))
+        if(endsTick(new FetchAction(rm, pm, this), time))
             return;
 
         if(endsTick(new TransportAction(rm, pm, this), time))
@@ -105,89 +97,8 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 //            return;
     }
 
-    private void processAssignments() {
-        List<Message> messages = messageStore.retrieve(Assignment.class);
-        for(Message msg : messages){
-            try {
-                Assignment assignment = (Assignment) msg;
-                queuePickup((BeaconParcel) assignment.getParcel());
-            } catch (ClassCastException e){
-                // NOP
-            }
-        }
-        return;
-    }
-    private void bid() {
-        List<Message> messages = messageStore.retrieve(ParticipationRequest.class);
-        for(Message msg : messages){
-            try {
-                ParticipationRequest request = (ParticipationRequest) msg;
-                if(discoveredParcels.contains(request.getAuctionableParcel())){
-                    System.out.println("Biddin from " + this.getPosition().toString() + " for " + request.getAuctionableParcel());
-                    CommunicationUser sender = request.getSender();
-                    double distance = Point.distance(this.getPosition(), request.getAuctionableParcel().getDestination());
-                    System.out.println("Biddin from " + this.getPosition().toString());
-                    send(sender,new ParticipationReply(this,request,distance));
-                    discoveredParcels.remove(request.getAuctionableParcel());
-                }
-            } catch (ClassCastException e){
-                // NOP
-            }
-        }
-        return;
-    }
 
-    private void auctioneer() {
-        Set<BeaconParcel> toRemove = new HashSet<BeaconParcel>();
-        List<Message> messages = messageStore.retrieve(ParticipationReply.class);
-        System.out.println(auctionableParcels.size());
-        for(Map.Entry<BeaconParcel,AuctionStatus> bpEntry: auctionableParcels.entrySet()){
-            switch (bpEntry.getValue()){
-                case UNAUCTIONED:
-                    System.out.println("UNAUC " + bpEntry.getKey());
-                    broadcast(new ParticipationRequest(this, bpEntry.getKey()));
-                    auctionableParcels.put(bpEntry.getKey(),AuctionStatus.PENDING);
-                    break;
-                case PENDING:
-                    auctionableParcels.put(bpEntry.getKey(), AuctionStatus.AUCTIONING);
-                    break;
-                case AUCTIONING:
-                    toRemove.add(bpEntry.getKey());
-                    System.out.println("PENDING for "+ bpEntry.getKey().toString()+":" + messages.size());
-                    DeliveryTruck bestTruck = this;
-                    double bestDistance = Point.distance(this.getPosition(), bpEntry.getKey().getDestination());
-                    System.out.println("Initial best:" + bestDistance);
-                    for(Message msg : messages){
-                        try {
-                            ParticipationReply reply = (ParticipationReply) msg;
-                            if (reply.getRequest().getAuctionableParcel().equals(bpEntry.getKey())){
-                                System.out.println("Reply recieved with dist " + reply.getDistance());
-                                if(reply.getDistance() < bestDistance){
-                                    bestDistance = reply.getDistance();
-                                    bestTruck = (DeliveryTruck) reply.getSender();
-                                }
-                            }
-                        } catch (ClassCastException e){
-                            // NOP
-                        }
-                    }
-                    if(bestTruck == this){
-                        queuePickup(bpEntry.getKey());
-                    } else {
-                        send(bestTruck, new Assignment(this, bpEntry.getKey()));
-                    }
-                    discoveredParcels.remove(bpEntry.getKey());
-                    bpEntry.getKey().setStatus(BeaconStatus.INACTIVE);
-                    break;
-            }
-        }
-        for(BeaconParcel bp : toRemove){
-            auctionableParcels.remove(bp);
-        }
-        return;
-    }
-
-    private void queuePickup(BeaconParcel parcel){
+    public void queuePickup(BeaconParcel parcel){
         this.pickupQueue.add(parcel);
     }
 
@@ -239,23 +150,13 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         this.bm = model;
     }
 
-    public Map<BeaconParcel,AuctionStatus> getAuctionableParcels(){
-        return new HashMap<BeaconParcel,AuctionStatus>(auctionableParcels);
-    }
 
-    public void addDiscoveredParcel(BeaconParcel parcel) {
-        discoveredParcels.add(parcel);
-    }
 
-    public void addAuctionableParcel(BeaconParcel parcel) {
-        auctionableParcels.put(parcel,AuctionStatus.UNAUCTIONED);
-    }
-
-    private void send(CommunicationUser recipient, Message message){
+    public void send(CommunicationUser recipient, Message message){
         ca.send(recipient, message);
     }
 
-    private void broadcast(Message message){
+    public void broadcast(Message message){
          ca.broadcast(message);
     }
 
