@@ -3,6 +3,8 @@ package com.jonasdevlieghere.mas.beacon;
 import com.jonasdevlieghere.mas.action.*;
 import com.jonasdevlieghere.mas.communication.*;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
+import org.apache.commons.math3.random.MersenneTwister;
+import org.apache.commons.math3.random.RandomGenerator;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.communication.CommunicationAPI;
@@ -17,7 +19,7 @@ import rinde.sim.pdptw.common.VehicleDTO;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser {
+public class DeliveryTruck extends DefaultVehicle implements CommunicationUser {
 
     private static final double RADIUS = 0.7;
     private static final double RELIABILITY = 1;
@@ -27,6 +29,8 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     private final Mailbox mailbox;
     private final ReentrantLock lock;
+
+    private final RandomGenerator rand;
 
     /**
      * Parcels ready for pickup by this DeliveryTruck
@@ -47,6 +51,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         this.communicatedWith = new HashSet<DeliveryTruck>();
         this.messageStore = new MessageStore();
         this.pickupQueue = new HashSet<BeaconParcel>();
+        this.rand = new MersenneTwister(123);
     }
 
     @Override
@@ -81,6 +86,9 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
         if(isSuccess(new DiscoverAction(rm, pm, bm, this), time))
             return;
+
+        if(isSuccess(new ExploreAction(rm, pm, this, this.rand), time))
+            return;
     }
 
     private void processAssignments() {
@@ -91,24 +99,24 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
                 queuePickup((BeaconParcel) assignment.getParcel());
                 discoveredParcels.remove(assignment.getParcel());
             } catch (ClassCastException e){
-                // NOOP
+                // NOP
             }
         }
     }
     private void bid() {
         Set<Message> messages = messageStore.popAllOfType(ParticipationRequest.class);
         for(Message msg : messages){
-            System.out.println("Biddin from " + this.getPosition().toString());
             try {
                 ParticipationRequest request = (ParticipationRequest) msg;
                 if(discoveredParcels.contains(request.getAuctionableParcel())){
                     CommunicationUser sender = request.getSender();
                     double distance = Point.distance(this.getPosition(), request.getAuctionableParcel().getDestination());
+                    System.out.println("Biddin from " + this.getPosition().toString());
                     send(sender,new ParticipationReply(this,request,distance));
                     discoveredParcels.remove(request.getAuctionableParcel());
                 }
             } catch (ClassCastException e){
-                // NOOP
+                // NOP
             }
         }
         return;
@@ -139,7 +147,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
                                 }
                             }
                         } catch (ClassCastException e){
-                            // NOOP
+                            // NOP
                         }
                     }
                     if(bestTruck == this){
