@@ -2,7 +2,7 @@ package com.jonasdevlieghere.mas.activity;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
-import com.jonasdevlieghere.mas.communication.Assignment;
+import com.jonasdevlieghere.mas.communication.AssignmentMessage;
 import com.jonasdevlieghere.mas.communication.MessageStore;
 import rinde.sim.core.model.communication.Message;
 
@@ -26,17 +26,15 @@ public class AssignmentsActivity extends Activity {
 
     @Override
     public void execute() {
-        List<Message> messages = messageStore.retrieve(Assignment.class);
+        List<Message> messages = messageStore.retrieve(AssignmentMessage.class);
         DeliveryTruck truck = (DeliveryTruck)getUser();
         for(Message msg : messages){
             try {
-                Assignment assignment = (Assignment) msg;
-                truck.queuePickup((BeaconParcel) assignment.getParcel());
+                AssignmentMessage assignmentMessage = (AssignmentMessage) msg;
+                truck.queuePickup((BeaconParcel) assignmentMessage.getParcel());
             } catch (ClassCastException e){
                 // NOP
             }
         }
-        return;
     }
-
 }

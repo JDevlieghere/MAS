@@ -10,18 +10,18 @@ import rinde.sim.core.model.communication.Message;
  * Time: 11:56 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ParticipationReply extends Message {
+public class ParticipationReplyMessage extends Message {
 
-    private ParticipationRequest request;
+    private ParticipationRequestMessage request;
     private double distance;
 
-    public ParticipationReply(CommunicationUser sender, ParticipationRequest request, double distance){
+    public ParticipationReplyMessage(CommunicationUser sender, ParticipationRequestMessage request, double distance){
         super(sender);
         this.request = request;
         this.distance = distance;
     }
 
-    public ParticipationRequest getRequest(){
+    public ParticipationRequestMessage getRequest(){
         return request;
     }
 

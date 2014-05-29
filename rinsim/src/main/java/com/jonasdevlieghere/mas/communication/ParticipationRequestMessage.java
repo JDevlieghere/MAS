@@ -8,23 +8,23 @@ import rinde.sim.core.model.pdp.Parcel;
  * Created with IntelliJ IDEA.
  * User: dieter
  * Date: 5/28/14
- * Time: 2:28 PM
+ * Time: 11:50 AM
  * To change this template use File | Settings | File Templates.
  */
-public class Assignment extends Message{
+public class ParticipationRequestMessage extends Message{
+
     private Parcel parcel;
 
-    public Assignment(CommunicationUser sender, Parcel parcel) {
+    public ParticipationRequestMessage(CommunicationUser sender, Parcel auctionableParcel){
         super(sender);
-        setParcel(parcel);
+        setAuctionableParcel(auctionableParcel);
     }
 
-    private void setParcel(Parcel parcel){
+    public void setAuctionableParcel(Parcel parcel){
         this.parcel = parcel;
     }
 
-    public Parcel getParcel(){
+    public Parcel getAuctionableParcel(){
         return parcel;
     }
-
 }
