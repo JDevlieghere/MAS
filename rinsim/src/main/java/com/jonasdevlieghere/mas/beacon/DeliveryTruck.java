@@ -24,7 +24,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     /**
      * Constants
      */
-    private static final double RADIUS = 10;
+    private static final double RADIUS = 0.7;
     private static final double RELIABILITY = 1;
 
     /**
@@ -66,7 +66,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
-        auction.execute();
         if(endsTick(auction, time))
             return;
 
@@ -119,7 +118,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     @Override
     public void receive(Message message) {
         messageStore.store(message);
-        System.out.println("MESSAGE RECEIVED at " + this.toString() + " (RP: " + messageStore.getSize(ParticipationReply.class) + ", RQ: "  + messageStore.getSize(ParticipationRequest.class) + ", TOT: " +messageStore.getSize() + ")");
+        System.out.println("MESSAGE RECEIVED at " + this.toString() + " (RP: " + messageStore.getSize(ParticipationReplyMessage.class) + ", RQ: "  + messageStore.getSize(ParticipationRequestMessage.class) + ", TOT: " +messageStore.getSize() + ")");
     }
 
     @Override

@@ -7,7 +7,7 @@ import rinde.sim.pdptw.common.ParcelDTO;
 
 public class BeaconParcel extends DefaultParcel implements Beacon {
 
-    private static final double RADIUS = 10;
+    private static final double RADIUS = 0.7;
 
     private Point pos;
     private BeaconStatus status;

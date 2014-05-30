@@ -15,14 +15,12 @@ public class AuctionActivity extends Activity{
     private MessageStore messageStore;
     private Map<BeaconParcel,AuctionStatus> auctionableParcels;
     private Set<BeaconParcel> discoveredParcels;
-    private int pendingCount;
 
     public AuctionActivity(ActivityUser user, MessageStore messageStore){
         super(user);
         this.messageStore = messageStore;
         this.discoveredParcels = new HashSet<BeaconParcel>();
         this.auctionableParcels = new HashMap<BeaconParcel,AuctionStatus>();
-        pendingCount = 0;
     }
 
     @Override
@@ -48,19 +46,12 @@ public class AuctionActivity extends Activity{
                     setStatus(ActivityStatus.END_TICK);
                     break;
                 case PENDING:
-                    System.out.println("PENDING "+ pendingCount+" : " +messageStore.getSize(ParticipationReplyMessage.class));
-                    if(pendingCount == 1){
-                        auctionableParcels.put(bpEntry.getKey(), AuctionStatus.AUCTIONING);
-                        pendingCount =0;
-                    } else {
-                        pendingCount++;
-                    }
+                    auctionableParcels.put(bpEntry.getKey(), AuctionStatus.AUCTIONING);
                     setStatus(ActivityStatus.END_TICK);
                     break;
                 case AUCTIONING:
-                    System.out.println(messageStore.getSize(ParticipationReplyMessage.class));
-                    List<Message> messages = messageStore.retrieve(ParticipationReplyMessage.class);
                     System.out.println("Bidders for all auctions (except me) = " + messageStore.getSize(ParticipationReplyMessage.class));
+                    List<Message> messages = messageStore.retrieve(ParticipationReplyMessage.class);
                     toRemove.add(bpEntry.getKey());
                     DeliveryTruck bestTruck = truck;
                     double bestDistance = Point.distance(truck.getPosition(), bpEntry.getKey().getDestination());
@@ -88,6 +79,7 @@ public class AuctionActivity extends Activity{
                         truck.send(bestTruck, new AssignmentMessage(truck, bpEntry.getKey()));
                     }
                     bpEntry.getKey().setStatus(BeaconStatus.INACTIVE);
+                    setStatus(ActivityStatus.NORMAL);
                     break;
             }
         }
@@ -116,7 +108,8 @@ public class AuctionActivity extends Activity{
                 // NOP
             }
         }
-        setStatus(ActivityStatus.END_TICK);
+        if(messages.size() > 0 )
+            setStatus(ActivityStatus.END_TICK);
         return;
     }
 

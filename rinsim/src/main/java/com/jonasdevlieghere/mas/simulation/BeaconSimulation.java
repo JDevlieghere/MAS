@@ -63,7 +63,7 @@ public class BeaconSimulation {
                 .addConfiguration(new BeaconConfiguration())
                 .addScenario(scenario)
                 .showGui(uic)
-                .repeat(4)
+                .repeat(1)
                 .perform();
     }
 }
