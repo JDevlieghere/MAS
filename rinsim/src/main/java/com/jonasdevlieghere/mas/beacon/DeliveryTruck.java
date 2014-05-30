@@ -52,7 +52,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private Activity processAssignments;
 
     private Point explorationDestination;
-    private Point exploreDestination;
 
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
@@ -197,9 +196,5 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     public void setExplorationDestination(Point destination) {
              explorationDestination = destination;
-    }
-
-    public Point getExploreDestination() {
-        return exploreDestination;
     }
 }
