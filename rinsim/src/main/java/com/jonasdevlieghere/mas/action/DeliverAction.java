@@ -21,7 +21,6 @@ public class DeliverAction extends Action {
         for (final Parcel parcel : pm.getContents(truck)) {
             if (parcel.getDestination().equals(truck.getPosition()) && pm.getVehicleState(truck) == PDPModel.VehicleState.IDLE){
                 pm.deliver(truck, parcel, time);
-                System.out.println("Delivered " + parcel);
                 setStatus(ActionStatus.SUCCESS);
                 return;
             }
