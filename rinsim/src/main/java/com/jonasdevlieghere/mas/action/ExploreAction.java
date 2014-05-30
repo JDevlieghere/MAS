@@ -20,8 +20,14 @@ public class ExploreAction extends Action {
     @Override
     public void execute(TimeLapse time) {
         final RoadModel rm = getRoadModel();
-        final Point destination = rm.getRandomPosition(this.rand);
+        Point destination;
         DeliveryTruck truck = (DeliveryTruck)getUser();
+        if(truck.getPosition().equals(truck.getExploreDestination())){
+            destination = truck.getExploreDestination();
+        } else {
+            destination = rm.getRandomPosition(this.rand);
+            truck.setExplorationDestination(destination);
+        }
         rm.moveTo(truck, destination, time);
         setStatus(ActionStatus.FAILURE);
     }

@@ -26,6 +26,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
      */
     private static final double RADIUS = 0.7;
     private static final double RELIABILITY = 1;
+    private static int count = 0;
 
     /**
      * Models
@@ -50,13 +51,17 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private AuctionActivity auction;
     private Activity processAssignments;
 
+    private Point explorationDestination;
+    private Point exploreDestination;
+
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
         this.lock = new ReentrantLock();
         this.discoveredParcels = new HashSet<BeaconParcel>();
         this.messageStore = new MessageStore();
         this.pickupQueue = new HashSet<BeaconParcel>();
-        this.rand = new MersenneTwister(123);
+        DeliveryTruck.count++;
+        this.rand = new MersenneTwister(123*count);
         this.auction = new AuctionActivity(this, messageStore);
         this.processAssignments = new AssignmentsActivity(this, messageStore);
     }
@@ -184,5 +189,17 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     public boolean hasDiscovered(BeaconParcel bp) {
         return auction.hasDiscovered(bp);
+    }
+
+    public Point getExplorationDestination(){
+        return explorationDestination;
+    }
+
+    public void setExplorationDestination(Point destination) {
+             explorationDestination = destination;
+    }
+
+    public Point getExploreDestination() {
+        return exploreDestination;
     }
 }
