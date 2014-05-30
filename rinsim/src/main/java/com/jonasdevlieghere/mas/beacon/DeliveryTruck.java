@@ -119,6 +119,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     @Override
     public void receive(Message message) {
         messageStore.store(message);
+        System.out.println("MESSAGE RECEIVED at " + this.toString() + " (RP: " + messageStore.getSize(ParticipationReply.class) + ", RQ: "  + messageStore.getSize(ParticipationRequest.class) + ", TOT: " +messageStore.getSize() + ")");
     }
 
     @Override

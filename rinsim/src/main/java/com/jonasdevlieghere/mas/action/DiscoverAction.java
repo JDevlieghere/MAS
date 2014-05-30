@@ -25,8 +25,10 @@ public class DiscoverAction extends Action {
             BeaconParcel parcel = parcels.get(0);
             if(parcel.ping()){
                 truck.addAuctionableParcel(parcel);
+            }  else {
+                //System.out.println("DISC");
+                truck.addDiscoveredParcel(parcel);
             }
-            truck.addDiscoveredParcel(parcel);
             setStatus(ActionStatus.SUCCESS);
         }else{
             setStatus(ActionStatus.FAILURE);
