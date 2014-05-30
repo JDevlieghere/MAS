@@ -89,6 +89,10 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
         maxX = bounds.get(1).x;
         minY = bounds.get(0).y;
         maxY = bounds.get(1).y;
+        System.out.println(minX);
+        System.out.println(maxX);
+        System.out.println(minY);
+        System.out.println(maxY);
     }
 
     public static SupplierRng<BeaconModel> supplier() {

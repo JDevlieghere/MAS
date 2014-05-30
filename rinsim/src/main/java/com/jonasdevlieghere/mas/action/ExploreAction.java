@@ -22,12 +22,13 @@ public class ExploreAction extends Action {
         final RoadModel rm = getRoadModel();
         Point destination;
         DeliveryTruck truck = (DeliveryTruck)getUser();
-        if(truck.getPosition().equals(truck.getExplorationDestination())){
-            destination = truck.getExplorationDestination();
-            System.out.println("New Dest: " + destination);
-        } else {
+        Point prevDestination = truck.getExplorationDestination();
+        if(prevDestination == null || truck.getPosition().equals(prevDestination)){
             destination = rm.getRandomPosition(this.rand);
+            System.out.println("New Dest: " + destination);
             truck.setExplorationDestination(destination);
+        } else {
+            destination = truck.getExplorationDestination();
             System.out.println("Dest: " + destination);
         }
         rm.moveTo(truck, destination, time);
