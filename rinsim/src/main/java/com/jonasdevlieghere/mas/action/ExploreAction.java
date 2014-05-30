@@ -25,11 +25,9 @@ public class ExploreAction extends Action {
         Point prevDestination = truck.getExplorationDestination();
         if(prevDestination == null || truck.getPosition().equals(prevDestination)){
             destination = rm.getRandomPosition(this.rand);
-            System.out.println("New Dest: " + destination);
             truck.setExplorationDestination(destination);
         } else {
             destination = truck.getExplorationDestination();
-            System.out.println("Dest: " + destination);
         }
         rm.moveTo(truck, destination, time);
         setStatus(ActionStatus.FAILURE);

@@ -1,30 +1,23 @@
 package com.jonasdevlieghere.mas.communication;
 
+import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import rinde.sim.core.model.communication.CommunicationUser;
 import rinde.sim.core.model.communication.Message;
-import rinde.sim.core.model.pdp.Parcel;
 
-/**
- * Created with IntelliJ IDEA.
- * User: dieter
- * Date: 5/28/14
- * Time: 11:50 AM
- * To change this template use File | Settings | File Templates.
- */
 public class ParticipationRequestMessage extends Message{
 
-    private Parcel parcel;
+    private BeaconParcel parcel;
 
-    public ParticipationRequestMessage(CommunicationUser sender, Parcel auctionableParcel){
+    public ParticipationRequestMessage(CommunicationUser sender, BeaconParcel auctionableParcel){
         super(sender);
         setAuctionableParcel(auctionableParcel);
     }
 
-    public void setAuctionableParcel(Parcel parcel){
+    public void setAuctionableParcel(BeaconParcel parcel){
         this.parcel = parcel;
     }
 
-    public Parcel getAuctionableParcel(){
+    public BeaconParcel getAuctionableParcel(){
         return parcel;
     }
 }

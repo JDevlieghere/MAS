@@ -55,15 +55,15 @@ public class AuctionActivity extends Activity{
                     List<Message> messages = messageStore.retrieve(ParticipationReplyMessage.class);
                     toRemove.add(bpEntry.getKey());
                     DeliveryTruck bestTruck = truck;
-                    double bestDistance = Point.distance(truck.getPosition(), bpEntry.getKey().getDestination()) + truck.getPickupQueue().size();
-                    System.out.println("MY "+ truck.toString()+" BID:"+ bestDistance);
+                    Cost lowestCost = new Cost(truck,bpEntry.getKey());
+                    System.out.println("MY "+ truck + " BID:"+ lowestCost);
                     for(Message msg : messages){
                         try {
                             ParticipationReplyMessage reply = (ParticipationReplyMessage) msg;
                             if (reply.getRequest().getAuctionableParcel().equals(bpEntry.getKey())){
-                                System.out.println("OTHER "+ reply.getSender().toString()+" BID:"+ reply.getDistance() + " FOR:" + reply.getRequest().getAuctionableParcel());
-                                if(reply.getDistance() < bestDistance){
-                                    bestDistance = reply.getDistance();
+                                System.out.println("OTHER "+ reply.getSender()+" BID:"+ reply.getCost() + " FOR:" + reply.getRequest().getAuctionableParcel());
+                                if(lowestCost.compareTo(reply.getCost()) > 0){
+                                    lowestCost= reply.getCost();
                                     bestTruck = (DeliveryTruck) reply.getSender();
                                 }
                             }
@@ -101,7 +101,7 @@ public class AuctionActivity extends Activity{
                     //System.out.println("Bidding on " + request.getAuctionableParcel().toString());
                     double distance = Point.distance(truck.getPosition(), request.getAuctionableParcel().getDestination()) + truck.getPickupQueue().size();
                     //System.out.println("Biddin from " + truck.getPosition().toString());
-                    truck.send(sender, new ParticipationReplyMessage(truck, request, distance));
+                    truck.send(sender, new ParticipationReplyMessage(truck, request,new Cost(truck, request.getAuctionableParcel())));
                     discoveredParcels.remove(request.getAuctionableParcel());
                 }
             } catch (ClassCastException e){
