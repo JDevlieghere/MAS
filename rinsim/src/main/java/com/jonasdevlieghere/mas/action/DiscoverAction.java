@@ -19,19 +19,20 @@ public class DiscoverAction extends Action {
         final PDPModel pm = getPDPModel();
         final BeaconModel bm = getBeaconModel();
         DeliveryTruck truck = (DeliveryTruck)getUser();
+        // Discovery is instantanious and does not end a tick.
+        setStatus(ActionStatus.FAILURE);
 
         List<BeaconParcel> parcels = bm.getDetectableParcels(truck);
         if(!parcels.isEmpty() && pm.getVehicleState(truck) == PDPModel.VehicleState.IDLE){
-            BeaconParcel parcel = parcels.get(0);
-            if(parcel.ping()){
-                truck.addAuctionableParcel(parcel);
-            }  else {
-                //System.out.println("DISC");
-                truck.addDiscoveredParcel(parcel);
+            for(BeaconParcel bp : parcels){
+                    if(bp.ping()){
+                        truck.addAuctionableParcel(bp);
+                    }  else {
+                        if(!truck.hasDiscovered(bp)){
+                            truck.addDiscoveredParcel(bp);
+                    }
+                }
             }
-            setStatus(ActionStatus.SUCCESS);
-        }else{
-            setStatus(ActionStatus.FAILURE);
         }
     }
 

@@ -23,6 +23,6 @@ public class ExploreAction extends Action {
         final Point destination = rm.getRandomPosition(this.rand);
         DeliveryTruck truck = (DeliveryTruck)getUser();
         rm.moveTo(truck, destination, time);
-        setStatus(ActionStatus.SUCCESS);
+        setStatus(ActionStatus.FAILURE);
     }
 }

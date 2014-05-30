@@ -66,10 +66,12 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
+        if(endsTick(new DiscoverAction(rm, pm, bm, this), time))
+            return;
+
         if(endsTick(auction, time))
             return;
 
-        processAssignments.execute();
         if(endsTick(processAssignments, time))
             return;
 
@@ -85,11 +87,8 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(endsTick(new TransportAction(rm, pm, this), time))
             return;
 
-        if(endsTick(new DiscoverAction(rm, pm, bm, this), time))
+        if(endsTick(new ExploreAction(rm, pm, this, this.rand), time))
             return;
-
-//        if(isSuccess(new ExploreAction(rm, pm, this, this.rand), time))
-//            return;
     }
 
 
@@ -181,5 +180,9 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(activity.getStatus() == ActivityStatus.END_TICK)
             return true;
         return false;
+    }
+
+    public boolean hasDiscovered(BeaconParcel bp) {
+        return auction.hasDiscovered(bp);
     }
 }

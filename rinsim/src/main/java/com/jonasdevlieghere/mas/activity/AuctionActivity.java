@@ -7,6 +7,7 @@ import com.jonasdevlieghere.mas.communication.*;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.communication.CommunicationUser;
 import rinde.sim.core.model.communication.Message;
+import rinde.sim.core.model.pdp.Parcel;
 
 import java.util.*;
 
@@ -29,7 +30,6 @@ public class AuctionActivity extends Activity{
             auction();
         }
         if(!discoveredParcels.isEmpty()){
-            //System.out.println("start biddin on " + discoveredParcels.size());
             bid();
         }
     }
@@ -40,12 +40,13 @@ public class AuctionActivity extends Activity{
         for(Map.Entry<BeaconParcel,AuctionStatus> bpEntry: auctionableParcels.entrySet()){
             switch (bpEntry.getValue()){
                 case UNAUCTIONED:
-                    System.out.println("UNAUC " + bpEntry.getKey());
+                    System.out.println("UNAUC at " + truck.toString() + ", parcel = " + bpEntry.getKey());
                     truck.broadcast(new ParticipationRequestMessage(truck, bpEntry.getKey()));
                     auctionableParcels.put(bpEntry.getKey(),AuctionStatus.PENDING);
                     setStatus(ActivityStatus.END_TICK);
                     break;
                 case PENDING:
+                    // Waiting for replies to come back.
                     auctionableParcels.put(bpEntry.getKey(), AuctionStatus.AUCTIONING);
                     setStatus(ActivityStatus.END_TICK);
                     break;
@@ -54,14 +55,13 @@ public class AuctionActivity extends Activity{
                     List<Message> messages = messageStore.retrieve(ParticipationReplyMessage.class);
                     toRemove.add(bpEntry.getKey());
                     DeliveryTruck bestTruck = truck;
-                    double bestDistance = Point.distance(truck.getPosition(), bpEntry.getKey().getDestination());
-                    System.out.println("MY"+ this.toString()+" BID:"+ bestDistance);
+                    double bestDistance = Point.distance(truck.getPosition(), bpEntry.getKey().getDestination()) + truck.getPickupQueue().size();
+                    System.out.println("MY "+ truck.toString()+" BID:"+ bestDistance);
                     for(Message msg : messages){
                         try {
                             ParticipationReplyMessage reply = (ParticipationReplyMessage) msg;
-                            System.out.println(reply.getRequest().getAuctionableParcel().toString());
                             if (reply.getRequest().getAuctionableParcel().equals(bpEntry.getKey())){
-                                System.out.println("OTHER"+ reply.getSender().toString()+" BID:"+ bestDistance);
+                                System.out.println("OTHER "+ reply.getSender().toString()+" BID:"+ reply.getDistance() + " FOR:" + reply.getRequest().getAuctionableParcel());
                                 if(reply.getDistance() < bestDistance){
                                     bestDistance = reply.getDistance();
                                     bestTruck = (DeliveryTruck) reply.getSender();
@@ -72,10 +72,10 @@ public class AuctionActivity extends Activity{
                         }
                     }
                     if(bestTruck.equals(this.getUser())){
-                        System.out.println("I WON:" + this.toString());
+                        System.out.println("I WON: " + bestTruck.toString());
                         truck.queuePickup(bpEntry.getKey());
                     } else {
-                        System.out.println("OTHER:" + bestTruck.toString());
+                        System.out.println("OTHER: " + bestTruck.toString());
                         truck.send(bestTruck, new AssignmentMessage(truck, bpEntry.getKey()));
                     }
                     bpEntry.getKey().setStatus(BeaconStatus.INACTIVE);
@@ -96,11 +96,11 @@ public class AuctionActivity extends Activity{
         for(Message msg : messages){
             try {
                 ParticipationRequestMessage request = (ParticipationRequestMessage) msg;
-                if(discoveredParcels.contains(request.getAuctionableParcel())){
+                if(hasDiscovered(request.getAuctionableParcel())){
                     CommunicationUser sender = request.getSender();
-                    System.out.println("Bidding on " + request.getAuctionableParcel().toString());
-                    double distance = Point.distance(truck.getPosition(), request.getAuctionableParcel().getDestination());
-                    System.out.println("Biddin from " + truck.getPosition().toString());
+                    //System.out.println("Bidding on " + request.getAuctionableParcel().toString());
+                    double distance = Point.distance(truck.getPosition(), request.getAuctionableParcel().getDestination()) + truck.getPickupQueue().size();
+                    //System.out.println("Biddin from " + truck.getPosition().toString());
                     truck.send(sender, new ParticipationReplyMessage(truck, request, distance));
                     discoveredParcels.remove(request.getAuctionableParcel());
                 }
@@ -123,5 +123,13 @@ public class AuctionActivity extends Activity{
 
     public void addDiscoveredParcel(BeaconParcel parcel) {
         discoveredParcels.add(parcel);
+    }
+
+    public Set<BeaconParcel> getDiscoveredParcels() {
+        return new HashSet<BeaconParcel>(discoveredParcels);
+    }
+
+    public boolean hasDiscovered(Parcel bp) {
+        return discoveredParcels.contains(bp);
     }
 }
