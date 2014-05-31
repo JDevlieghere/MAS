@@ -6,6 +6,7 @@ import java.util.*;
 
 public class MessageStore {
     private List<Message> messages;
+    private static int totalNbOfMessages = 0;
 
     public MessageStore(){
         messages = new ArrayList<Message>();
@@ -13,7 +14,7 @@ public class MessageStore {
 
     public void store(Message message){
         this.messages.add(message);
-        System.out.println(this.getSize());
+        totalNbOfMessages++;
     }
 
     public List<Message> retrieve(Class clazz){
@@ -38,5 +39,9 @@ public class MessageStore {
 
     public int getSize(){
         return messages.size();
+    }
+
+    public int getTotalNbOfMessages() {
+        return totalNbOfMessages;
     }
 }

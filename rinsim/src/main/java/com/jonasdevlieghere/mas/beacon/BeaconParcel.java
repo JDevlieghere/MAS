@@ -7,7 +7,8 @@ import rinde.sim.pdptw.common.ParcelDTO;
 
 public class BeaconParcel extends DefaultParcel implements Beacon {
 
-    private static final double RADIUS = 0.7;
+    private static final double DEFAULT_RADIUS = 0.7;
+    private double radius;
 
     private Point pos;
     private BeaconStatus status;
@@ -16,6 +17,12 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
         super(pDto);
         this.pos = pDto.pickupLocation;
         setStatus(BeaconStatus.ACTIVE);
+        this.radius = DEFAULT_RADIUS;
+    }
+
+    public BeaconParcel(ParcelDTO pDto, double radius) {
+        this(pDto);
+        setRadius(radius);
     }
 
     @Override
@@ -23,7 +30,7 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
 
     @Override
     public double getRadius() {
-        return RADIUS;
+        return radius;
     }
 
     @Override
@@ -52,5 +59,9 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
     public String toString() {
         return "Beacon Parcel " +
                 pos;
+    }
+
+    public void setRadius(double radius) {
+        this.radius = radius;
     }
 }
