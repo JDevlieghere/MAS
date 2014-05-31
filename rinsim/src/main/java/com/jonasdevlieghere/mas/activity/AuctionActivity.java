@@ -26,6 +26,7 @@ public class AuctionActivity extends Activity{
 
     @Override
     public void execute() {
+        setStatus(ActivityStatus.NORMAL);
         if(!auctionableParcels.isEmpty()){
             auction();
         }
