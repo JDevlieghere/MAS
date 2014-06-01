@@ -4,7 +4,10 @@ import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import com.jonasdevlieghere.mas.communication.AssignmentMessage;
 import com.jonasdevlieghere.mas.communication.MessageStore;
+import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.communication.Message;
+import rinde.sim.core.model.pdp.PDPModel;
+import rinde.sim.core.model.road.RoadModel;
 
 import java.util.List;
 
@@ -15,17 +18,17 @@ import java.util.List;
  * Time: 3:03 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AssignmentsActivity extends Activity {
+public class AssignmentActivity extends Activity {
 
     private MessageStore messageStore;
 
-    public AssignmentsActivity(ActivityUser user, MessageStore messageStore){
+    public AssignmentActivity(ActivityUser user, MessageStore messageStore){
         super(user);
         this.messageStore = messageStore;
     }
 
     @Override
-    public void execute() {
+    public void execute(RoadModel rm, PDPModel pm, TimeLapse time) {
         List<Message> messages = messageStore.retrieve(AssignmentMessage.class);
         DeliveryTruck truck = (DeliveryTruck)getUser();
         for(Message msg : messages){
