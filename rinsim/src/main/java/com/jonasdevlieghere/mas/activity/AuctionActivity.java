@@ -76,10 +76,8 @@ public class AuctionActivity extends Activity{
                         }
                     }
                     if(bestTruck.equals(this.getUser())){
-                        System.out.println("I WON: " + bestTruck.toString());
                         truck.queuePickup(bpEntry.getKey());
                     } else {
-                        System.out.println("OTHER: " + bestTruck.toString());
                         truck.send(bestTruck, new AssignmentMessage(truck, bpEntry.getKey()));
                     }
                     bpEntry.getKey().setStatus(BeaconStatus.INACTIVE);
