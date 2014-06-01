@@ -57,6 +57,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private FetchActivity fetchActivity;
 
     private Point explorationDestination;
+    private boolean pinged;
 
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
@@ -67,6 +68,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         this.assignmentActivity = new AssignmentActivity(this, messageStore);
         this.transportActivity = new TransportActivity(this);
         this.fetchActivity = new FetchActivity(this);
+        this.pinged = false;
     }
 
     @Override
@@ -147,6 +149,23 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     @Override
     public void setStatus(BeaconStatus status) {
 
+    }
+
+    @Override
+    public boolean ping() {
+        if(pinged == false) {
+            pinged = true;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isPinged(){
+        return pinged;
+    }
+
+    public void resetPing(){
+        pinged = false;
     }
 
     @Override

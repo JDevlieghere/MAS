@@ -43,6 +43,7 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
         return this.status;
     }
 
+    @Override
     public boolean ping(){
         if(getStatus() == BeaconStatus.ACTIVE){
             setStatus(BeaconStatus.IN_AUCTION);
