@@ -10,6 +10,7 @@ package com.jonasdevlieghere.mas.communication;
 public enum ExchangeStatus {
     INITIAL,
     PENDING,
+    PLANNING,
     MEETING,
     EXCHANGING
 }
