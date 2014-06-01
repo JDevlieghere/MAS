@@ -6,6 +6,9 @@ import rinde.sim.core.graph.Point;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
+/**
+ * Naive 2D implementation of the K-Means Algorithm in Java.
+ */
 public class KMeans {
 
     public static final int MAX_ITERATIONS = 1000;

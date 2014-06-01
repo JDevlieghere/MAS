@@ -16,5 +16,6 @@ public interface Beacon {
 
     public void setStatus(BeaconStatus status);
 
-    boolean ping();
+    public boolean ping();
+
 }

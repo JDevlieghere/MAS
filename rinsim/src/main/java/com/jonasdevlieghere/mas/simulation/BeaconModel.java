@@ -54,7 +54,7 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
     public List<BeaconParcel> getDetectableParcels(DeliveryTruck truck) {
         final List<BeaconParcel> parcels = new ArrayList<BeaconParcel>();
         for (final BeaconParcel parcel : getParcelBeacons()) {
-            if((parcel.getStatus() == BeaconStatus.ACTIVE  || parcel.getStatus() == BeaconStatus.IN_AUCTION)
+            if((parcel.getStatus() == BeaconStatus.ACTIVE  || parcel.getStatus() == BeaconStatus.IN_ACTIVITY)
                     && Point.distance(truck.getPosition(), parcel.getPosition()) <= truck.getRadius() + parcel.getRadius()
                     && pdpModel.getParcelState((parcel)) == PDPModel.ParcelState.AVAILABLE)
                 parcels.add(parcel);

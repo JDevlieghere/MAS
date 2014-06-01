@@ -1,6 +1,7 @@
 package com.jonasdevlieghere.mas.activity;
 
 import com.google.common.collect.ImmutableSet;
+import com.jonasdevlieghere.mas.beacon.BeaconStatus;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import com.jonasdevlieghere.mas.cluster.Cluster;
 import com.jonasdevlieghere.mas.cluster.KMeans;
@@ -44,7 +45,7 @@ public class ExchangeActivity extends Activity{
         DeliveryTruck truck = (DeliveryTruck) getUser();
         DeliveryTruck otherTruck;
         //Master of the exchange
-        if(!truck.isPinged()){
+        if(truck.getStatus() == BeaconStatus.ACTIVE){
             switch (status){
                 case INITIAL:
                     initiateExchange(rm, truck);
@@ -65,7 +66,6 @@ public class ExchangeActivity extends Activity{
                 case EXCHANGING:
 
             }
-
         } else {
             switch (status){
                 case INITIAL:

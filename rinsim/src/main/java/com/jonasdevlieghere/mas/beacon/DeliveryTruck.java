@@ -57,7 +57,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private FetchActivity fetchActivity;
 
     private Point explorationDestination;
-    private boolean pinged;
 
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
@@ -68,7 +67,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         this.assignmentActivity = new AssignmentActivity(this, messageStore);
         this.transportActivity = new TransportActivity(this);
         this.fetchActivity = new FetchActivity(this);
-        this.pinged = false;
+        this.setStatus(BeaconStatus.ACTIVE);
     }
 
     @Override
@@ -128,7 +127,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     @Override
     public void receive(Message message) {
         messageStore.store(message);
-        System.out.println("MESSAGE RECEIVED at " + this.toString() + " (RP: " + messageStore.getSize(ParticipationReplyMessage.class) + ", RQ: "  + messageStore.getSize(ParticipationRequestMessage.class) + ", TOT: " +messageStore.getSize() + ")");
+        System.out.println("MESSAGE RECEIVED at " + this.toString() + " (RP: " + messageStore.getSize(ParticipationReplyMessage.class) + ", RQ: " + messageStore.getSize(ParticipationRequestMessage.class) + ", TOT: " + messageStore.getSize() + ")");
     }
 
     @Override
@@ -152,21 +151,15 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     }
 
     @Override
-    public boolean ping() {
-        if(pinged == false) {
-            pinged = true;
+    public boolean ping(){
+        if(getStatus() == BeaconStatus.ACTIVE){
+            setStatus(BeaconStatus.IN_ACTIVITY);
             return true;
         }
         return false;
     }
 
-    public boolean isPinged(){
-        return pinged;
-    }
 
-    public void resetPing(){
-        pinged = false;
-    }
 
     @Override
     public void setModel(BeaconModel model) {
