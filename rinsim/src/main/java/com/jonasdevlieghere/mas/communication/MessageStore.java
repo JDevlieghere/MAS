@@ -17,17 +17,17 @@ public class MessageStore {
         totalNbOfMessages++;
     }
 
-    public List<Message> retrieve(Class clazz){
-        List<Message> result = getMessages(clazz);
+    public <Y extends Message> List<Y> retrieve(Class<Y> clazz){
+        List<Y> result = getMessages(clazz);
         messages.removeAll(result);
         return result;
     }
 
-    private List<Message> getMessages(Class clazz) {
-        List<Message> result = new ArrayList<Message>();
+    private <Y extends Message> List<Y> getMessages(Class<Y> clazz) {
+        List<Y> result = new ArrayList<Y>();
         for(Message msg : messages){
             if(clazz.isInstance(msg)){
-                result.add(msg);
+                result.add((Y) msg);
             }
         }
         return result;
