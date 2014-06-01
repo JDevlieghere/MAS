@@ -31,6 +31,7 @@ public class ExchangeActivity extends Activity{
     private Point meetingPoint;
     private ArrayList<Point> dropList;
     private ArrayList<Point> pickupList;
+    DeliveryTruck otherTruck;
 
     public ExchangeActivity(ActivityUser user, MessageStore messageStore){
         super(user);
@@ -43,7 +44,6 @@ public class ExchangeActivity extends Activity{
         //Reset activity status
         setStatus(ActivityStatus.NORMAL);
         DeliveryTruck truck = (DeliveryTruck) getUser();
-        DeliveryTruck otherTruck;
         //Master of the exchange
         if(truck.getStatus() == BeaconStatus.ACTIVE){
             switch (status){
@@ -61,8 +61,11 @@ public class ExchangeActivity extends Activity{
                     setStatus(ActivityStatus.END_TICK);
                     break;
                 case MEETING:
+                    if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
+                        status=ExchangeStatus.EXCHANGING;
                     meet(rm, time, truck);
                     setStatus(ActivityStatus.END_TICK);
+                    break;
                 case EXCHANGING:
 
             }
@@ -72,7 +75,8 @@ public class ExchangeActivity extends Activity{
                     List<ExchangeRequestMessage> messages1 = messageStore.retrieve(ExchangeRequestMessage.class);
                     //At all times there should only be one message of this type.
                     ExchangeRequestMessage request = messages1.get(0);
-                    truck.send(request.getSender(), new ExchangeReplyMessage(truck, pm.getContents(truck)));
+                    otherTruck = (DeliveryTruck) request.getSender();
+                    truck.send(otherTruck, new ExchangeReplyMessage(truck, pm.getContents(truck)));
                     status = ExchangeStatus.PENDING;
                     break;
                 case PENDING:
@@ -88,9 +92,19 @@ public class ExchangeActivity extends Activity{
                     status = ExchangeStatus.MEETING;
                     setStatus(ActivityStatus.END_TICK);
                 case MEETING:
+                    if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
+                        status=ExchangeStatus.DROPING;
                     meet(rm,time,truck);
+                    break;
+                case DROPING:
+                    drop();
+                    break;
             }
         }
+    }
+
+    private void drop() {
+        //TODO: Check whether PDPModel.drop() transfers a parcel.
     }
 
     private void planExchange(PDPModel pm, DeliveryTruck truck) {
@@ -146,7 +160,6 @@ public class ExchangeActivity extends Activity{
     }
 
     private void initiateExchange(RoadModel rm, DeliveryTruck truck) {
-        DeliveryTruck otherTruck;
         otherTruck = getNearestTruck(rm, truck);
         if(otherTruck != null){
             //Ensure you are the first and only one to initiate exchange
@@ -157,7 +170,7 @@ public class ExchangeActivity extends Activity{
     }
 
     private void meet(RoadModel rm, TimeLapse time, DeliveryTruck truck) {
-        rm.moveTo(truck, meetingPoint,time);
+        rm.moveTo(truck, meetingPoint, time);
     }
 
     private void pending() {
