@@ -97,7 +97,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
         if(endsTick(new ExploreAction(rm, pm, this, this.rand), time))
             return;
-
     }
 
 

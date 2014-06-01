@@ -17,10 +17,12 @@ public class FetchActivity extends Activity{
     public FetchActivity(ActivityUser user) {
         super(user);
         this.scheduler = new Scheduler((DeliveryTruck)user, new NearestPickupStrategy());
+
     }
 
     @Override
     public void execute(RoadModel rm, PDPModel pm, TimeLapse time) {
+        setStatus(ActivityStatus.NORMAL);
         DeliveryTruck truck = (DeliveryTruck)getUser();
 
         BeaconParcel parcel = scheduler.next(rm, pm, time);
