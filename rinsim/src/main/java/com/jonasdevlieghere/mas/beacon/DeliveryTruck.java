@@ -17,7 +17,6 @@ import rinde.sim.pdptw.common.DefaultVehicle;
 import rinde.sim.pdptw.common.VehicleDTO;
 
 import java.util.*;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser, ActionUser, ActivityUser {
 
@@ -26,7 +25,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
      */
     private static final double RADIUS = 0.7;
     private static final double RELIABILITY = 1;
-    private static int count = 0;
 
     /**
      * Models
@@ -35,34 +33,40 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private CommunicationAPI ca;
 
     /**
-     * Utilities
+     * Random Generator
      */
-    private final ReentrantLock lock;
     private final RandomGenerator rand;
+    private static int count = 0;
 
     /**
      * Parcels ready for pickup by this DeliveryTruck
      */
     private Set<BeaconParcel> pickupQueue;
 
+    /**
+     * Message Storage
+     */
     private MessageStore messageStore;
-    private Set<BeaconParcel> discoveredParcels;
 
-    private AuctionActivity auction;
-    private Activity processAssignments;
+    /**
+     * Activities
+     */
+    private AuctionActivity auctionActivity;
+    private AssignmentActivity assignmentActivity;
+    private TransportActivity transportActivity;
+    private FetchActivity fetchActivity;
 
     private Point explorationDestination;
 
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
-        this.lock = new ReentrantLock();
-        this.discoveredParcels = new HashSet<BeaconParcel>();
         this.messageStore = new MessageStore();
         this.pickupQueue = new HashSet<BeaconParcel>();
-        DeliveryTruck.count++;
-        this.rand = new MersenneTwister(123*count);
-        this.auction = new AuctionActivity(this, messageStore);
-        this.processAssignments = new AssignmentsActivity(this, messageStore);
+        this.rand = new MersenneTwister(123*count++);
+        this.auctionActivity = new AuctionActivity(this, messageStore);
+        this.assignmentActivity = new AssignmentActivity(this, messageStore);
+        this.transportActivity = new TransportActivity(this);
+        this.fetchActivity = new FetchActivity(this);
     }
 
     @Override
@@ -73,22 +77,22 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(endsTick(new DiscoverAction(rm, pm, bm, this), time))
             return;
 
-        if(endsTick(auction, time))
+        if(endsTick(auctionActivity, rm, pm, time))
             return;
 
-        if(endsTick(processAssignments, time))
+        if(endsTick(assignmentActivity, rm, pm, time))
             return;
 
-        if(endsTick(new PickupAction(rm, pm, this), time))
+        if(endsTick(new PickupAction(rm, pm ,this), time))
             return;
 
         if(endsTick(new DeliverAction(rm, pm ,this), time))
             return;
 
-        if(endsTick(new FetchAction(rm, pm ,this), time))
+        if(endsTick(fetchActivity, rm, pm, time))
             return;
 
-        if(endsTick(new TransportAction(rm, pm, this), time))
+        if(endsTick(transportActivity, rm, pm, time))
             return;
 
         if(endsTick(new ExploreAction(rm, pm, this, this.rand), time))
@@ -150,11 +154,11 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     }
 
     public void addDiscoveredParcel(BeaconParcel parcel) {
-        auction.addDiscoveredParcel(parcel);
+        auctionActivity.addDiscoveredParcel(parcel);
     }
 
     public void addAuctionableParcel(BeaconParcel parcel) {
-        auction.addAuctionableParcel(parcel);
+        auctionActivity.addAuctionableParcel(parcel);
     }
 
     public void send(CommunicationUser recipient, Message message){
@@ -183,15 +187,15 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     }
 
     @Override
-    public boolean endsTick(Activity activity, TimeLapse time) {
-        activity.execute();
+    public boolean endsTick(Activity activity, RoadModel rm, PDPModel pm, TimeLapse time) {
+        activity.execute(rm, pm, time);
         if(activity.getStatus() == ActivityStatus.END_TICK)
             return true;
         return false;
     }
 
     public boolean hasDiscovered(BeaconParcel bp) {
-        return auction.hasDiscovered(bp);
+        return auctionActivity.hasDiscovered(bp);
     }
 
     public Point getExplorationDestination(){

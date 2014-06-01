@@ -4,17 +4,17 @@ import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import rinde.sim.core.graph.Point;
 
-public class Cost implements Comparable<Cost> {
+public class AuctionCost implements Comparable<AuctionCost> {
     private DeliveryTruck truck;
     private BeaconParcel parcel;
 
-    public Cost(DeliveryTruck truck, BeaconParcel parcel){
+    public AuctionCost(DeliveryTruck truck, BeaconParcel parcel){
         this.truck = truck;
         this.parcel = parcel;
     }
 
     @Override
-    public int compareTo(Cost o) {
+    public int compareTo(AuctionCost o) {
         if(this.equals(o) || this.getValue() ==  o.getValue())
             return 0;
         if(this.getValue() < o.getValue())

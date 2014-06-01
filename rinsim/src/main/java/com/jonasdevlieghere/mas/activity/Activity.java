@@ -1,5 +1,9 @@
 package com.jonasdevlieghere.mas.activity;
 
+import rinde.sim.core.TimeLapse;
+import rinde.sim.core.model.pdp.PDPModel;
+import rinde.sim.core.model.road.RoadModel;
+
 public abstract class Activity {
 
     private ActivityStatus status;
@@ -10,8 +14,7 @@ public abstract class Activity {
         setStatus(ActivityStatus.NORMAL);
     }
 
-    public abstract void execute();
-
+    public abstract void execute(RoadModel rm, PDPModel pm, TimeLapse time);
 
     public void setStatus(ActivityStatus status){
         this.status = status;

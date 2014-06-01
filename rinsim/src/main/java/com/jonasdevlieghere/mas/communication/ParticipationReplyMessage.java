@@ -13,19 +13,19 @@ import rinde.sim.core.model.communication.Message;
 public class ParticipationReplyMessage extends Message {
 
     private ParticipationRequestMessage request;
-    private Cost cost;
+    private AuctionCost auctionCost;
 
-    public ParticipationReplyMessage(CommunicationUser sender, ParticipationRequestMessage request, Cost cost){
+    public ParticipationReplyMessage(CommunicationUser sender, ParticipationRequestMessage request, AuctionCost auctionCost){
         super(sender);
         this.request = request;
-        this.cost = cost;
+        this.auctionCost = auctionCost;
     }
 
     public ParticipationRequestMessage getRequest(){
         return request;
     }
 
-    public Cost getCost() {
-        return cost;
+    public AuctionCost getAuctionCost() {
+        return auctionCost;
     }
 }

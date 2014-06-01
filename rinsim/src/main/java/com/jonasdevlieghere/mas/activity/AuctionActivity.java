@@ -4,10 +4,13 @@ import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconStatus;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import com.jonasdevlieghere.mas.communication.*;
+import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.communication.CommunicationUser;
 import rinde.sim.core.model.communication.Message;
+import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.pdp.Parcel;
+import rinde.sim.core.model.road.RoadModel;
 
 import java.util.*;
 
@@ -25,7 +28,7 @@ public class AuctionActivity extends Activity{
     }
 
     @Override
-    public void execute() {
+    public void execute(RoadModel rm, PDPModel pm, TimeLapse time) {
         setStatus(ActivityStatus.NORMAL);
         if(!auctionableParcels.isEmpty()){
             auction();
@@ -56,15 +59,15 @@ public class AuctionActivity extends Activity{
                     List<Message> messages = messageStore.retrieve(ParticipationReplyMessage.class);
                     toRemove.add(bpEntry.getKey());
                     DeliveryTruck bestTruck = truck;
-                    Cost lowestCost = new Cost(truck,bpEntry.getKey());
-                    System.out.println("MY "+ truck + " BID:"+ lowestCost);
+                    AuctionCost lowestAuctionCost = new AuctionCost(truck,bpEntry.getKey());
+                    System.out.println("MY "+ truck + " BID:"+ lowestAuctionCost);
                     for(Message msg : messages){
                         try {
                             ParticipationReplyMessage reply = (ParticipationReplyMessage) msg;
                             if (reply.getRequest().getAuctionableParcel().equals(bpEntry.getKey())){
-                                System.out.println("OTHER "+ reply.getSender()+" BID:"+ reply.getCost() + " FOR:" + reply.getRequest().getAuctionableParcel());
-                                if(lowestCost.compareTo(reply.getCost()) > 0){
-                                    lowestCost= reply.getCost();
+                                System.out.println("OTHER "+ reply.getSender()+" BID:"+ reply.getAuctionCost() + " FOR:" + reply.getRequest().getAuctionableParcel());
+                                if(lowestAuctionCost.compareTo(reply.getAuctionCost()) > 0){
+                                    lowestAuctionCost = reply.getAuctionCost();
                                     bestTruck = (DeliveryTruck) reply.getSender();
                                 }
                             }
@@ -102,7 +105,7 @@ public class AuctionActivity extends Activity{
                     //System.out.println("Bidding on " + request.getAuctionableParcel().toString());
                     double distance = Point.distance(truck.getPosition(), request.getAuctionableParcel().getDestination()) + truck.getPickupQueue().size();
                     //System.out.println("Biddin from " + truck.getPosition().toString());
-                    truck.send(sender, new ParticipationReplyMessage(truck, request,new Cost(truck, request.getAuctionableParcel())));
+                    truck.send(sender, new ParticipationReplyMessage(truck, request,new AuctionCost(truck, request.getAuctionableParcel())));
                     discoveredParcels.remove(request.getAuctionableParcel());
                 }
             } catch (ClassCastException e){
