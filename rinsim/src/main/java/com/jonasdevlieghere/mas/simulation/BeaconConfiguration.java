@@ -38,6 +38,7 @@ public class BeaconConfiguration extends DefaultMASConfiguration {
             @Override
             public boolean create(Simulator sim, AddParcelEvent event) {
                 // all parcels are accepted by default
+                //Radius can be altered here.
                 return sim.register(new BeaconParcel(event.parcelDTO));
             }
         });
