@@ -31,7 +31,7 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
         this.beacons = new CopyOnWriteArrayList<Beacon>();
     }
 
-    public List<DeliveryTruck> getTruckBeacons() {
+    public List<DeliveryTruck> getAllTruckBeacons() {
         final List<DeliveryTruck> trucks = new ArrayList<DeliveryTruck>();
         for (final Beacon beacon : beacons) {
             if (beacon instanceof DeliveryTruck) {
@@ -41,7 +41,7 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
         return trucks;
     }
 
-    public List<BeaconParcel> getParcelBeacons() {
+    public List<BeaconParcel> getAllParcelBeacons() {
         final List<BeaconParcel> parcels = new ArrayList<BeaconParcel>();
         for (final Beacon beacon : beacons) {
             if (beacon instanceof BeaconParcel) {
@@ -53,14 +53,25 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
 
     public List<BeaconParcel> getDetectableParcels(DeliveryTruck truck) {
         final List<BeaconParcel> parcels = new ArrayList<BeaconParcel>();
-        for (final BeaconParcel parcel : getParcelBeacons()) {
-            if((parcel.getStatus() == BeaconStatus.ACTIVE  || parcel.getStatus() == BeaconStatus.IN_ACTIVITY)
+        for (final BeaconParcel parcel : getAllParcelBeacons()) {
+            if((parcel.getStatus() == BeaconStatus.ACTIVE  || parcel.getStatus() == BeaconStatus.BUSY)
                     && Point.distance(truck.getPosition(), parcel.getPosition()) <= truck.getRadius() + parcel.getRadius()
                     && pdpModel.getParcelState((parcel)) == PDPModel.ParcelState.AVAILABLE)
                 parcels.add(parcel);
         }
         return parcels;
     }
+
+    public List<DeliveryTruck> getDetectableTrucks(DeliveryTruck truck){
+        final List<DeliveryTruck> trucks = new ArrayList<DeliveryTruck>();
+        for (final DeliveryTruck t : getAllTruckBeacons()) {
+            if((t.getStatus() == BeaconStatus.ACTIVE  || t.getStatus() == BeaconStatus.BUSY)
+                    && Point.distance(truck.getPosition(), t.getPosition()) <= truck.getRadius() + t.getRadius())
+                trucks.add(t);
+        }
+        return trucks;
+    }
+
 
     @Override
     public boolean register(Beacon beacon) {

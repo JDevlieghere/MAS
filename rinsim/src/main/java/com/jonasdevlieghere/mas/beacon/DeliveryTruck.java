@@ -164,7 +164,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     @Override
     public boolean ping(){
         if(getStatus() == BeaconStatus.ACTIVE){
-            setStatus(BeaconStatus.IN_ACTIVITY);
+            setStatus(BeaconStatus.BUSY);
             return true;
         }
         return false;
