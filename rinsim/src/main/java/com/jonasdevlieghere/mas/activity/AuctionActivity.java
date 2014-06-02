@@ -44,7 +44,7 @@ public class AuctionActivity extends Activity{
         for(Map.Entry<BeaconParcel,AuctionStatus> bpEntry: auctionableParcels.entrySet()){
             switch (bpEntry.getValue()){
                 case UNAUCTIONED:
-                    System.out.println("UNAUC at " + truck.toString() + ", parcel = " + bpEntry.getKey());
+                    //System.out.println("UNAUC at " + truck.toString() + ", parcel = " + bpEntry.getKey());
                     truck.broadcast(new ParticipationRequestMessage(truck, bpEntry.getKey()));
                     auctionableParcels.put(bpEntry.getKey(),AuctionStatus.PENDING);
                     setActivityStatus(ActivityStatus.END_TICK);
@@ -55,17 +55,17 @@ public class AuctionActivity extends Activity{
                     setActivityStatus(ActivityStatus.END_TICK);
                     break;
                 case AUCTIONING:
-                    System.out.println("Bidders for all auctions (except me) = " + messageStore.getSize(ParticipationReplyMessage.class));
+                    //System.out.println("Bidders for all auctions (except me) = " + messageStore.getSize(ParticipationReplyMessage.class));
                     List<ParticipationReplyMessage> messages = messageStore.retrieve(ParticipationReplyMessage.class);
                     toRemove.add(bpEntry.getKey());
                     DeliveryTruck bestTruck = truck;
                     AuctionCost lowestAuctionCost = new AuctionCost(truck,bpEntry.getKey());
-                    System.out.println("MY "+ truck + " BID:"+ lowestAuctionCost);
+                    //System.out.println("MY "+ truck + " BID:"+ lowestAuctionCost);
                     for(Message msg : messages){
                         try {
                             ParticipationReplyMessage reply = (ParticipationReplyMessage) msg;
                             if (reply.getRequest().getAuctionableParcel().equals(bpEntry.getKey())){
-                                System.out.println("OTHER "+ reply.getSender()+" BID:"+ reply.getAuctionCost() + " FOR:" + reply.getRequest().getAuctionableParcel());
+                                //System.out.println("OTHER "+ reply.getSender()+" BID:"+ reply.getAuctionCost() + " FOR:" + reply.getRequest().getAuctionableParcel());
                                 if(lowestAuctionCost.compareTo(reply.getAuctionCost()) > 0){
                                     lowestAuctionCost = reply.getAuctionCost();
                                     bestTruck = (DeliveryTruck) reply.getSender();

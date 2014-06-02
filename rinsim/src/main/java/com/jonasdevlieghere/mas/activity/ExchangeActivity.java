@@ -15,6 +15,7 @@ import rinde.sim.core.model.road.RoadModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ExchangeActivity extends Activity{
 
@@ -54,12 +55,19 @@ public class ExchangeActivity extends Activity{
                     break;
                 case MEETING:
                     if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
-                        setExchangeStatus(ExchangeStatus.EXCHANGING);
+                        setExchangeStatus(ExchangeStatus.DROPPING);
                     meet(rm, time, truck);
                     setActivityStatus(ActivityStatus.END_TICK);
                     break;
-                case EXCHANGING:
-
+                case DROPPING:
+                    drop(pm, time, truck);
+                    setActivityStatus(ActivityStatus.END_TICK);
+                    break;
+                case PICKUP:
+                    pickUp(rm, pm, time, truck);
+                    status = ExchangeStatus.INITIAL;
+                    setActivityStatus(ActivityStatus.END_TICK);
+                    break;
             }
         } else {
             switch (status){
@@ -88,14 +96,56 @@ public class ExchangeActivity extends Activity{
                         setExchangeStatus(ExchangeStatus.EXCHANGING);
                     meet(rm,time,truck);
                     break;
-                case EXCHANGING:
+                case DROPPING:
+                    drop(pm, time, truck);
+                    setActivityStatus(ActivityStatus.END_TICK);
+                    break;
+                case PICKUP:
+                    pickUp(rm, pm, time, truck);
+                    status=ExchangeStatus.INITIAL;
+                    setActivityStatus(ActivityStatus.END_TICK);
                     break;
             }
         }
     }
 
-    private void drop() {
-        //TODO: Check whether PDPModel.drop() transfers a parcel.
+    private void drop(PDPModel pm, TimeLapse time, DeliveryTruck truck) {
+        if(!dropList.isEmpty()){
+            if(pm.getVehicleState(truck) == PDPModel.VehicleState.IDLE ){
+                Point p = dropList.remove(0);
+                for(Parcel parcel :pm.getContents(truck)){
+                   if(parcel.getDestination().equals(p)){
+                       pm.drop(truck, parcel, time);
+                   }
+                }
+            }
+        } else {
+            setExchangeStatus(ExchangeStatus.PICKUP);
+        }
+    }
+
+    private void pickUp(RoadModel rm, PDPModel pm, TimeLapse time, DeliveryTruck truck) {
+        if(!pickupList.isEmpty()){
+            if(pm.getVehicleState(truck) == PDPModel.VehicleState.IDLE ){
+                Point pickupPoint =null;
+                Parcel toPickup =null;
+                Set<Parcel> availableParcels = rm.getObjectsAt(truck,Parcel.class);
+                for(Point p:pickupList){
+                    for(Parcel parcel : availableParcels){
+                        if(parcel.getDestination().equals(p)){
+                            pickupPoint = p;
+                            toPickup = parcel;
+                        }
+                    }
+                }
+                if(toPickup !=null){
+                    pickupList.remove(pickupPoint);
+                    pm.pickup(truck, toPickup, time);
+                }
+            }
+        } else {
+            setExchangeStatus(ExchangeStatus.PICKUP);
+        }
     }
 
     private void planExchange(PDPModel pm, DeliveryTruck truck) {
