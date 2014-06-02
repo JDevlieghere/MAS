@@ -16,13 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created with IntelliJ IDEA.
- * User: dieter
- * Date: 6/1/14
- * Time: 2:07 PM
- * To change this template use File | Settings | File Templates.
- */
 public class ExchangeActivity extends Activity{
 
     private static double exchangeRadius = 0.5;
@@ -93,11 +86,10 @@ public class ExchangeActivity extends Activity{
                     setStatus(ActivityStatus.END_TICK);
                 case MEETING:
                     if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
-                        status=ExchangeStatus.DROPING;
+                        status=ExchangeStatus.EXCHANGING;
                     meet(rm,time,truck);
                     break;
-                case DROPING:
-                    drop();
+                case EXCHANGING:
                     break;
             }
         }

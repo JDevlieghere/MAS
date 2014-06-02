@@ -2,7 +2,9 @@ package com.jonasdevlieghere.mas.beacon;
 
 import com.jonasdevlieghere.mas.action.*;
 import com.jonasdevlieghere.mas.activity.*;
-import com.jonasdevlieghere.mas.communication.*;
+import com.jonasdevlieghere.mas.communication.MessageStore;
+import com.jonasdevlieghere.mas.communication.ParticipationReplyMessage;
+import com.jonasdevlieghere.mas.communication.ParticipationRequestMessage;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -12,11 +14,13 @@ import rinde.sim.core.model.communication.CommunicationAPI;
 import rinde.sim.core.model.communication.CommunicationUser;
 import rinde.sim.core.model.communication.Message;
 import rinde.sim.core.model.pdp.PDPModel;
+import rinde.sim.core.model.pdp.Parcel;
 import rinde.sim.core.model.road.RoadModel;
 import rinde.sim.pdptw.common.DefaultVehicle;
 import rinde.sim.pdptw.common.VehicleDTO;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser, ActionUser, ActivityUser {
 
@@ -75,6 +79,13 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
+        //if(this.getNbOfParcels()>0){
+            //Parcel parcel = getPDPModel().getContents(this).iterator().next();
+            //DeliveryTruck oTruck = (DeliveryTruck) pm.getVehicles().iterator().next();
+            //pm.drop(this,parcel,time);
+            //System.out.println(this);
+            //System.out.println(oTruck);
+        //}
 
         if(endsTick(assignmentActivity, rm, pm, time))
             return;
