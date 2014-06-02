@@ -61,6 +61,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     private Point explorationDestination;
     private Parcel cheatParcel;
+    private BeaconStatus status;
 
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
@@ -71,7 +72,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         this.assignmentActivity = new AssignmentActivity(this, messageStore);
         this.transportActivity = new TransportActivity(this);
         this.fetchActivity = new FetchActivity(this);
-        this.exchangeActivity = new ExchangeActivity(this,bm,messageStore);
+        this.exchangeActivity = new ExchangeActivity(this,messageStore);
         this.setStatus(BeaconStatus.ACTIVE);
     }
 
@@ -80,10 +81,10 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
-        if(endsTick(assignmentActivity, rm, pm, time))
+        if(endsTick(assignmentActivity, rm, pm, bm, time))
             return;
 
-        if(endsTick(exchangeActivity, rm, pm, time))
+        if(endsTick(exchangeActivity, rm, pm, bm, time))
             return;
 
         if(endsTick(new PickupAction(rm, pm ,this), time))
@@ -92,16 +93,16 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(endsTick(new DeliverAction(rm, pm ,this), time))
             return;
 
-        if(endsTick(fetchActivity, rm, pm, time))
+        if(endsTick(fetchActivity, rm, pm, bm, time))
             return;
 
-        if(endsTick(transportActivity, rm, pm, time))
+        if(endsTick(transportActivity, rm, pm, bm, time))
             return;
 
         if(endsTick(new DiscoverAction(rm, pm, bm, this), time))
             return;
 
-        if(endsTick(auctionActivity, rm, pm, time))
+        if(endsTick(auctionActivity, rm, pm, bm, time))
             return;
 
         if(endsTick(new SmartExploreAction(rm, pm, this, this.rand), time))
@@ -148,12 +149,12 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     @Override
     public BeaconStatus getStatus() {
-        return null;
+        return status;
     }
 
     @Override
     public void setStatus(BeaconStatus status) {
-
+        this.status = status;
     }
 
     @Override
@@ -204,8 +205,8 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     }
 
     @Override
-    public boolean endsTick(Activity activity, RoadModel rm, PDPModel pm, TimeLapse time) {
-        activity.execute(rm, pm, time);
+    public boolean endsTick(Activity activity, RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
+        activity.execute(rm, pm, bm, time);
         if(activity.getStatus() == ActivityStatus.END_TICK)
             return true;
         return false;

@@ -25,17 +25,15 @@ public class ExchangeActivity extends Activity{
     private ArrayList<Point> myDropList;
     private ArrayList<Point> myPickupList;
     DeliveryTruck otherTruck;
-    private BeaconModel bm;
 
-    public ExchangeActivity(ActivityUser user, BeaconModel bm, MessageStore messageStore){
+    public ExchangeActivity(ActivityUser user, MessageStore messageStore){
         super(user);
-        this.bm = bm;
         this.messageStore = messageStore;
-        this.status = ExchangeStatus.INITIAL;
+        setExchangeStatus(ExchangeStatus.INITIAL);
     }
 
     @Override
-    public void execute(RoadModel rm, PDPModel pm, TimeLapse time) {
+    public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
         //Reset activity status
         setActivityStatus(ActivityStatus.NORMAL);
         DeliveryTruck truck = (DeliveryTruck) getUser();
@@ -43,7 +41,7 @@ public class ExchangeActivity extends Activity{
         switch (truck.getStatus()){
             case ACTIVE:
                 assert(status == ExchangeStatus.INITIAL);
-                initiateExchange(truck);
+                initiateExchange(truck, bm);
                 break;
             case MASTER:
                 switch (status){
@@ -142,7 +140,7 @@ public class ExchangeActivity extends Activity{
         otherTruck.setStatus(BeaconStatus.ACTIVE);
         otherTruck = null;
         truck.setStatus(BeaconStatus.ACTIVE);
-        status=ExchangeStatus.INITIAL;
+        setExchangeStatus(ExchangeStatus.INITIAL);
         meetingPoint = null;
         myDropList = new ArrayList<Point>();
         myPickupList = new ArrayList<Point>();
@@ -204,7 +202,7 @@ public class ExchangeActivity extends Activity{
         }
     }
 
-    private void initiateExchange(DeliveryTruck truck) {
+    private void initiateExchange(DeliveryTruck truck, BeaconModel bm) {
         List<DeliveryTruck> trucks = bm.getDetectableTrucks(truck);
         if(trucks.isEmpty())
             return;

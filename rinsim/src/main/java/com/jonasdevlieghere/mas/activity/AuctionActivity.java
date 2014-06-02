@@ -4,6 +4,7 @@ import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconStatus;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import com.jonasdevlieghere.mas.communication.*;
+import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.communication.CommunicationUser;
@@ -28,7 +29,7 @@ public class AuctionActivity extends Activity{
     }
 
     @Override
-    public void execute(RoadModel rm, PDPModel pm, TimeLapse time) {
+    public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
         setActivityStatus(ActivityStatus.NORMAL);
         if(!auctionableParcels.isEmpty()){
             auction();
