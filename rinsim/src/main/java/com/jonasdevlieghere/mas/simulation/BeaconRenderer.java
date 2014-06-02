@@ -18,7 +18,10 @@ import java.util.List;
 public class BeaconRenderer implements ModelRenderer {
 
     protected final static RGB BLACK = new RGB(0, 0, 0);
+    protected final static RGB BORDEAUX = new RGB(95, 2, 31);
     protected final static RGB GREEN = new RGB(0, 255, 0);
+    protected final static RGB YELLOW = new RGB(225, 255, 0);
+
 
     protected BeaconModel beaconModel;
 
@@ -27,7 +30,7 @@ public class BeaconRenderer implements ModelRenderer {
 
     @Override
     public void renderDynamic(GC gc, ViewPort vp, long time) {
-        final List<BeaconParcel> parcels = beaconModel.getParcelBeacons();
+        final List<BeaconParcel> parcels = beaconModel.getAllParcelBeacons();
         synchronized (parcels) {
             for(BeaconParcel parcel : parcels){
 
@@ -37,8 +40,11 @@ public class BeaconRenderer implements ModelRenderer {
                 final int y = (int) (vp.origin.y + (position.y - vp.rect.min.y) * vp.scale);
                 final int r = (int) (parcel.getRadius() * vp.scale);
 
-                if(parcel.getStatus() == BeaconStatus.ACTIVE) {
+                if(parcel.getStatus() != BeaconStatus.INACTIVE) {
                     RGB rgb = GREEN;
+                    if(parcel.getStatus() == BeaconStatus.BUSY){
+                        rgb = YELLOW;
+                    }
                     gc.setBackground(new Color(gc.getDevice(), rgb));
                     gc.setForeground(new Color(gc.getDevice(), rgb));
                     gc.setAlpha(10);
@@ -50,7 +56,7 @@ public class BeaconRenderer implements ModelRenderer {
             }
         }
 
-        final List<DeliveryTruck> trucks = beaconModel.getTruckBeacons();
+        final List<DeliveryTruck> trucks = beaconModel.getAllTruckBeacons();
         synchronized (trucks) {
             for(DeliveryTruck truck : trucks){
                 Point position = truck.getPosition();
@@ -58,8 +64,10 @@ public class BeaconRenderer implements ModelRenderer {
                 final int x = (int) (vp.origin.x + (position.x - vp.rect.min.x) * vp.scale);
                 final int y = (int) (vp.origin.y + (position.y - vp.rect.min.y) * vp.scale);
                 final int r = (int) (truck.getRadius() * vp.scale);
-
                 RGB rgb = BLACK;
+                if(truck.getStatus() == BeaconStatus.BUSY){
+                    rgb = BORDEAUX;
+                }
                 gc.setBackground(new Color(gc.getDevice(), rgb));
                 gc.setForeground(new Color(gc.getDevice(), rgb));
                 gc.setAlpha(10);
