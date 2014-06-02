@@ -55,12 +55,24 @@ public class ExchangeActivity extends Activity{
                     break;
                 case MEETING:
                     if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
-                        status=ExchangeStatus.EXCHANGING;
+                        status=ExchangeStatus.DROPPING;
                     meet(rm, time, truck);
                     setStatus(ActivityStatus.END_TICK);
                     break;
-                case EXCHANGING:
-
+                case DROPPING:
+                    if(!dropList.isEmpty()){
+                        if(pm.getVehicleState(truck) == PDPModel.VehicleState.IDLE ){
+                            Point p = dropList.remove(0);
+                            for(Parcel parcel :pm.getContents(truck)){
+                               if(parcel.getDestination().equals(p)){
+                                   pm.drop(truck, parcel, time);
+                                   setStatus(ActivityStatus.END_TICK);
+                               }
+                            }
+                        }
+                    } else {
+                        // set status
+                    }
             }
         } else {
             switch (status){

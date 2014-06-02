@@ -61,6 +61,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private FetchActivity fetchActivity;
 
     private Point explorationDestination;
+    private Parcel cheatParcel;
 
     public DeliveryTruck(VehicleDTO pDto) {
         super(pDto);
@@ -78,14 +79,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     protected void tickImpl(TimeLapse time) {
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
-
-        //if(this.getNbOfParcels()>0){
-            //Parcel parcel = getPDPModel().getContents(this).iterator().next();
-            //DeliveryTruck oTruck = (DeliveryTruck) pm.getVehicles().iterator().next();
-            //pm.drop(this,parcel,time);
-            //System.out.println(this);
-            //System.out.println(oTruck);
-        //}
 
         if(endsTick(assignmentActivity, rm, pm, time))
             return;
