@@ -3,8 +3,6 @@ package com.jonasdevlieghere.mas.beacon;
 import com.jonasdevlieghere.mas.action.*;
 import com.jonasdevlieghere.mas.activity.*;
 import com.jonasdevlieghere.mas.communication.MessageStore;
-import com.jonasdevlieghere.mas.communication.ParticipationReplyMessage;
-import com.jonasdevlieghere.mas.communication.ParticipationRequestMessage;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -59,6 +57,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private AssignmentActivity assignmentActivity;
     private TransportActivity transportActivity;
     private FetchActivity fetchActivity;
+    private ExchangeActivity exchangeActivity;
 
     private Point explorationDestination;
     private Parcel cheatParcel;
@@ -72,6 +71,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         this.assignmentActivity = new AssignmentActivity(this, messageStore);
         this.transportActivity = new TransportActivity(this);
         this.fetchActivity = new FetchActivity(this);
+        this.exchangeActivity = new ExchangeActivity(this,bm,messageStore);
         this.setStatus(BeaconStatus.ACTIVE);
     }
 
@@ -81,6 +81,9 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         final PDPModel pm = pdpModel.get();
 
         if(endsTick(assignmentActivity, rm, pm, time))
+            return;
+
+        if(endsTick(exchangeActivity, rm, pm, time))
             return;
 
         if(endsTick(new PickupAction(rm, pm ,this), time))
@@ -156,13 +159,11 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     @Override
     public boolean ping(){
         if(getStatus() == BeaconStatus.ACTIVE){
-            setStatus(BeaconStatus.BUSY);
+            setStatus(BeaconStatus.SLAVE);
             return true;
         }
         return false;
     }
-
-
 
     @Override
     public void setModel(BeaconModel model) {

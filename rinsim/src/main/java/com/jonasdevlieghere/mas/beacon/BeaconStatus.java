@@ -9,6 +9,7 @@ package com.jonasdevlieghere.mas.beacon;
  */
 public enum BeaconStatus {
     ACTIVE,
-    BUSY,
+    MASTER,
+    SLAVE,
     INACTIVE
 }
