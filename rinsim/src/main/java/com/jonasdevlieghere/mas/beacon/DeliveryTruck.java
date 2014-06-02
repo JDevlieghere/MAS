@@ -101,7 +101,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(endsTick(auctionActivity, rm, pm, time))
             return;
 
-        if(endsTick(new ExploreAction(rm, pm, this, this.rand), time))
+        if(endsTick(new SmartExploreAction(rm, pm, this, this.rand), time))
             return;
     }
 
@@ -131,7 +131,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     @Override
     public void receive(Message message) {
         messageStore.store(message);
-        System.out.println("MESSAGE RECEIVED at " + this.toString() + " (RP: " + messageStore.getSize(ParticipationReplyMessage.class) + ", RQ: " + messageStore.getSize(ParticipationRequestMessage.class) + ", TOT: " + messageStore.getSize() + ")");
     }
 
     @Override

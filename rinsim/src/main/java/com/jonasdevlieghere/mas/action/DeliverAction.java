@@ -19,7 +19,8 @@ public class DeliverAction extends Action {
         setStatus(ActionStatus.FAILURE);
         DeliveryTruck truck = (DeliveryTruck)getUser();
         for (final Parcel parcel : pm.getContents(truck)) {
-            if (parcel.getDestination().equals(truck.getPosition()) && pm.getVehicleState(truck) == PDPModel.VehicleState.IDLE){
+            if (parcel.getDestination().equals(truck.getPosition()) && pm.getVehicleState(truck) == PDPModel.VehicleState.IDLE && pm.getTimeWindowPolicy().canDeliver(parcel.getDeliveryTimeWindow(),
+                    time.getTime(), parcel.getPickupDuration()) ){
                 pm.deliver(truck, parcel, time);
                 setStatus(ActionStatus.SUCCESS);
                 return;

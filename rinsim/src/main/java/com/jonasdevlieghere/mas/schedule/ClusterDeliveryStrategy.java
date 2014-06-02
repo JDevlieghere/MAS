@@ -45,6 +45,7 @@ public class ClusterDeliveryStrategy implements SchedulingStrategy {
                 double distance = Point.distance(truck.getPosition(), cluster.getCenter());
                 clusterTreeMap.put(distance, cluster);
             }
+            System.out.println(clusterTreeMap);
             for(Map.Entry<Double, Cluster> clusterEntry: clusterTreeMap.entrySet()){
                 double bestDistance = Double.POSITIVE_INFINITY;
                 Parcel bestParcel = null;
