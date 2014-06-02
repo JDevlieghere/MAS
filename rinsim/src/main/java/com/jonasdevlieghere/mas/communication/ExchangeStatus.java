@@ -12,5 +12,6 @@ public enum ExchangeStatus {
     PENDING,
     PLANNING,
     MEETING,
-    DROPPING, PICKUP, EXCHANGING
+    RESETTING,
+    EXCHANGING
 }

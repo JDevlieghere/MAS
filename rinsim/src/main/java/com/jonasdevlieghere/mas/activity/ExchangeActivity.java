@@ -40,82 +40,97 @@ public class ExchangeActivity extends Activity{
         setActivityStatus(ActivityStatus.NORMAL);
         DeliveryTruck truck = (DeliveryTruck) getUser();
         //Master of the exchange
-        if(truck.getStatus() == BeaconStatus.ACTIVE){
-            switch (status){
-                case INITIAL:
-                    initiateExchange(truck);
-                    break;
-                case PENDING:
-                    pending();
-                    break;
-                case PLANNING:
-                    planExchange(pm, truck);
-                    break;
-                case MEETING:
-                    if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
-                        setExchangeStatus(ExchangeStatus.DROPPING);
-                    meet(rm, time, truck);
-                    setActivityStatus(ActivityStatus.END_TICK);
-                    break;
-                case DROPPING:
-                    drop(pm, time, truck);
-                    setActivityStatus(ActivityStatus.END_TICK);
-                    break;
-                case PICKUP:
-                    pickUp(rm, pm, time, truck);
-                    status = ExchangeStatus.INITIAL;
-                    setActivityStatus(ActivityStatus.END_TICK);
-                    break;
-            }
-        } else {
-            switch (status){
-                case INITIAL:
-                    List<ExchangeRequestMessage> messages1 = messageStore.retrieve(ExchangeRequestMessage.class);
-                    //At all times there should only be one message of this type.
-                    ExchangeRequestMessage request = messages1.get(0);
-                    if(truck.getNbOfParcels() > 0){
-                        otherTruck = (DeliveryTruck) request.getSender();
-                        truck.send(otherTruck, new ExchangeReplyMessage(truck, pm.getContents(truck)));
-                        setExchangeStatus(ExchangeStatus.PENDING);
-                    }
-                    setActivityStatus(ActivityStatus.END_TICK);
-                    break;
-                case PENDING:
-                    pending();
-                    break;
-                case PLANNING:
-                    List<ExchangeAssignmentMessage> messages2 = messageStore.retrieve(ExchangeAssignmentMessage.class);
-                    //At all times there should only be one message of this type.
-                    ExchangeAssignmentMessage assignment = messages2.get(0);
-                    dropList = assignment.getDropList();
-                    pickupList = assignment.getPickupList();
-                    meetingPoint = assignment.getMeetingPoint();
-                    setExchangeStatus(ExchangeStatus.MEETING);
-                    setActivityStatus(ActivityStatus.END_TICK);
-                case MEETING:
-                    if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
-                        setExchangeStatus(ExchangeStatus.EXCHANGING);
-                    meet(rm,time,truck);
-                    break;
-                case DROPPING:
-                    drop(pm, time, truck);
-                    setActivityStatus(ActivityStatus.END_TICK);
-                    break;
-                case PICKUP:
-                    pickUp(rm, pm, time, truck);
-                    reset();
-                    break;
-            }
+        switch (truck.getStatus()){
+            case ACTIVE:
+                assert(status == ExchangeStatus.INITIAL);
+                initiateExchange(truck);
+                truck.setStatus(BeaconStatus.MASTER);
+                break;
+            case MASTER:
+                switch (status){
+                    case PENDING:
+                        pending();
+                        break;
+                    case PLANNING:
+                        planExchange(pm, truck);
+                        break;
+                    case MEETING:
+                        if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
+                            setExchangeStatus(ExchangeStatus.DROPPING);
+                        meet(rm, time, truck);
+                        setActivityStatus(ActivityStatus.END_TICK);
+                        break;
+                    case EXCHANGING:
+                        System.out.println("EXCHANGING");
+                        //EXCHANGING
+                        status = ExchangeStatus.RESETTING;
+                        setActivityStatus(ActivityStatus.END_TICK);
+                        break;
+                    case RESETTING:
+                        if(!bm.getDetectableTrucks(truck).contains(otherTruck)){
+                            reset(truck);
+                        }
+                        break;
+                    default:
+                        System.out.println("This case is strange: " + status);
+                        break;
+                }
+                break;
+            case SLAVE:
+                switch (status){
+                    case INITIAL:
+                        List<ExchangeRequestMessage> messages1 = messageStore.retrieve(ExchangeRequestMessage.class);
+                        if(!messages1.isEmpty()){
+                            //At all times there should only be one message of this type.
+                            ExchangeRequestMessage request = messages1.get(0);
+                            System.out.println("Request recieved");
+                            if(truck.getNbOfParcels() > 0){
+                                otherTruck = (DeliveryTruck) request.getSender();
+                                System.out.println("Replyed");
+                                truck.send(otherTruck, new ExchangeReplyMessage(truck, pm.getContents(truck)));
+                                setExchangeStatus(ExchangeStatus.PENDING);
+                            }
+                            setActivityStatus(ActivityStatus.END_TICK);
+                        }
+                        break;
+                    case PENDING:
+                        pending();
+                        break;
+                    case PLANNING:
+                        List<ExchangeAssignmentMessage> messages2 = messageStore.retrieve(ExchangeAssignmentMessage.class);
+                        //At all times there should only be one message of this type.
+                        ExchangeAssignmentMessage assignment = messages2.get(0);
+                        dropList = assignment.getDropList();
+                        pickupList = assignment.getPickupList();
+                        meetingPoint = assignment.getMeetingPoint();
+                        setExchangeStatus(ExchangeStatus.MEETING);
+                        setActivityStatus(ActivityStatus.END_TICK);
+                    case MEETING:
+                        if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
+                            setExchangeStatus(ExchangeStatus.EXCHANGING);
+                        meet(rm,time,truck);
+                        setActivityStatus(ActivityStatus.END_TICK);
+                        break;
+                    case EXCHANGING:
+                        //See whether this isn't too fast.
+                        setExchangeStatus(ExchangeStatus.INITIAL);
+                        setActivityStatus(ActivityStatus.END_TICK);
+                        break;
+                }
+                break;
+            case INACTIVE:
+                break;
         }
     }
 
-    private void reset() {
-        meetingPoint = null;
+    private void reset(DeliveryTruck truck) {
+        otherTruck.setStatus(BeaconStatus.ACTIVE);
         otherTruck = null;
+        truck.setStatus(BeaconStatus.ACTIVE);
+        status=ExchangeStatus.INITIAL;
+        meetingPoint = null;
         dropList = new ArrayList<Point>();
         pickupList = new ArrayList<Point>();
-        status=ExchangeStatus.INITIAL;
-        setActivityStatus(ActivityStatus.END_TICK);
     }
 
     private void drop(PDPModel pm, TimeLapse time, DeliveryTruck truck) {

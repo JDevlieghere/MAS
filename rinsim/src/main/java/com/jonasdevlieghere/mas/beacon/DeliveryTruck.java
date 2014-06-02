@@ -3,8 +3,6 @@ package com.jonasdevlieghere.mas.beacon;
 import com.jonasdevlieghere.mas.action.*;
 import com.jonasdevlieghere.mas.activity.*;
 import com.jonasdevlieghere.mas.communication.MessageStore;
-import com.jonasdevlieghere.mas.communication.ParticipationReplyMessage;
-import com.jonasdevlieghere.mas.communication.ParticipationRequestMessage;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -85,8 +83,8 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(endsTick(assignmentActivity, rm, pm, time))
             return;
 
-    //    if(endsTick(exchangeActivity, rm, pm, time))
-     //       return;
+        if(endsTick(exchangeActivity, rm, pm, time))
+            return;
 
         if(endsTick(new PickupAction(rm, pm ,this), time))
             return;
@@ -136,7 +134,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     @Override
     public void receive(Message message) {
         messageStore.store(message);
-        System.out.println("MESSAGE RECEIVED at " + this.toString() + " (RP: " + messageStore.getSize(ParticipationReplyMessage.class) + ", RQ: " + messageStore.getSize(ParticipationRequestMessage.class) + ", TOT: " + messageStore.getSize() + ")");
+        //System.out.println("MESSAGE RECEIVED at " + this.toString() + " (RP: " + messageStore.getSize(ParticipationReplyMessage.class) + ", RQ: " + messageStore.getSize(ParticipationRequestMessage.class) + ", TOT: " + messageStore.getSize() + ")");
     }
 
     @Override
@@ -162,7 +160,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     @Override
     public boolean ping(){
         if(getStatus() == BeaconStatus.ACTIVE){
-            setStatus(BeaconStatus.BUSY);
+            setStatus(BeaconStatus.SLAVE);
             return true;
         }
         return false;
