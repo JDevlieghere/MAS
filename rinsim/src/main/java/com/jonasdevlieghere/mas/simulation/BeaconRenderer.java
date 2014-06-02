@@ -22,7 +22,6 @@ public class BeaconRenderer implements ModelRenderer {
     protected final static RGB GREEN = new RGB(0, 255, 0);
     protected final static RGB YELLOW = new RGB(225, 255, 0);
 
-
     protected BeaconModel beaconModel;
 
     @Override

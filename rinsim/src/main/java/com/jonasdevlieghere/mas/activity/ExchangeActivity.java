@@ -6,6 +6,7 @@ import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import com.jonasdevlieghere.mas.cluster.Cluster;
 import com.jonasdevlieghere.mas.cluster.KMeans;
 import com.jonasdevlieghere.mas.communication.*;
+import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -25,16 +26,17 @@ import java.util.Set;
  */
 public class ExchangeActivity extends Activity{
 
-    private static double exchangeRadius = 0.5;
     private ExchangeStatus status;
     private MessageStore messageStore;
     private Point meetingPoint;
     private ArrayList<Point> dropList;
     private ArrayList<Point> pickupList;
     DeliveryTruck otherTruck;
+    private BeaconModel bm;
 
-    public ExchangeActivity(ActivityUser user, MessageStore messageStore){
+    public ExchangeActivity(ActivityUser user, BeaconModel bm, MessageStore messageStore){
         super(user);
+        this.bm = bm;
         this.messageStore = messageStore;
         this.status = ExchangeStatus.INITIAL;
     }
@@ -159,13 +161,13 @@ public class ExchangeActivity extends Activity{
 
     }
 
-    private void initiateExchange(RoadModel rm, DeliveryTruck truck) {
-        otherTruck = getNearestTruck(rm, truck);
-        if(otherTruck != null){
-            //Ensure you are the first and only one to initiate exchange
-            if(otherTruck.ping()){
-                truck.send(otherTruck,new ExchangeRequestMessage(truck));
-            }
+    private void initiateExchange(DeliveryTruck truck) {
+        List<DeliveryTruck> trucks = bm.getDetectableTrucks(truck);
+        if(trucks.isEmpty())
+            return;
+        DeliveryTruck otherTruck = trucks.get(0);
+        if(otherTruck.ping()){
+            truck.send(otherTruck, new ExchangeRequestMessage(truck));
         }
     }
 
@@ -178,18 +180,4 @@ public class ExchangeActivity extends Activity{
         setStatus(ActivityStatus.END_TICK);
     }
 
-    private DeliveryTruck getNearestTruck(RoadModel rm, DeliveryTruck truck){
-        Set<DeliveryTruck> allTrucks = rm.getObjectsOfType(DeliveryTruck.class);
-        DeliveryTruck bestTruck = null;
-        double distance;
-        double bestDistance = exchangeRadius;
-        for(DeliveryTruck otherTruck : allTrucks){
-            distance = Point.distance(otherTruck.getPosition(), truck.getPosition());
-            if(distance < bestDistance){
-               bestTruck = otherTruck;
-               bestDistance = distance;
-            }
-        }
-        return bestTruck;
-    }
 }
