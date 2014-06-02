@@ -5,7 +5,6 @@ import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import com.jonasdevlieghere.mas.communication.AssignmentMessage;
 import com.jonasdevlieghere.mas.communication.MessageStore;
 import rinde.sim.core.TimeLapse;
-import rinde.sim.core.model.communication.Message;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.road.RoadModel;
 
@@ -29,15 +28,10 @@ public class AssignmentActivity extends Activity {
 
     @Override
     public void execute(RoadModel rm, PDPModel pm, TimeLapse time) {
-        List<Message> messages = messageStore.retrieve(AssignmentMessage.class);
+        List<AssignmentMessage> messages = messageStore.retrieve(AssignmentMessage.class);
         DeliveryTruck truck = (DeliveryTruck)getUser();
-        for(Message msg : messages){
-            try {
-                AssignmentMessage assignmentMessage = (AssignmentMessage) msg;
-                truck.queuePickup((BeaconParcel) assignmentMessage.getParcel());
-            } catch (ClassCastException e){
-                // NOP
-            }
+        for(AssignmentMessage assignment: messages){
+                truck.queuePickup((BeaconParcel) assignment.getParcel());
         }
     }
 }
