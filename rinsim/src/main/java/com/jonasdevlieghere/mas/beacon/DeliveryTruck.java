@@ -59,6 +59,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private AssignmentActivity assignmentActivity;
     private TransportActivity transportActivity;
     private FetchActivity fetchActivity;
+    private ExchangeActivity exchangeActivity;
 
     private Point explorationDestination;
     private Parcel cheatParcel;
@@ -72,6 +73,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         this.assignmentActivity = new AssignmentActivity(this, messageStore);
         this.transportActivity = new TransportActivity(this);
         this.fetchActivity = new FetchActivity(this);
+        this.exchangeActivity = new ExchangeActivity(this,bm,messageStore);
         this.setStatus(BeaconStatus.ACTIVE);
     }
 
@@ -82,6 +84,9 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
         if(endsTick(assignmentActivity, rm, pm, time))
             return;
+
+    //    if(endsTick(exchangeActivity, rm, pm, time))
+     //       return;
 
         if(endsTick(new PickupAction(rm, pm ,this), time))
             return;

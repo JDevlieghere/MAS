@@ -50,8 +50,6 @@ public class ExchangeActivity extends Activity{
                     break;
                 case PLANNING:
                     planExchange(pm, truck);
-                    setExchangeStatus(ExchangeStatus.MEETING);
-                    setActivityStatus(ActivityStatus.END_TICK);
                     break;
                 case MEETING:
                     if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
@@ -75,9 +73,12 @@ public class ExchangeActivity extends Activity{
                     List<ExchangeRequestMessage> messages1 = messageStore.retrieve(ExchangeRequestMessage.class);
                     //At all times there should only be one message of this type.
                     ExchangeRequestMessage request = messages1.get(0);
-                    otherTruck = (DeliveryTruck) request.getSender();
-                    truck.send(otherTruck, new ExchangeReplyMessage(truck, pm.getContents(truck)));
+                    if(truck.getNbOfParcels() > 0){
+                        otherTruck = (DeliveryTruck) request.getSender();
+                        truck.send(otherTruck, new ExchangeReplyMessage(truck, pm.getContents(truck)));
                         setExchangeStatus(ExchangeStatus.PENDING);
+                    }
+                    setActivityStatus(ActivityStatus.END_TICK);
                     break;
                 case PENDING:
                     pending();
@@ -102,11 +103,19 @@ public class ExchangeActivity extends Activity{
                     break;
                 case PICKUP:
                     pickUp(rm, pm, time, truck);
-                    status=ExchangeStatus.INITIAL;
-                    setActivityStatus(ActivityStatus.END_TICK);
+                    reset();
                     break;
             }
         }
+    }
+
+    private void reset() {
+        meetingPoint = null;
+        otherTruck = null;
+        dropList = new ArrayList<Point>();
+        pickupList = new ArrayList<Point>();
+        status=ExchangeStatus.INITIAL;
+        setActivityStatus(ActivityStatus.END_TICK);
     }
 
     private void drop(PDPModel pm, TimeLapse time, DeliveryTruck truck) {
@@ -151,53 +160,59 @@ public class ExchangeActivity extends Activity{
     private void planExchange(PDPModel pm, DeliveryTruck truck) {
         List<ExchangeReplyMessage> messages = messageStore.retrieve(ExchangeReplyMessage.class);
         //At all times there should only be one message of this type.
-        ExchangeReplyMessage reply = messages.get(0);
-        DeliveryTruck otherTruck= (DeliveryTruck) reply.getSender();
-        ArrayList<Point> pointList = new ArrayList<Point>();
-        ImmutableSet<Parcel> myParcels = pm.getContents(truck);
-        ImmutableSet<Parcel> otherParcels = reply.getParcels();
-        for(Parcel p: myParcels){
-            pointList.add(p.getDestination());
-        }
-
-        for(Parcel p:otherParcels){
-            pointList.add(p.getDestination());
-        }
-        KMeans km = new KMeans(pointList ,2);
-        ArrayList<Cluster> clusters = km.getClusters();
-        ArrayList<Point> myPoints = clusters.get(0).getPoints();
-        ArrayList<Point> otherPoints = clusters.get(1).getPoints();
-
-        ArrayList<Point> myPickupList = new ArrayList<Point>();
-        ArrayList<Point> myDropList = new ArrayList<Point>();
-
-        ArrayList<Point> otherPickupList = new ArrayList<Point>();
-        ArrayList<Point> otherDropList = new ArrayList<Point>();
-
-        for(Parcel parcel: myParcels){
-            Point dest = parcel.getDestination();
-            if(otherPoints.contains(dest)){
-               otherDropList.add(dest);
-               myPickupList.add(dest);
+        if(!messages.isEmpty()){
+            ExchangeReplyMessage reply = messages.get(0);
+            DeliveryTruck otherTruck= (DeliveryTruck) reply.getSender();
+            ArrayList<Point> pointList = new ArrayList<Point>();
+            ImmutableSet<Parcel> myParcels = pm.getContents(truck);
+            ImmutableSet<Parcel> otherParcels = reply.getParcels();
+            for(Parcel p: myParcels){
+                pointList.add(p.getDestination());
             }
-        }
 
-        for(Parcel parcel: otherParcels){
-            Point dest = parcel.getDestination();
-            if(myPoints.contains(dest)){
-                myDropList.add(dest);
-                otherPickupList.add(dest);
+            for(Parcel p:otherParcels){
+                pointList.add(p.getDestination());
             }
+            KMeans km = new KMeans(pointList ,2);
+            ArrayList<Cluster> clusters = km.getClusters();
+            ArrayList<Point> myPoints = clusters.get(0).getPoints();
+            ArrayList<Point> otherPoints = clusters.get(1).getPoints();
+
+            ArrayList<Point> myPickupList = new ArrayList<Point>();
+            ArrayList<Point> myDropList = new ArrayList<Point>();
+
+            ArrayList<Point> otherPickupList = new ArrayList<Point>();
+            ArrayList<Point> otherDropList = new ArrayList<Point>();
+
+            for(Parcel parcel: myParcels){
+                Point dest = parcel.getDestination();
+                if(otherPoints.contains(dest)){
+                   otherDropList.add(dest);
+                   myPickupList.add(dest);
+                }
+            }
+
+            for(Parcel parcel: otherParcels){
+                Point dest = parcel.getDestination();
+                if(myPoints.contains(dest)){
+                    myDropList.add(dest);
+                    otherPickupList.add(dest);
+                }
+            }
+
+            dropList = myDropList;
+            pickupList = myPickupList;
+
+            double newX =  (truck.getPosition().x + otherTruck.getPosition().x)/2;
+            double newY =  (truck.getPosition().y + otherTruck.getPosition().y)/2;
+            meetingPoint = new Point(newX, newY);
+            truck.send(otherTruck, new ExchangeAssignmentMessage(truck, otherDropList,otherPickupList, meetingPoint));
+            setExchangeStatus(ExchangeStatus.MEETING);
+            setActivityStatus(ActivityStatus.END_TICK);
+        } else {
+            setExchangeStatus(ExchangeStatus.INITIAL);
+            setActivityStatus(ActivityStatus.END_TICK);
         }
-
-        dropList = myDropList;
-        pickupList = myPickupList;
-
-        double newX =  (truck.getPosition().x + otherTruck.getPosition().x)/2;
-        double newY =  (truck.getPosition().y + otherTruck.getPosition().y)/2;
-        meetingPoint = new Point(newX, newY);
-        truck.send(otherTruck, new ExchangeAssignmentMessage(truck, otherDropList,otherPickupList, meetingPoint));
-
     }
 
     private void initiateExchange(DeliveryTruck truck) {
