@@ -54,7 +54,7 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
     public List<BeaconParcel> getDetectableParcels(DeliveryTruck truck) {
         final List<BeaconParcel> parcels = new ArrayList<BeaconParcel>();
         for (final BeaconParcel parcel : getAllParcelBeacons()) {
-            if((parcel.getStatus() == BeaconStatus.ACTIVE  || parcel.getStatus() == BeaconStatus.BUSY)
+            if((parcel.getStatus() == BeaconStatus.ACTIVE  || parcel.getStatus() == BeaconStatus.SLAVE)
                     && Point.distance(truck.getPosition(), parcel.getPosition()) <= truck.getRadius() + parcel.getRadius()
                     && pdpModel.getParcelState((parcel)) == PDPModel.ParcelState.AVAILABLE)
                 parcels.add(parcel);
@@ -65,7 +65,8 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
     public List<DeliveryTruck> getDetectableTrucks(DeliveryTruck truck){
         final List<DeliveryTruck> trucks = new ArrayList<DeliveryTruck>();
         for (final DeliveryTruck t : getAllTruckBeacons()) {
-            if((t.getStatus() == BeaconStatus.ACTIVE  || t.getStatus() == BeaconStatus.BUSY)
+            //TODO:check whether slave is correct.
+            if((t.getStatus() == BeaconStatus.ACTIVE  || t.getStatus() == BeaconStatus.SLAVE)
                     && Point.distance(truck.getPosition(), t.getPosition()) <= truck.getRadius() + t.getRadius())
                 trucks.add(t);
         }

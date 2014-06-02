@@ -11,6 +11,7 @@ import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.pdp.Parcel;
+import rinde.sim.core.model.pdp.TripleDJPDPModel;
 import rinde.sim.core.model.road.RoadModel;
 
 import java.util.ArrayList;
@@ -43,7 +44,6 @@ public class ExchangeActivity extends Activity{
             case ACTIVE:
                 assert(status == ExchangeStatus.INITIAL);
                 initiateExchange(truck);
-                truck.setStatus(BeaconStatus.MASTER);
                 break;
             case MASTER:
                 switch (status){
@@ -62,7 +62,7 @@ public class ExchangeActivity extends Activity{
                     case EXCHANGING:
                         System.out.println("EXCHANGING");
                         //EXCHANGING
-                        exchange(pm,truck);
+                        exchange(pm,truck,time);
                         status = ExchangeStatus.RESETTING;
                         setActivityStatus(ActivityStatus.END_TICK);
                         break;
@@ -123,16 +123,16 @@ public class ExchangeActivity extends Activity{
         }
     }
 
-    private void exchange(PDPModel pm, DeliveryTruck truck) {
+    private void exchange(PDPModel pm, DeliveryTruck truck, TimeLapse time) {
         for(Parcel parcel :pm.getContents(truck)){
             if(myDropList.contains(parcel.getDestination())){
-                //pm.transship(truck,otherTruck,parcel);
+                ((TripleDJPDPModel) pm).transship(truck,otherTruck,parcel,time);
                 myDropList.remove(parcel.getDestination());
             }
         }
         for(Parcel parcel :pm.getContents(otherTruck)){
             if(myPickupList.contains(parcel.getDestination())){
-                //pm.transship(otherTruck,truck,parcel);
+                ((TripleDJPDPModel) pm).transship(otherTruck,truck,parcel,time);
                 myPickupList.remove(parcel.getDestination());
             }
         }
@@ -153,7 +153,7 @@ public class ExchangeActivity extends Activity{
         //At all times there should only be one message of this type.
         if(!messages.isEmpty()){
             ExchangeReplyMessage reply = messages.get(0);
-            DeliveryTruck otherTruck= (DeliveryTruck) reply.getSender();
+            assert(otherTruck.equals(reply.getSender()));
             ArrayList<Point> pointList = new ArrayList<Point>();
             ImmutableSet<Parcel> myParcels = pm.getContents(truck);
             ImmutableSet<Parcel> otherParcels = reply.getParcels();
@@ -178,7 +178,6 @@ public class ExchangeActivity extends Activity{
             for(Parcel parcel: myParcels){
                 Point dest = parcel.getDestination();
                 if(otherPoints.contains(dest)){
-                   otherDropList.add(dest);
                    myPickupList.add(dest);
                 }
             }
@@ -187,7 +186,6 @@ public class ExchangeActivity extends Activity{
                 Point dest = parcel.getDestination();
                 if(myPoints.contains(dest)){
                     myDropList.add(dest);
-                    otherPickupList.add(dest);
                 }
             }
 
@@ -210,9 +208,10 @@ public class ExchangeActivity extends Activity{
         List<DeliveryTruck> trucks = bm.getDetectableTrucks(truck);
         if(trucks.isEmpty())
             return;
-        DeliveryTruck otherTruck = trucks.get(0);
+        otherTruck = trucks.get(0);
         if(otherTruck.ping()){
             truck.send(otherTruck, new ExchangeRequestMessage(truck));
+            truck.setStatus(BeaconStatus.MASTER);
             setExchangeStatus(ExchangeStatus.PENDING);
             setActivityStatus(ActivityStatus.END_TICK);
         }

@@ -7,8 +7,8 @@ import rinde.sim.pdptw.common.DefaultDepot;
 import rinde.sim.pdptw.common.RouteRenderer;
 import rinde.sim.pdptw.experiment.Experiment;
 import rinde.sim.pdptw.gendreau06.Gendreau06ObjectiveFunction;
-import rinde.sim.pdptw.gendreau06.Gendreau06Parser;
-import rinde.sim.pdptw.gendreau06.Gendreau06Scenario;
+import rinde.sim.pdptw.gendreau06.TripleDJGendreau06Parser;
+import rinde.sim.pdptw.gendreau06.TripleDJGendreau06Scenario;
 import rinde.sim.scenario.ScenarioController;
 import rinde.sim.ui.View;
 import rinde.sim.ui.renderers.PDPModelRenderer;
@@ -49,7 +49,7 @@ public class BeaconSimulation {
             }
         };
 
-        final Gendreau06Scenario scenario = Gendreau06Parser
+        final TripleDJGendreau06Scenario scenario = TripleDJGendreau06Parser
                 .parser().addFile(BeaconSimulation.class
                                 .getResourceAsStream("/data/gendreau06/req_rapide_1_240_24"),
                         "req_rapide_1_240_24")
