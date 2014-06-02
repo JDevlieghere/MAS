@@ -61,7 +61,7 @@ public class BeaconRenderer implements ModelRenderer {
                 final int y = (int) (vp.origin.y + (position.y - vp.rect.min.y) * vp.scale);
                 final int r = (int) (truck.getRadius() * vp.scale);
                 RGB rgb = BLACK;
-                if(truck.getStatus() == BeaconStatus.BUSY){
+                if(truck.getStatus() == BeaconStatus.MASTER || truck.getStatus() == BeaconStatus.SLAVE){
                     rgb = BORDEAUX;
                 }
                 gc.setBackground(new Color(gc.getDevice(), rgb));
