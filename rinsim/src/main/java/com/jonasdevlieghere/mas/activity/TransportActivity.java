@@ -19,13 +19,13 @@ public class TransportActivity extends Activity {
 
     @Override
     public void execute(RoadModel rm, PDPModel pm, TimeLapse time) {
-        setStatus(ActivityStatus.NORMAL);
+        setActivityStatus(ActivityStatus.NORMAL);
         BeaconParcel parcel = scheduler.next(rm, pm, time);
         DeliveryTruck truck = (DeliveryTruck)getUser();
 
         if(parcel != null){
             rm.moveTo(truck, parcel.getDestination(), time);
-            setStatus(ActivityStatus.END_TICK);
+            setActivityStatus(ActivityStatus.END_TICK);
         }
     }
 }

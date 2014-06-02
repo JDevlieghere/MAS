@@ -15,7 +15,6 @@ import rinde.sim.core.model.road.RoadModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class ExchangeActivity extends Activity{
 
@@ -37,29 +36,27 @@ public class ExchangeActivity extends Activity{
     @Override
     public void execute(RoadModel rm, PDPModel pm, TimeLapse time) {
         //Reset activity status
-        setStatus(ActivityStatus.NORMAL);
+        setActivityStatus(ActivityStatus.NORMAL);
         DeliveryTruck truck = (DeliveryTruck) getUser();
         //Master of the exchange
         if(truck.getStatus() == BeaconStatus.ACTIVE){
             switch (status){
                 case INITIAL:
-                    initiateExchange(rm, truck);
-                    status = ExchangeStatus.PENDING;
-                    setStatus(ActivityStatus.END_TICK);
+                    initiateExchange(truck);
                     break;
                 case PENDING:
                     pending();
                     break;
                 case PLANNING:
                     planExchange(pm, truck);
-                    status = ExchangeStatus.MEETING;
-                    setStatus(ActivityStatus.END_TICK);
+                    setExchangeStatus(ExchangeStatus.MEETING);
+                    setActivityStatus(ActivityStatus.END_TICK);
                     break;
                 case MEETING:
                     if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
-                        status=ExchangeStatus.EXCHANGING;
+                        setExchangeStatus(ExchangeStatus.EXCHANGING);
                     meet(rm, time, truck);
-                    setStatus(ActivityStatus.END_TICK);
+                    setActivityStatus(ActivityStatus.END_TICK);
                     break;
                 case EXCHANGING:
 
@@ -72,7 +69,7 @@ public class ExchangeActivity extends Activity{
                     ExchangeRequestMessage request = messages1.get(0);
                     otherTruck = (DeliveryTruck) request.getSender();
                     truck.send(otherTruck, new ExchangeReplyMessage(truck, pm.getContents(truck)));
-                    status = ExchangeStatus.PENDING;
+                        setExchangeStatus(ExchangeStatus.PENDING);
                     break;
                 case PENDING:
                     pending();
@@ -84,11 +81,11 @@ public class ExchangeActivity extends Activity{
                     dropList = assignment.getDropList();
                     pickupList = assignment.getPickupList();
                     meetingPoint = assignment.getMeetingPoint();
-                    status = ExchangeStatus.MEETING;
-                    setStatus(ActivityStatus.END_TICK);
+                    setExchangeStatus(ExchangeStatus.MEETING);
+                    setActivityStatus(ActivityStatus.END_TICK);
                 case MEETING:
                     if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
-                        status=ExchangeStatus.EXCHANGING;
+                        setExchangeStatus(ExchangeStatus.EXCHANGING);
                     meet(rm,time,truck);
                     break;
                 case EXCHANGING:
@@ -160,6 +157,8 @@ public class ExchangeActivity extends Activity{
         DeliveryTruck otherTruck = trucks.get(0);
         if(otherTruck.ping()){
             truck.send(otherTruck, new ExchangeRequestMessage(truck));
+            setExchangeStatus(ExchangeStatus.PENDING);
+            setActivityStatus(ActivityStatus.END_TICK);
         }
     }
 
@@ -168,8 +167,12 @@ public class ExchangeActivity extends Activity{
     }
 
     private void pending() {
-        status = ExchangeStatus.PLANNING;
-        setStatus(ActivityStatus.END_TICK);
+        setExchangeStatus(ExchangeStatus.PLANNING);
+        setActivityStatus(ActivityStatus.END_TICK);
+    }
+
+    private void setExchangeStatus(ExchangeStatus status){
+        this.status = status;
     }
 
 }

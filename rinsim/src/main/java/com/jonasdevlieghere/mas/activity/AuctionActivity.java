@@ -29,7 +29,7 @@ public class AuctionActivity extends Activity{
 
     @Override
     public void execute(RoadModel rm, PDPModel pm, TimeLapse time) {
-        setStatus(ActivityStatus.NORMAL);
+        setActivityStatus(ActivityStatus.NORMAL);
         if(!auctionableParcels.isEmpty()){
             auction();
         }
@@ -47,12 +47,12 @@ public class AuctionActivity extends Activity{
                     System.out.println("UNAUC at " + truck.toString() + ", parcel = " + bpEntry.getKey());
                     truck.broadcast(new ParticipationRequestMessage(truck, bpEntry.getKey()));
                     auctionableParcels.put(bpEntry.getKey(),AuctionStatus.PENDING);
-                    setStatus(ActivityStatus.END_TICK);
+                    setActivityStatus(ActivityStatus.END_TICK);
                     break;
                 case PENDING:
                     // Waiting for replies to come back.
                     auctionableParcels.put(bpEntry.getKey(), AuctionStatus.AUCTIONING);
-                    setStatus(ActivityStatus.END_TICK);
+                    setActivityStatus(ActivityStatus.END_TICK);
                     break;
                 case AUCTIONING:
                     System.out.println("Bidders for all auctions (except me) = " + messageStore.getSize(ParticipationReplyMessage.class));
@@ -81,7 +81,7 @@ public class AuctionActivity extends Activity{
                         truck.send(bestTruck, new AssignmentMessage(truck, bpEntry.getKey()));
                     }
                     bpEntry.getKey().setStatus(BeaconStatus.INACTIVE);
-                    setStatus(ActivityStatus.NORMAL);
+                    setActivityStatus(ActivityStatus.NORMAL);
                     break;
             }
         }
@@ -106,7 +106,7 @@ public class AuctionActivity extends Activity{
             }
         }
         if(messages.size() > 0 )
-            setStatus(ActivityStatus.END_TICK);
+            setActivityStatus(ActivityStatus.END_TICK);
         return;
     }
 
@@ -129,4 +129,5 @@ public class AuctionActivity extends Activity{
     public boolean hasDiscovered(Parcel bp) {
         return discoveredParcels.contains(bp);
     }
+
 }

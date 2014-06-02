@@ -8,8 +8,6 @@ import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.road.RoadModel;
 
-import java.util.Set;
-
 public class FetchActivity extends Activity{
 
     private Scheduler scheduler;
@@ -22,13 +20,13 @@ public class FetchActivity extends Activity{
 
     @Override
     public void execute(RoadModel rm, PDPModel pm, TimeLapse time) {
-        setStatus(ActivityStatus.NORMAL);
+        setActivityStatus(ActivityStatus.NORMAL);
         DeliveryTruck truck = (DeliveryTruck)getUser();
 
         BeaconParcel parcel = scheduler.next(rm, pm, time);
         if(parcel != null){
             rm.moveTo(truck, parcel.getPosition(), time);
-            setStatus(ActivityStatus.END_TICK);
+            setActivityStatus(ActivityStatus.END_TICK);
         }
     }
 }

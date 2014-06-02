@@ -11,12 +11,12 @@ public abstract class Activity {
 
     public Activity(ActivityUser user){
         this.user = user;
-        setStatus(ActivityStatus.NORMAL);
+        setActivityStatus(ActivityStatus.NORMAL);
     }
 
     public abstract void execute(RoadModel rm, PDPModel pm, TimeLapse time);
 
-    public void setStatus(ActivityStatus status){
+    public void setActivityStatus(ActivityStatus status){
         this.status = status;
     }
 
