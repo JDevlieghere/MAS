@@ -15,15 +15,14 @@ import rinde.sim.core.model.road.RoadModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class ExchangeActivity extends Activity{
 
     private ExchangeStatus status;
     private MessageStore messageStore;
     private Point meetingPoint;
-    private ArrayList<Point> dropList;
-    private ArrayList<Point> pickupList;
+    private ArrayList<Point> myDropList;
+    private ArrayList<Point> myPickupList;
     DeliveryTruck otherTruck;
     private BeaconModel bm;
 
@@ -56,13 +55,14 @@ public class ExchangeActivity extends Activity{
                         break;
                     case MEETING:
                         if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
-                            setExchangeStatus(ExchangeStatus.DROPPING);
+                            setExchangeStatus(ExchangeStatus.EXCHANGING);
                         meet(rm, time, truck);
                         setActivityStatus(ActivityStatus.END_TICK);
                         break;
                     case EXCHANGING:
                         System.out.println("EXCHANGING");
                         //EXCHANGING
+                        exchange(pm,truck);
                         status = ExchangeStatus.RESETTING;
                         setActivityStatus(ActivityStatus.END_TICK);
                         break;
@@ -100,8 +100,8 @@ public class ExchangeActivity extends Activity{
                         List<ExchangeAssignmentMessage> messages2 = messageStore.retrieve(ExchangeAssignmentMessage.class);
                         //At all times there should only be one message of this type.
                         ExchangeAssignmentMessage assignment = messages2.get(0);
-                        dropList = assignment.getDropList();
-                        pickupList = assignment.getPickupList();
+                        myDropList = assignment.getDropList();
+                        myPickupList = assignment.getPickupList();
                         meetingPoint = assignment.getMeetingPoint();
                         setExchangeStatus(ExchangeStatus.MEETING);
                         setActivityStatus(ActivityStatus.END_TICK);
@@ -123,53 +123,29 @@ public class ExchangeActivity extends Activity{
         }
     }
 
+    private void exchange(PDPModel pm, DeliveryTruck truck) {
+        for(Parcel parcel :pm.getContents(truck)){
+            if(myDropList.contains(parcel.getDestination())){
+                //pm.transship(truck,otherTruck,parcel);
+                myDropList.remove(parcel.getDestination());
+            }
+        }
+        for(Parcel parcel :pm.getContents(otherTruck)){
+            if(myPickupList.contains(parcel.getDestination())){
+                //pm.transship(otherTruck,truck,parcel);
+                myPickupList.remove(parcel.getDestination());
+            }
+        }
+    }
+
     private void reset(DeliveryTruck truck) {
         otherTruck.setStatus(BeaconStatus.ACTIVE);
         otherTruck = null;
         truck.setStatus(BeaconStatus.ACTIVE);
         status=ExchangeStatus.INITIAL;
         meetingPoint = null;
-        dropList = new ArrayList<Point>();
-        pickupList = new ArrayList<Point>();
-    }
-
-    private void drop(PDPModel pm, TimeLapse time, DeliveryTruck truck) {
-        if(!dropList.isEmpty()){
-            if(pm.getVehicleState(truck) == PDPModel.VehicleState.IDLE ){
-                Point p = dropList.remove(0);
-                for(Parcel parcel :pm.getContents(truck)){
-                   if(parcel.getDestination().equals(p)){
-                       pm.drop(truck, parcel, time);
-                   }
-                }
-            }
-        } else {
-            setExchangeStatus(ExchangeStatus.PICKUP);
-        }
-    }
-
-    private void pickUp(RoadModel rm, PDPModel pm, TimeLapse time, DeliveryTruck truck) {
-        if(!pickupList.isEmpty()){
-            if(pm.getVehicleState(truck) == PDPModel.VehicleState.IDLE ){
-                Point pickupPoint =null;
-                Parcel toPickup =null;
-                Set<Parcel> availableParcels = rm.getObjectsAt(truck,Parcel.class);
-                for(Point p:pickupList){
-                    for(Parcel parcel : availableParcels){
-                        if(parcel.getDestination().equals(p)){
-                            pickupPoint = p;
-                            toPickup = parcel;
-                        }
-                    }
-                }
-                if(toPickup !=null){
-                    pickupList.remove(pickupPoint);
-                    pm.pickup(truck, toPickup, time);
-                }
-            }
-        } else {
-            setExchangeStatus(ExchangeStatus.PICKUP);
-        }
+        myDropList = new ArrayList<Point>();
+        myPickupList = new ArrayList<Point>();
     }
 
     private void planExchange(PDPModel pm, DeliveryTruck truck) {
@@ -215,8 +191,8 @@ public class ExchangeActivity extends Activity{
                 }
             }
 
-            dropList = myDropList;
-            pickupList = myPickupList;
+            this.myDropList = myDropList;
+            this.myPickupList = myPickupList;
 
             double newX =  (truck.getPosition().x + otherTruck.getPosition().x)/2;
             double newY =  (truck.getPosition().y + otherTruck.getPosition().y)/2;
