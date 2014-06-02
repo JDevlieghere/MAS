@@ -41,9 +41,6 @@ public class BeaconRenderer implements ModelRenderer {
 
                 if(parcel.getStatus() != BeaconStatus.INACTIVE) {
                     RGB rgb = GREEN;
-                    if(parcel.getStatus() == BeaconStatus.BUSY){
-                        rgb = YELLOW;
-                    }
                     gc.setBackground(new Color(gc.getDevice(), rgb));
                     gc.setForeground(new Color(gc.getDevice(), rgb));
                     gc.setAlpha(10);

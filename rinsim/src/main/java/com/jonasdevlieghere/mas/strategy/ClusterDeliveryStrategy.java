@@ -1,19 +1,18 @@
-package com.jonasdevlieghere.mas.schedule;
+package com.jonasdevlieghere.mas.strategy;
 
 import com.google.common.collect.ImmutableSet;
-import com.jonasdevlieghere.mas.beacon.Beacon;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import com.jonasdevlieghere.mas.cluster.Cluster;
 import com.jonasdevlieghere.mas.cluster.KMeans;
+import com.jonasdevlieghere.mas.schedule.Scheduler;
+import com.jonasdevlieghere.mas.schedule.SchedulingStrategy;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.pdp.Parcel;
 import rinde.sim.core.model.road.RoadModel;
-import rinde.sim.util.Tuple;
 
-import javax.annotation.concurrent.Immutable;
 import java.util.*;
 
 public class ClusterDeliveryStrategy implements SchedulingStrategy {
