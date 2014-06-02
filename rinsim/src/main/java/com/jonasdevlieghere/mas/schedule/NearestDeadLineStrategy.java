@@ -3,13 +3,12 @@ package com.jonasdevlieghere.mas.schedule;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
 import rinde.sim.core.TimeLapse;
-import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.pdp.Parcel;
 import rinde.sim.core.model.road.RoadModel;
 import rinde.sim.util.TimeWindow;
 
-public class NearestDeadLineStrategy implements SchedulingStrategy {
+public class NearestDeadlineStrategy implements SchedulingStrategy {
 
     private Scheduler scheduler;
 
