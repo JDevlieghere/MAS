@@ -2,9 +2,7 @@ package com.jonasdevlieghere.mas.activity;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
-import com.jonasdevlieghere.mas.schedule.ClusterDeliveryStrategy;
-import com.jonasdevlieghere.mas.schedule.NearestDeadlineStrategy;
-import com.jonasdevlieghere.mas.schedule.NearestDeliveryStrategy;
+import com.jonasdevlieghere.mas.strategy.NearestDeliveryStrategy;
 import com.jonasdevlieghere.mas.schedule.Scheduler;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -16,7 +14,7 @@ public class TransportActivity extends Activity {
 
     public TransportActivity(ActivityUser user) {
         super(user);
-        this.scheduler = new Scheduler((DeliveryTruck)user, new ClusterDeliveryStrategy());
+        this.scheduler = new Scheduler((DeliveryTruck)user, new NearestDeliveryStrategy());
     }
 
     @Override

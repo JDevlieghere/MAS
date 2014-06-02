@@ -1,7 +1,9 @@
-package com.jonasdevlieghere.mas.schedule;
+package com.jonasdevlieghere.mas.strategy;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import com.jonasdevlieghere.mas.schedule.Scheduler;
+import com.jonasdevlieghere.mas.schedule.SchedulingStrategy;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -21,8 +23,7 @@ public class NearestDeliveryStrategy implements SchedulingStrategy {
         for (final Parcel parcel : pm.getContents(truck)) {
             double distance = Point.distance(truck.getPosition(), parcel.getDestination());
             if (distance < minDistance){
-                if(pm.getTimeWindowPolicy().canDeliver(parcel.getDeliveryTimeWindow(),
-                        time.getTime(), parcel.getPickupDuration()) ) {
+                if(parcel.canBeDelivered(truck, time.getTime())) {
                     minDistance = distance;
                     bestParcel = (BeaconParcel) parcel;
                 }

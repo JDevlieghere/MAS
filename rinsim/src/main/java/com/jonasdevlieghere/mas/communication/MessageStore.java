@@ -41,7 +41,4 @@ public class MessageStore {
         return messages.size();
     }
 
-    public int getTotalNbOfMessages() {
-        return totalNbOfMessages;
-    }
 }

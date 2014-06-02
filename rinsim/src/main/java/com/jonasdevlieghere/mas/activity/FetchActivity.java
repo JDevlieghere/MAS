@@ -2,7 +2,7 @@ package com.jonasdevlieghere.mas.activity;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
-import com.jonasdevlieghere.mas.schedule.NearestPickupStrategy;
+import com.jonasdevlieghere.mas.strategy.NearestPickupStrategy;
 import com.jonasdevlieghere.mas.schedule.Scheduler;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -25,8 +25,10 @@ public class FetchActivity extends Activity{
 
         BeaconParcel parcel = scheduler.next(rm, pm, time);
         if(parcel != null){
-            rm.moveTo(truck, parcel.getPosition(), time);
-            setActivityStatus(ActivityStatus.END_TICK);
+            if(parcel.canBePickedUp(truck, time.getTime())){
+                rm.moveTo(truck, parcel.getPosition(), time);
+                setActivityStatus(ActivityStatus.END_TICK);
+            }
         }
     }
 }
