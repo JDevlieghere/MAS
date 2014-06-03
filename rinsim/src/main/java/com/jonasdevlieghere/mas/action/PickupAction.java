@@ -32,7 +32,7 @@ public class PickupAction extends Action {
             if (newSize <= truck.getCapacity()) {
                 pm.pickup(truck, nearest, time);
                 BeaconParcel beaconParcel = (BeaconParcel) nearest;
-                beaconParcel.setStatus(BeaconStatus.INACTIVE);
+                beaconParcel.setBeaconStatus(BeaconStatus.INACTIVE);
                 truck.unqueuePickup(beaconParcel);
                 setStatus(TickStatus.END_TICK);
             }

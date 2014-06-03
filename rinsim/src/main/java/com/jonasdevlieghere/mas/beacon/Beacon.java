@@ -8,13 +8,13 @@ public interface Beacon {
 
     public void setModel(BeaconModel model);
 
-    public double getRadius();
+    public double getBeaconRadius();
 
     public Point getPosition();
 
-    public BeaconStatus getStatus();
+    public BeaconStatus getBeaconStatus();
 
-    public void setStatus(BeaconStatus status);
+    public void setBeaconStatus(BeaconStatus status);
 
     public boolean ping();
 

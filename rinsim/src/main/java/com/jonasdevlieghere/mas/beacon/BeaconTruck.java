@@ -32,8 +32,9 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
     /**
      * Constants
      */
-    private static final double RADIUS = 0.7;
-    private static final double RELIABILITY = 1;
+    private static final double BEACON_RADIUS = 0.7;
+    private static final double COMM_RELIABILITY = 1;
+    private static final double COMM_RADIUS = 10;
 
     /**
      * Models
@@ -86,7 +87,7 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         this.transportActivity = new TransportActivity(this);
         this.fetchActivity = new FetchActivity(this);
         this.exchangeActivity = new ExchangeActivity(this,messageStore);
-        this.setStatus(BeaconStatus.ACTIVE);
+        this.setBeaconStatus(BeaconStatus.ACTIVE);
     }
 
     @Override
@@ -141,13 +142,13 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
     }
 
     @Override
-    public double getRadius() {
-        return RADIUS;
+    public double getBeaconRadius() {
+        return BEACON_RADIUS;
     }
 
     @Override
     public double getReliability() {
-        return RELIABILITY;
+        return COMM_RELIABILITY;
     }
 
     @Override
@@ -166,19 +167,24 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
     }
 
     @Override
-    public BeaconStatus getStatus() {
+    public double getRadius() {
+        return COMM_RADIUS;
+    }
+
+    @Override
+    public BeaconStatus getBeaconStatus() {
         return this.status;
     }
 
     @Override
-    public void setStatus(BeaconStatus status) {
+    public void setBeaconStatus(BeaconStatus status) {
         this.status = status;
     }
 
     @Override
     public boolean ping(){
-        if(getStatus() == BeaconStatus.ACTIVE){
-            setStatus(BeaconStatus.SLAVE);
+        if(getBeaconStatus() == BeaconStatus.ACTIVE){
+            setBeaconStatus(BeaconStatus.SLAVE);
             return true;
         }
         return false;

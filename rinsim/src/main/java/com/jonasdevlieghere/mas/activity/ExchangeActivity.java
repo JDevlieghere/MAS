@@ -41,7 +41,7 @@ public class ExchangeActivity extends Activity{
         //Reset activity status
         setActivityStatus(TickStatus.NORMAL);
         BeaconTruck truck = (BeaconTruck) getUser();
-        switch (truck.getStatus()){
+        switch (truck.getBeaconStatus()){
             case ACTIVE:
                 assert(status == ExchangeStatus.INITIATE);
                 masterInitiate(truck, bm);
@@ -156,8 +156,8 @@ public class ExchangeActivity extends Activity{
     }
 
     private void reset(BeaconTruck truck) {
-        otherTruck.setStatus(BeaconStatus.ACTIVE);
-        truck.setStatus(BeaconStatus.ACTIVE);
+        otherTruck.setBeaconStatus(BeaconStatus.ACTIVE);
+        truck.setBeaconStatus(BeaconStatus.ACTIVE);
         setExchangeStatus(ExchangeStatus.INITIATE);
         otherTruck = null;
         meetingPoint = null;
@@ -229,7 +229,7 @@ public class ExchangeActivity extends Activity{
         if(trucks.get(0).ping()){
             otherTruck = trucks.get(0);
             truck.send(otherTruck, new ExchangeRequestMessage(truck));
-            truck.setStatus(BeaconStatus.MASTER);
+            truck.setBeaconStatus(BeaconStatus.MASTER);
             setExchangeStatus(ExchangeStatus.PENDING);
             setActivityStatus(TickStatus.END_TICK);
         }

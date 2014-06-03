@@ -41,11 +41,11 @@ public class BeaconRenderer implements ModelRenderer {
 
                 final int x = (int) (vp.origin.x + (position.x - vp.rect.min.x) * vp.scale);
                 final int y = (int) (vp.origin.y + (position.y - vp.rect.min.y) * vp.scale);
-                final int r = (int) (parcel.getRadius() * vp.scale);
+                final int r = (int) (parcel.getBeaconRadius() * vp.scale);
 
-                if(parcel.getStatus() != BeaconStatus.INACTIVE) {
+                if(parcel.getBeaconStatus() != BeaconStatus.INACTIVE) {
                     RGB rgb = GREEN;
-                    if(parcel.getStatus() == BeaconStatus.SLAVE){
+                    if(parcel.getBeaconStatus() == BeaconStatus.SLAVE){
                         rgb = RED;
                     }
                     gc.setBackground(new Color(gc.getDevice(), rgb));
@@ -66,9 +66,9 @@ public class BeaconRenderer implements ModelRenderer {
 
                 final int x = (int) (vp.origin.x + (position.x - vp.rect.min.x) * vp.scale);
                 final int y = (int) (vp.origin.y + (position.y - vp.rect.min.y) * vp.scale);
-                final int r = (int) (truck.getRadius() * vp.scale);
+                final int r = (int) (truck.getBeaconRadius() * vp.scale);
                 RGB rgb = BLACK;
-                if(truck.getStatus() == BeaconStatus.MASTER || truck.getStatus() == BeaconStatus.SLAVE){
+                if(truck.getBeaconStatus() == BeaconStatus.MASTER || truck.getBeaconStatus() == BeaconStatus.SLAVE){
                     rgb = BLUE;
                 }
                 gc.setBackground(new Color(gc.getDevice(), rgb));

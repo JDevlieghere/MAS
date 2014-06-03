@@ -54,8 +54,8 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
     public List<BeaconParcel> getDetectableParcels(BeaconTruck truck) {
         final List<BeaconParcel> parcels = new ArrayList<BeaconParcel>();
         for (final BeaconParcel parcel : getAllParcelBeacons()) {
-            if((parcel.getStatus() == BeaconStatus.ACTIVE  || parcel.getStatus() == BeaconStatus.SLAVE)
-                    && Point.distance(truck.getPosition(), parcel.getPosition()) <= truck.getRadius() + parcel.getRadius()
+            if((parcel.getBeaconStatus() == BeaconStatus.ACTIVE  || parcel.getBeaconStatus() == BeaconStatus.SLAVE)
+                    && Point.distance(truck.getPosition(), parcel.getPosition()) <= truck.getBeaconRadius() + parcel.getBeaconRadius()
                     && pdpModel.getParcelState((parcel)) == PDPModel.ParcelState.AVAILABLE)
                 parcels.add(parcel);
         }
@@ -66,8 +66,8 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
         final List<BeaconTruck> trucks = new ArrayList<BeaconTruck>();
         for (final BeaconTruck t : getAllTruckBeacons()) {
             //TODO:check whether slave is correct.
-            if((t.getStatus() == BeaconStatus.ACTIVE  || t.getStatus() == BeaconStatus.SLAVE)
-                    && Point.distance(truck.getPosition(), t.getPosition()) <= truck.getRadius() + t.getRadius())
+            if((t.getBeaconStatus() == BeaconStatus.ACTIVE  || t.getBeaconStatus() == BeaconStatus.SLAVE)
+                    && Point.distance(truck.getPosition(), t.getPosition()) <= truck.getBeaconRadius() + t.getBeaconRadius())
                 trucks.add(t);
         }
         trucks.remove(truck);

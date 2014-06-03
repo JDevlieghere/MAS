@@ -17,7 +17,7 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
     public BeaconParcel(ParcelDTO pDto) {
         super(pDto);
         this.pos = pDto.pickupLocation;
-        setStatus(BeaconStatus.ACTIVE);
+        setBeaconStatus(BeaconStatus.ACTIVE);
         this.radius = DEFAULT_RADIUS;
     }
 
@@ -30,7 +30,7 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
     public void setModel(BeaconModel model) {}
 
     @Override
-    public double getRadius() {
+    public double getBeaconRadius() {
         return radius;
     }
 
@@ -40,20 +40,20 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
     }
 
     @Override
-    public BeaconStatus getStatus() {
+    public BeaconStatus getBeaconStatus() {
         return this.status;
     }
 
     @Override
     public boolean ping(){
-        if(getStatus() == BeaconStatus.ACTIVE){
-            setStatus(BeaconStatus.SLAVE);
+        if(getBeaconStatus() == BeaconStatus.ACTIVE){
+            setBeaconStatus(BeaconStatus.SLAVE);
             return true;
         }
         return false;
     }
 
-    public void setStatus(BeaconStatus status) {
+    public void setBeaconStatus(BeaconStatus status) {
         this.status = status;
     }
 
