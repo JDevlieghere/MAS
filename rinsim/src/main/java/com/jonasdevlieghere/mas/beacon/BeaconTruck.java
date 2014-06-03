@@ -98,8 +98,8 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         if(endsTick(assignmentActivity, rm, pm, bm, time))
             return;
 
-        if(endsTick(exchangeActivity, rm, pm, bm, time))
-            return;
+//        if(endsTick(exchangeActivity, rm, pm, bm, time))
+//            return;
 
         if(endsTick(new PickupAction(rm, pm ,this), time))
             return;

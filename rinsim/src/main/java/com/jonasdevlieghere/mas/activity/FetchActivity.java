@@ -23,10 +23,10 @@ public class FetchActivity extends Activity{
     @Override
     public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
         setActivityStatus(TickStatus.NORMAL);
-        BeaconTruck truck = (BeaconTruck)getUser();
 
         BeaconParcel parcel = scheduler.next(rm, pm, time);
         if(parcel != null){
+            BeaconTruck truck = (BeaconTruck)getUser();
             if(parcel.canBePickedUp(truck, time.getTime())){
                 rm.moveTo(truck, parcel.getPosition(), time);
                 setActivityStatus(TickStatus.END_TICK);

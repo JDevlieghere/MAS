@@ -19,12 +19,12 @@ public class NearestPickupStrategy implements SchedulingStrategy {
         double minDistance = Double.POSITIVE_INFINITY;
         BeaconTruck truck = scheduler.getUser();
         BeaconParcel bestParcel = null;
-
         for (final Parcel parcel : truck.getPickupQueue()) {
-            double distance = Point.distance(truck.getPosition(), parcel.getDestination());
+            BeaconParcel beaconParcel = (BeaconParcel)parcel;
+            double distance = Point.distance(truck.getPosition(), beaconParcel.getPosition());
             if (distance < minDistance){
                 minDistance = distance;
-                bestParcel = (BeaconParcel)parcel;
+                bestParcel = beaconParcel;
             }
         }
         return bestParcel;
