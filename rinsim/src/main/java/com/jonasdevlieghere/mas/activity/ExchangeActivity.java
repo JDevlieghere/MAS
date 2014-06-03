@@ -7,6 +7,8 @@ import com.jonasdevlieghere.mas.cluster.Cluster;
 import com.jonasdevlieghere.mas.cluster.KMeans;
 import com.jonasdevlieghere.mas.communication.*;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -19,6 +21,7 @@ import java.util.List;
 
 public class ExchangeActivity extends Activity{
 
+    final Logger logger = LoggerFactory.getLogger(ExchangeActivity.class);
     private ExchangeStatus status;
     private MessageStore messageStore;
     private Point meetingPoint;
@@ -58,7 +61,6 @@ public class ExchangeActivity extends Activity{
                         setActivityStatus(ActivityStatus.END_TICK);
                         break;
                     case EXCHANGING:
-                        System.out.println("EXCHANGING");
                         //EXCHANGING
                         exchange(pm,truck,time);
                         status = ExchangeStatus.RESETTING;
@@ -70,7 +72,7 @@ public class ExchangeActivity extends Activity{
                         }
                         break;
                     default:
-                        System.out.println("This case is strange: " + status);
+                        logger.warn("This case is strange: " + status);
                         break;
                 }
                 break;
@@ -81,7 +83,6 @@ public class ExchangeActivity extends Activity{
                         if(!messages1.isEmpty()){
                             //At all times there should only be one message of this type.
                             ExchangeRequestMessage request = messages1.get(0);
-                            System.out.println("Request recieved");
                             otherTruck = (DeliveryTruck) request.getSender();
                             truck.send(otherTruck, new ExchangeReplyMessage(truck, pm.getContents(truck)));
                             setExchangeStatus(ExchangeStatus.PENDING);
@@ -103,6 +104,7 @@ public class ExchangeActivity extends Activity{
                             setExchangeStatus(ExchangeStatus.MEETING);
                         }
                         setActivityStatus(ActivityStatus.END_TICK);
+                        break;
                     case MEETING:
                         if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
                             setExchangeStatus(ExchangeStatus.EXCHANGING);
@@ -122,26 +124,25 @@ public class ExchangeActivity extends Activity{
     }
 
     private void exchange(PDPModel pm, DeliveryTruck truck, TimeLapse time) {
-        System.out.println("BEFORE: " + truck);
-        System.out.println("other BEFORE: " + otherTruck);
-
+        logger.warn("BEFORE: " + truck);
+        logger.warn("other BEFORE: " + otherTruck);
         for(Parcel parcel :pm.getContents(truck)){
             if(myDropList.contains(parcel.getDestination())){
-                System.out.println("Transshipping to" + parcel);
+                logger.warn("Transshipping to" + parcel);
                 ((TripleDJPDPModel) pm).transship(truck,otherTruck,parcel,time);
                 myDropList.remove(parcel.getDestination());
             }
         }
         for(Parcel parcel :pm.getContents(otherTruck)){
             if(myPickupList.contains(parcel.getDestination())){
-                System.out.println("Transshipping from" + parcel);
+                logger.warn("Transshipping from" + parcel);
                 ((TripleDJPDPModel) pm).transship(otherTruck,truck,parcel,time);
                 myPickupList.remove(parcel.getDestination());
             }
         }
-        System.out.println("AFTER: " + truck);
-        System.out.println("other AFTER: " + otherTruck);
-        System.out.println("____________________________");
+        logger.warn("AFTER: " + truck);
+        logger.warn("other AFTER: " + otherTruck);
+        logger.warn("____________________________");
     }
 
     private void reset(DeliveryTruck truck) {
