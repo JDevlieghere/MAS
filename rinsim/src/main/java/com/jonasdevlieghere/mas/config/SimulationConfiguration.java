@@ -36,7 +36,6 @@ public class SimulationConfiguration extends DefaultMASConfiguration {
             return new DynamicPDPTWProblem.Creator<AddVehicleEvent>() {
                 @Override
                 public boolean create(Simulator sim, AddVehicleEvent event) {
-                    System.out.println(runtimeConfiguration);
                     return sim.register(new BeaconTruck(event.vehicleDTO, sim.getRandomGenerator().nextInt(), runtimeConfiguration.getBeaconRadius(), runtimeConfiguration.getCommunicationRadius(), runtimeConfiguration.getCommunicationReliability(), runtimeConfiguration.getPickupStrategy(), runtimeConfiguration.getDeliveryStrategy(), runtimeConfiguration.isDoExchange(), runtimeConfiguration.isDoExplore()));
                 }
             };

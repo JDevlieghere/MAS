@@ -1,5 +1,6 @@
 package com.jonasdevlieghere.mas.simulation;
 
+import com.google.common.collect.ImmutableList;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import com.jonasdevlieghere.mas.config.RuntimeConfiguration;
@@ -13,14 +14,32 @@ import rinde.sim.pdptw.experiment.Experiment;
 import rinde.sim.pdptw.gendreau06.Gendreau06ObjectiveFunction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BeaconSimulationTester {
 
+    public static final List<String> GENDREAU = Arrays.asList(
+            "req_rapide_1_240_24",
+            "req_rapide_1_240_33",
+            "req_rapide_1_450_24",
+            "req_rapide_2_240_24",
+            "req_rapide_2_240_33",
+            "req_rapide_2_450_24",
+            "req_rapide_3_240_24",
+            "req_rapide_3_240_33",
+            "req_rapide_3_450_24",
+            "req_rapide_4_240_24",
+            "req_rapide_4_240_33",
+            "req_rapide_4_450_24",
+            "req_rapide_5_240_24",
+            "req_rapide_5_240_33",
+            "req_rapide_5_450_24"
+    );
+
     public static void main(String[] args){
         ArrayList<RuntimeConfiguration> runtimeConfigurations = new ArrayList<RuntimeConfiguration>();
-        ArrayList<String> datasets = new ArrayList<String>();
-        datasets.add("req_rapide_1_240_24");
+        ArrayList<String> datasets = new ArrayList<String>(GENDREAU);
         runtimeConfigurations.add(new RuntimeConfiguration(1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true));
         BeaconSimulationTester tester = new BeaconSimulationTester(runtimeConfigurations, datasets);
         tester.run();
@@ -43,8 +62,7 @@ public class BeaconSimulationTester {
         }
     }
 
-    Experiment.ExperimentResults runExperiment(RuntimeConfiguration runtimeConfiguration, String dataset){
-
+    ImmutableList<Experiment.SimulationResult> runExperiment(RuntimeConfiguration runtimeConfiguration, String dataset){
         final BeaconGendreau06Scenario scenario = BeaconGendreau06Parser
                 .parser().addFile(BeaconSimulation.class
                                 .getResourceAsStream("/data/gendreau06/" + dataset),
@@ -59,7 +77,7 @@ public class BeaconSimulationTester {
                 .addConfiguration(new SimulationConfiguration(runtimeConfiguration))
                 .addScenario(scenario)
                 .repeat(1)
-                .perform();
+                .perform().results;
     }
 
 }

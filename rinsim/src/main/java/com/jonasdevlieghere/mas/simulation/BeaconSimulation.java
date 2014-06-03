@@ -100,7 +100,6 @@ public class BeaconSimulation {
                 .showGui(uic)
                 .repeat(1)
                 .perform();
-        System.out.println("----- RESULTS -----");
         System.out.println(results.results);
     }
 }
