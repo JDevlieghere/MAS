@@ -2,7 +2,6 @@ package com.jonasdevlieghere.mas.communication;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
-import rinde.sim.core.graph.Point;
 
 public class AuctionCost implements Comparable<AuctionCost> {
     private BeaconTruck truck;
@@ -23,9 +22,7 @@ public class AuctionCost implements Comparable<AuctionCost> {
     }
 
     public double getValue(){
-        double result =  Point.distance(truck.getPosition(), parcel.getDestination()) ;
-        result += Point.distance(truck.getPosition(), parcel.getPosition());
-        result += truck.getPickupQueue().size();
+        double result = truck.getPickupQueue().size();
         result += 0.7*truck.getNbOfParcels();
         return result;
     }
