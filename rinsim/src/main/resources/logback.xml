@@ -17,7 +17,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.jonasdevlieghere.mas" level="DEBUG" />
+    <logger name="com.jonasdevlieghere.mas" level="INFO" />
     <root level="OFF">
         <appender-ref ref="STDOUT" />
     </root>
