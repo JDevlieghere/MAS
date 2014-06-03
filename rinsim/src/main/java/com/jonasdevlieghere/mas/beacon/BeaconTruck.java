@@ -1,6 +1,5 @@
 package com.jonasdevlieghere.mas.beacon;
 
-import com.jonasdevlieghere.mas.action.*;
 import com.jonasdevlieghere.mas.activity.*;
 import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.communication.MessageStore;
@@ -22,7 +21,7 @@ import rinde.sim.pdptw.common.VehicleDTO;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BeaconTruck extends DefaultVehicle implements Beacon, CommunicationUser, ActionUser, ActivityUser {
+public class BeaconTruck extends DefaultVehicle implements Beacon, CommunicationUser, ActivityUser {
 
     /**
      * Logger
@@ -65,6 +64,10 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
     private TransportActivity transportActivity;
     private FetchActivity fetchActivity;
     private ExchangeActivity exchangeActivity;
+    private PickupActivity pickupActivity;
+    private DeliverActivity deliverActivity;
+    private DiscoverActivity discoverActivity;
+    private SmartExploreActivity smartExploreActivity;
 
     /**
      * Point for Exploration Activity
@@ -86,6 +89,10 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         this.fetchActivity = new FetchActivity(this);
         this.exchangeActivity = new ExchangeActivity(this,messageStore);
         this.setBeaconStatus(BeaconStatus.ACTIVE);
+        this.pickupActivity = new PickupActivity(this);
+        this.deliverActivity = new DeliverActivity(this);
+        this.discoverActivity = new DiscoverActivity(auctionActivity, this);
+        this.smartExploreActivity = new SmartExploreActivity(this, rand);
     }
 
     @Override
@@ -96,10 +103,10 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         if(endsTick(exchangeActivity, rm, pm, bm, time))
             return;
 
-        if(endsTick(new PickupAction(rm, pm ,this), time))
+        if(endsTick(pickupActivity, rm, pm, bm, time))
             return;
 
-        if(endsTick(new DeliverAction(rm, pm ,this), time))
+        if(endsTick(deliverActivity, rm, pm, bm, time))
             return;
 
         if(endsTick(fetchActivity, rm, pm, bm, time))
@@ -111,10 +118,10 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         if(endsTick(auctionActivity, rm, pm, bm, time))
             return;
 
-        if(endsTick(new DiscoverAction(rm, pm, bm, auctionActivity, this), time))
+        if(endsTick(discoverActivity, rm, pm, bm, time))
             return;
 
-        //if(endsTick(new SmartExploreAction(rm, pm, this, this.rand), time))
+        //if(endsTick(new SmartExploreActivity(rm, pm, this, this.rand), time))
             //return;
 //        logger.info(this.toString());
     }
@@ -205,14 +212,6 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
 
     public int getNbOfParcels() {
         return getPDPModel().getContents(this).size();
-    }
-
-    @Override
-    public boolean endsTick(Action action, TimeLapse time) {
-        action.execute(time);
-        if(action.getStatus() == TickStatus.END_TICK)
-            return true;
-        return false;
     }
 
     @Override
