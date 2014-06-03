@@ -2,6 +2,9 @@ package com.jonasdevlieghere.mas.simulation;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import org.apache.commons.cli.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rinde.sim.core.Simulator;
 import rinde.sim.pdptw.common.DefaultDepot;
 import rinde.sim.pdptw.common.RouteRenderer;
@@ -18,13 +21,28 @@ import rinde.sim.ui.renderers.UiSchema;
 
 public class BeaconSimulation {
 
+    final static Logger logger = LoggerFactory.getLogger(BeaconSimulation.class);
+
     private BeaconSimulation() {}
 
     public static void main(String[] args) {
-        run(false);
+        Options options = new Options();
+        options.addOption("t", false, "Testing");
+        CommandLineParser parser = new PosixParser();
+        try {
+            CommandLine cmd = parser.parse(options, args);
+            if(cmd.hasOption("t")){
+                run(true);
+            }else{
+                run(false);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void run(final boolean testing) {
+        logger.warn("Running with testing mode set to {}", testing);
         final ScenarioController.UICreator uic = new ScenarioController.UICreator() {
             @Override
             public void createUI(Simulator sim) {
@@ -42,8 +60,7 @@ public class BeaconSimulation {
                                 new PDPModelRenderer(false)
                         );
                 if (testing) {
-                    viewBuilder.enableAutoClose().enableAutoPlay().setSpeedUp(64)
-                            .stopSimulatorAtTime(60 * 60 * 1000);
+                    viewBuilder.enableAutoClose().enableAutoPlay().setSpeedUp(64);
                 }
                 viewBuilder.show();
             }
