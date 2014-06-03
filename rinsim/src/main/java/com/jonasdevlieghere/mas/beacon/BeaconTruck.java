@@ -1,7 +1,7 @@
 package com.jonasdevlieghere.mas.beacon;
 
 import com.jonasdevlieghere.mas.activity.*;
-import com.jonasdevlieghere.mas.common.TickStatus;
+import com.jonasdevlieghere.mas.activity.ActivityStatus;
 import com.jonasdevlieghere.mas.communication.MessageStore;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import org.apache.commons.math3.random.MersenneTwister;
@@ -19,9 +19,7 @@ import rinde.sim.pdptw.common.DefaultVehicle;
 import rinde.sim.pdptw.common.VehicleDTO;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class BeaconTruck extends DefaultVehicle implements Beacon, CommunicationUser, ActivityUser {
 
@@ -219,7 +217,7 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
     @Override
     public boolean endsTick(Activity activity, RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
         activity.execute(rm, pm, bm, time);
-        if(activity.getStatus() == TickStatus.END_TICK)
+        if(activity.getStatus() == ActivityStatus.END_TICK)
             return true;
         return false;
     }

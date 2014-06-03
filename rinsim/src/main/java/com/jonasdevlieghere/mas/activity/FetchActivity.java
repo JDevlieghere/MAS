@@ -2,7 +2,6 @@ package com.jonasdevlieghere.mas.activity;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
-import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import com.jonasdevlieghere.mas.strategy.pickup.NearestPickupStrategy;
 import com.jonasdevlieghere.mas.common.Scheduler;
@@ -22,14 +21,14 @@ public class FetchActivity extends Activity{
 
     @Override
     public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
-        setActivityStatus(TickStatus.NORMAL);
+        setActivityStatus(ActivityStatus.NORMAL);
 
         BeaconParcel parcel = scheduler.next(rm, pm, time);
         if(parcel != null){
             BeaconTruck truck = (BeaconTruck)getUser();
             if(parcel.canBePickedUp(truck, time.getTime())){
                 rm.moveTo(truck, parcel.getPosition(), time);
-                setActivityStatus(TickStatus.END_TICK);
+                setActivityStatus(ActivityStatus.END_TICK);
             }
         }
     }

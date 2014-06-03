@@ -2,7 +2,6 @@ package com.jonasdevlieghere.mas.activity;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
-import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import org.apache.commons.math3.random.RandomGenerator;
 import rinde.sim.core.TimeLapse;
@@ -23,7 +22,7 @@ public class SmartExploreActivity extends Activity{
 
     @Override
     public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
-        setActivityStatus(TickStatus.NORMAL);
+        setActivityStatus(ActivityStatus.NORMAL);
         BeaconTruck truck = (BeaconTruck)getUser();
         double minDistance = Double.POSITIVE_INFINITY;
         BeaconParcel bestParcel = null;

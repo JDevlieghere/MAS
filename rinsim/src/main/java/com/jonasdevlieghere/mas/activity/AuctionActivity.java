@@ -2,7 +2,6 @@ package com.jonasdevlieghere.mas.activity;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
-import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.communication.*;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
@@ -30,12 +29,13 @@ public class AuctionActivity extends Activity{
 
     @Override
     public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
+        setActivityStatus(ActivityStatus.NORMAL);
         List<AssignmentMessage> messages = messageStore.retrieve(AssignmentMessage.class);
         BeaconTruck truck = (BeaconTruck)getUser();
         for(AssignmentMessage assignment: messages){
             truck.queuePickup((BeaconParcel) assignment.getParcel());
         }
-        setActivityStatus(TickStatus.NORMAL);
+        setActivityStatus(ActivityStatus.NORMAL);
         if(!auctionableParcels.isEmpty()){
             auction();
         }
@@ -53,12 +53,12 @@ public class AuctionActivity extends Activity{
                     //System.out.println("UNAUC at " + truck.toString() + ", parcel = " + bpEntry.getKey());
                     truck.broadcast(new ParticipationRequestMessage(truck, bpEntry.getKey()));
                     auctionableParcels.put(bpEntry.getKey(),AuctionStatus.PENDING);
-                    setActivityStatus(TickStatus.END_TICK);
+                    setActivityStatus(ActivityStatus.END_TICK);
                     break;
                 case PENDING:
                     // Waiting for replies to come back.
                     auctionableParcels.put(bpEntry.getKey(), AuctionStatus.AUCTIONING);
-                    setActivityStatus(TickStatus.END_TICK);
+                    setActivityStatus(ActivityStatus.END_TICK);
                     break;
                 case AUCTIONING:
                     //System.out.println("Bidders for all auctions (except me) = " + messageStore.getSize(ParticipationReplyMessage.class));
@@ -86,7 +86,6 @@ public class AuctionActivity extends Activity{
                     } else {
                         truck.send(bestTruck, new AssignmentMessage(truck, bpEntry.getKey()));
                     }
-                    setActivityStatus(TickStatus.NORMAL);
                     break;
             }
         }
@@ -111,7 +110,7 @@ public class AuctionActivity extends Activity{
             }
         }
         if(messages.size() > 0 )
-            setActivityStatus(TickStatus.END_TICK);
+            setActivityStatus(ActivityStatus.END_TICK);
         return;
     }
 

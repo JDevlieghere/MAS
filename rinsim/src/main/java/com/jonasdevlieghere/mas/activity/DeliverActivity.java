@@ -1,7 +1,6 @@
 package com.jonasdevlieghere.mas.activity;
 
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
-import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -16,13 +15,13 @@ public class DeliverActivity extends Activity{
 
     @Override
     public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
-        setActivityStatus(TickStatus.NORMAL);
+        setActivityStatus(ActivityStatus.NORMAL);
         BeaconTruck truck = (BeaconTruck)getUser();
         for (final Parcel parcel : pm.getContents(truck)) {
             if (parcel.getDestination().equals(truck.getPosition()) && pm.getVehicleState(truck) == PDPModel.VehicleState.IDLE && pm.getTimeWindowPolicy().canDeliver(parcel.getDeliveryTimeWindow(),
                     time.getTime(), parcel.getPickupDuration()) ){
                 pm.deliver(truck, parcel, time);
-                setActivityStatus(TickStatus.END_TICK);
+                setActivityStatus(ActivityStatus.END_TICK);
                 return;
             }
         }
