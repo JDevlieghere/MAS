@@ -72,7 +72,7 @@ public class ExchangeActivity extends Activity{
                         }
                         break;
                     default:
-                        logger.warn("This case is strange: " + status);
+                        logger.debug("This case is strange: " + status);
                         break;
                 }
                 break;
@@ -124,27 +124,26 @@ public class ExchangeActivity extends Activity{
     }
 
     private void exchange(PDPModel pm, DeliveryTruck truck, TimeLapse time) {
-        logger.warn("BEFORE: " + truck);
-        logger.warn("other BEFORE: " + otherTruck);
+        logger.debug("BEFORE: " + truck);
+        logger.debug("other BEFORE: " + otherTruck);
         ImmutableSet<Parcel> myContents = pm.getContents(truck);
         ImmutableSet<Parcel> otherContents = pm.getContents(otherTruck);
         for(Parcel parcel :myContents){
             if(myDropList.contains(parcel.getDestination())){
-                logger.warn("Transshipping to" + parcel);
+                logger.debug("Transshipping to" + parcel);
                 ((TripleDJPDPModel) pm).transship(truck,otherTruck,parcel,time);
                 myDropList.remove(parcel.getDestination());
             }
         }
         for(Parcel parcel : otherContents){
             if(myPickupList.contains(parcel.getDestination())){
-                logger.warn("Transshipping from" + parcel);
+                logger.debug("Transshipping from" + parcel);
                 ((TripleDJPDPModel) pm).transship(otherTruck,truck,parcel,time);
                 myPickupList.remove(parcel.getDestination());
             }
         }
-        logger.warn("AFTER: " + truck);
-        logger.warn("other AFTER: " + otherTruck);
-        logger.warn("____________________________");
+        logger.debug("AFTER: " + truck);
+        logger.debug("other AFTER: " + otherTruck);
     }
 
     private void reset(DeliveryTruck truck) {
