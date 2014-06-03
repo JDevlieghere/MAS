@@ -22,6 +22,7 @@ import rinde.sim.ui.renderers.UiSchema;
 
 public class BeaconSimulation {
 
+    final static String DEFAULT_DATASET = "req_rapide_1_240_24";
     final static Logger logger = LoggerFactory.getLogger(BeaconSimulation.class);
 
     private BeaconSimulation() {}
@@ -32,17 +33,25 @@ public class BeaconSimulation {
         CommandLineParser parser = new PosixParser();
         try {
             CommandLine cmd = parser.parse(options, args);
+            int speedUp;
+            String dataSet;
             if(cmd.hasOption("s")){
-                run(Integer.parseInt(cmd.getOptionValue("s")));
+                speedUp = Integer.parseInt(cmd.getOptionValue("s"));
             }else{
-                run(0);
+                speedUp = 0;
             }
+            if(cmd.hasOption("d")){
+                dataSet = cmd.getOptionValue("d");
+            }else{
+                dataSet = DEFAULT_DATASET;
+            }
+            run(speedUp, dataSet);
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
-    public static void run(final int speedUp) {
+    public static void run(final int speedUp, String dataset) {
         final ScenarioController.UICreator uic = new ScenarioController.UICreator() {
             @Override
             public void createUI(Simulator sim) {
@@ -67,10 +76,11 @@ public class BeaconSimulation {
             }
         };
 
+
         final BeaconGendreau06Scenario scenario = BeaconGendreau06Parser
                 .parser().addFile(BeaconSimulation.class
-                                .getResourceAsStream("/data/gendreau06/req_rapide_1_240_24"),
-                        "req_rapide_1_240_24")
+                                .getResourceAsStream("/data/gendreau06/" + dataset),
+                        dataset)
                 .allowDiversion()
                 .parse().get(0);
 
