@@ -1,9 +1,10 @@
-package com.jonasdevlieghere.mas.simulation;
+package com.jonasdevlieghere.mas.config;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
+import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import org.apache.commons.math3.random.MersenneTwister;
 import rinde.sim.core.Simulator;
 import rinde.sim.core.model.Model;
@@ -14,7 +15,7 @@ import rinde.sim.pdptw.common.DynamicPDPTWProblem;
 import rinde.sim.pdptw.experiment.DefaultMASConfiguration;
 import rinde.sim.util.SupplierRng;
 
-public class BeaconConfiguration extends DefaultMASConfiguration {
+public class SimulationConfiguration extends DefaultMASConfiguration {
 
 
     @Override

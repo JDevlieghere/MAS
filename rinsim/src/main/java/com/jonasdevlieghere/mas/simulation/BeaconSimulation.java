@@ -2,6 +2,7 @@ package com.jonasdevlieghere.mas.simulation;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
+import com.jonasdevlieghere.mas.config.SimulationConfiguration;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06ObjectiveFunction;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Parser;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Scenario;
@@ -88,7 +89,7 @@ public class BeaconSimulation {
         Experiment.ExperimentResults results = Experiment
                 .build(objFunc)
                 .withRandomSeed(123)
-                .addConfiguration(new BeaconConfiguration())
+                .addConfiguration(new SimulationConfiguration())
                 .addScenario(scenario)
                 .showGui(uic)
                 .repeat(1)

@@ -1,5 +1,6 @@
 package com.jonasdevlieghere.mas.beacon;
 
+import com.jonasdevlieghere.mas.config.RuntimeConfiguration;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.Vehicle;
@@ -8,22 +9,22 @@ import rinde.sim.pdptw.common.ParcelDTO;
 
 public class BeaconParcel extends DefaultParcel implements Beacon {
 
-    private static final double DEFAULT_RADIUS = 0.7;
-    private double radius;
+    /**
+     * RuntimeConfiguration
+     */
+    private RuntimeConfiguration runtimeConfiguration;
 
-    private Point pos;
     private BeaconStatus status;
+    private double radius;
 
     public BeaconParcel(ParcelDTO pDto) {
         super(pDto);
-        this.pos = pDto.pickupLocation;
         setBeaconStatus(BeaconStatus.ACTIVE);
-        this.radius = DEFAULT_RADIUS;
     }
 
     public BeaconParcel(ParcelDTO pDto, double radius) {
         this(pDto);
-        setRadius(radius);
+        this.radius = radius;
     }
 
     @Override
@@ -31,12 +32,12 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
 
     @Override
     public double getBeaconRadius() {
-        return radius;
+        return this.radius;
     }
 
     @Override
     public Point getPosition() {
-        return this.pos;
+        return this.getPickupLocation();
     }
 
     @Override
@@ -60,11 +61,7 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
     @Override
     public String toString() {
         return "Beacon Parcel " +
-                pos;
-    }
-
-    public void setRadius(double radius) {
-        this.radius = radius;
+                getPosition();
     }
 
     @Override
@@ -90,6 +87,5 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
         double speed = truck.getSpeed();
         return currentTime + (long)(distance/speed) + this.getPickupDuration();
     }
-
 
 }
