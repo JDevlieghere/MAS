@@ -126,14 +126,16 @@ public class ExchangeActivity extends Activity{
     private void exchange(PDPModel pm, DeliveryTruck truck, TimeLapse time) {
         logger.warn("BEFORE: " + truck);
         logger.warn("other BEFORE: " + otherTruck);
-        for(Parcel parcel :pm.getContents(truck)){
+        ImmutableSet<Parcel> myContents = pm.getContents(truck);
+        ImmutableSet<Parcel> otherContents = pm.getContents(otherTruck);
+        for(Parcel parcel :myContents){
             if(myDropList.contains(parcel.getDestination())){
                 logger.warn("Transshipping to" + parcel);
                 ((TripleDJPDPModel) pm).transship(truck,otherTruck,parcel,time);
                 myDropList.remove(parcel.getDestination());
             }
         }
-        for(Parcel parcel :pm.getContents(otherTruck)){
+        for(Parcel parcel : otherContents){
             if(myPickupList.contains(parcel.getDestination())){
                 logger.warn("Transshipping from" + parcel);
                 ((TripleDJPDPModel) pm).transship(otherTruck,truck,parcel,time);
