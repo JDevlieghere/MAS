@@ -90,7 +90,8 @@ public class BeaconSimulation {
                 .parse().get(0);
 
         final Gendreau06ObjectiveFunction objFunc = new BeaconGendreau06ObjectiveFunction();
-        final RuntimeConfiguration runtimeConfiguration = new RuntimeConfiguration(0.7,10,1, true, true, new NearestPickupStrategy(), new NearestOnTimeDeliveryStrategy());
+        final RuntimeConfiguration runtimeConfiguration = new RuntimeConfiguration(1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true);
+        System.out.println(runtimeConfiguration);
         Experiment.ExperimentResults results = Experiment
                 .build(objFunc)
                 .withRandomSeed(123)

@@ -1,5 +1,6 @@
 package com.jonasdevlieghere.mas.config;
 
+import com.jonasdevlieghere.mas.activity.PickupActivity;
 import com.jonasdevlieghere.mas.strategy.SchedulingStrategy;
 
 public class RuntimeConfiguration {
@@ -11,12 +12,12 @@ public class RuntimeConfiguration {
     private boolean doExplore;
     private boolean doExchange;
 
-    private SchedulingStrategy pickupStrategy;
-    private SchedulingStrategy deliveryStrategy;
+    private Class<SchedulingStrategy> pickupStrategy;
+    private Class<SchedulingStrategy> deliveryStrategy;
 
-    public RuntimeConfiguration(double beaconRadius, double communicationReliability, double communicationRadius,
-                                boolean doExchange, boolean doExplore,
-                                SchedulingStrategy pickupStrategy, SchedulingStrategy deliveryStrategy)
+    public <T extends SchedulingStrategy, Y extends SchedulingStrategy> RuntimeConfiguration(double beaconRadius, double communicationRadius,  double communicationReliability,
+                                Class<T> pickupStrategy, Class<Y> deliveryStrategy,
+                                boolean doExchange, boolean doExplore)
     {
         setBeaconRadius(beaconRadius);
         setCommunicationRadius(communicationRadius);
@@ -68,19 +69,33 @@ public class RuntimeConfiguration {
     }
 
     public SchedulingStrategy getPickupStrategy() {
-        return pickupStrategy;
+        try {
+            return pickupStrategy.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public void setPickupStrategy(SchedulingStrategy pickupStrategy) {
-        this.pickupStrategy = pickupStrategy;
+    public <T extends SchedulingStrategy> void setPickupStrategy(Class<T> pickupStrategy) {
+        this.pickupStrategy = (Class< SchedulingStrategy>)pickupStrategy;
     }
 
     public SchedulingStrategy getDeliveryStrategy() {
-        return deliveryStrategy;
+        try {
+            return deliveryStrategy.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public void setDeliveryStrategy(SchedulingStrategy deliveryStrategy) {
-        this.deliveryStrategy = deliveryStrategy;
+    public <T extends SchedulingStrategy> void setDeliveryStrategy(Class<T> deliveryStrategy) {
+        this.deliveryStrategy = (Class< SchedulingStrategy>)deliveryStrategy;
     }
 
     @Override

@@ -28,8 +28,7 @@ public class PickupActivity extends Activity {
         if (nearest != null && rm.equalPosition(nearest, truck)
                 && pm.getTimeWindowPolicy().canPickup(nearest.getPickupTimeWindow(),
                 time.getTime(), nearest.getPickupDuration()) && truck.getPickupQueue().contains(nearest)) {
-            final double newSize = pm.getContentsSize(truck)
-                    + nearest.getMagnitude();
+            final double newSize = pm.getContentsSize(truck) + nearest.getMagnitude();
             if (newSize <= truck.getCapacity()) {
                 pm.pickup(truck, nearest, time);
                 BeaconParcel beaconParcel = (BeaconParcel) nearest;

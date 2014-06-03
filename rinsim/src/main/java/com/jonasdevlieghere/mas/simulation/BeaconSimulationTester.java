@@ -15,16 +15,13 @@ import rinde.sim.pdptw.gendreau06.Gendreau06ObjectiveFunction;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by jonas on 03/06/14.
- */
 public class BeaconSimulationTester {
 
     public static void main(String[] args){
         ArrayList<RuntimeConfiguration> runtimeConfigurations = new ArrayList<RuntimeConfiguration>();
         ArrayList<String> datasets = new ArrayList<String>();
         datasets.add("req_rapide_1_240_24");
-        runtimeConfigurations.add(new RuntimeConfiguration(1,10,1,true, true, new NearestPickupStrategy(), new NearestDeliveryStrategy()));
+        runtimeConfigurations.add(new RuntimeConfiguration(1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true));
         BeaconSimulationTester tester = new BeaconSimulationTester(runtimeConfigurations, datasets);
         tester.run();
     }

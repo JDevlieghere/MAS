@@ -31,23 +31,18 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
     private static Logger logger = LoggerFactory.getLogger(BeaconTruck.class);
 
 
-    private double beaconRadius;
-    private double commReliability;
-    private double commRadius;
+    private final double beaconRadius;
+    private final double commReliability;
+    private final double commRadius;
 
-    boolean doExplore;
-    boolean doExchange;
+    private final boolean doExplore;
+    private final boolean doExchange;
 
     /**
      * Models
      */
     private BeaconModel bm;
     private CommunicationAPI ca;
-
-    /**
-     * Random Generator
-     */
-    private final RandomGenerator rand;
 
     /**
      * Parcels ready for pickup by this DeliveryTruck
@@ -81,7 +76,8 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
      */
     private BeaconStatus status;
 
-    public BeaconTruck(VehicleDTO pDto, int seed, double beaconRadius, double commReliability, double commRadius,
+    public BeaconTruck(VehicleDTO pDto, int seed,
+                       double beaconRadius, double commRadius, double commReliability,
                        SchedulingStrategy pickupStrategy, SchedulingStrategy deliveryStrategy,
                        boolean doExchange, boolean doExplore) {
         super(pDto);
@@ -94,15 +90,14 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
 
         this.messageStore = new MessageStore();
         this.pickupQueue = new ArrayList<BeaconParcel>();
-        this.rand = new MersenneTwister(seed);
         this.auctionActivity = new AuctionActivity(this, messageStore);
-        this.transportActivity = new TransportActivity(this, deliveryStrategy);
         this.fetchActivity = new FetchActivity(this, pickupStrategy);
+        this.transportActivity = new TransportActivity(this, deliveryStrategy);
         this.exchangeActivity = new ExchangeActivity(this,messageStore);
         this.pickupActivity = new PickupActivity(this);
         this.deliverActivity = new DeliverActivity(this);
         this.discoverActivity = new DiscoverActivity(auctionActivity, this);
-        this.exploreActivity = new ExploreActivity(this, rand);
+        this.exploreActivity = new ExploreActivity(this, new MersenneTwister(seed));
 
         this.setBeaconStatus(BeaconStatus.ACTIVE);
     }

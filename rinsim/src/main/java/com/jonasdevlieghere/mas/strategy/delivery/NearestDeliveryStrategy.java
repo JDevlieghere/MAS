@@ -37,4 +37,8 @@ public class NearestDeliveryStrategy implements SchedulingStrategy {
         this.scheduler = scheduler;
     }
 
+    public String toString() {
+        return "NearestDeliveryStrategy";
+    }
+
 }

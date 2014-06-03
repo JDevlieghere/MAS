@@ -8,16 +8,12 @@ import rinde.sim.pdptw.common.ParcelDTO;
 
 public class BeaconParcel extends DefaultParcel implements Beacon {
 
-    private BeaconStatus status;
     private double radius;
-
-    public BeaconParcel(ParcelDTO pDto) {
-        super(pDto);
-        setBeaconStatus(BeaconStatus.ACTIVE);
-    }
+    private BeaconStatus status;
 
     public BeaconParcel(ParcelDTO pDto, double radius) {
-        this(pDto);
+        super(pDto);
+        setBeaconStatus(BeaconStatus.ACTIVE);
         this.radius = radius;
     }
 
@@ -54,9 +50,9 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
 
     @Override
     public String toString() {
-        return "Beacon Parcel " +
-                getPosition();
+        return "Beacon Parcel " + getPosition();
     }
+
 
     @Override
     public boolean canBeDelivered(Vehicle v, long time) {

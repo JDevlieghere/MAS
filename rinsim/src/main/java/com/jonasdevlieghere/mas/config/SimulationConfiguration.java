@@ -5,6 +5,8 @@ import com.google.common.collect.ImmutableList;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
+import com.jonasdevlieghere.mas.strategy.delivery.NearestOnTimeDeliveryStrategy;
+import com.jonasdevlieghere.mas.strategy.pickup.NearestPickupStrategy;
 import org.apache.commons.math3.random.MersenneTwister;
 import rinde.sim.core.Simulator;
 import rinde.sim.core.model.Model;
@@ -17,48 +19,42 @@ import rinde.sim.util.SupplierRng;
 
 public class SimulationConfiguration extends DefaultMASConfiguration {
 
-    private RuntimeConfiguration runtimeConfiguration;
+        private RuntimeConfiguration runtimeConfiguration;
 
-    public SimulationConfiguration(RuntimeConfiguration runtimeConfiguration){
-        this.runtimeConfiguration = runtimeConfiguration;
-    }
 
-    @Override
-    public ImmutableList<? extends SupplierRng<? extends Model<?>>> getModels() {
-        return ImmutableList.of(BeaconModel.supplier(), new CommunicationModelSupplier());
-    }
+        public SimulationConfiguration(RuntimeConfiguration runtimeConfiguration){
+            this.runtimeConfiguration = runtimeConfiguration;
+        }
 
-    @Override
-    public DynamicPDPTWProblem.Creator<AddVehicleEvent> getVehicleCreator() {
-        return new DynamicPDPTWProblem.Creator<AddVehicleEvent>() {
-            @Override
-            public boolean create(Simulator sim, AddVehicleEvent event) {
-                return sim.register(new BeaconTruck(event.vehicleDTO,
-                        sim.getRandomGenerator().nextInt(),
-                        runtimeConfiguration.getBeaconRadius(),
-                        runtimeConfiguration.getCommunicationReliability(),
-                        runtimeConfiguration.getCommunicationRadius(),
-                        runtimeConfiguration.getPickupStrategy(),
-                        runtimeConfiguration.getDeliveryStrategy(),
-                        runtimeConfiguration.isDoExchange(),
-                        runtimeConfiguration.isDoExplore()));
+        @Override
+        public ImmutableList<? extends SupplierRng<? extends Model<?>>> getModels() {
+            return ImmutableList.of(BeaconModel.supplier(), new CommunicationModelSupplier());
+        }
+
+        @Override
+        public DynamicPDPTWProblem.Creator<AddVehicleEvent> getVehicleCreator() {
+            return new DynamicPDPTWProblem.Creator<AddVehicleEvent>() {
+                @Override
+                public boolean create(Simulator sim, AddVehicleEvent event) {
+                    System.out.println(runtimeConfiguration);
+                    return sim.register(new BeaconTruck(event.vehicleDTO, sim.getRandomGenerator().nextInt(), runtimeConfiguration.getBeaconRadius(), runtimeConfiguration.getCommunicationRadius(), runtimeConfiguration.getCommunicationReliability(), runtimeConfiguration.getPickupStrategy(), runtimeConfiguration.getDeliveryStrategy(), runtimeConfiguration.isDoExchange(), runtimeConfiguration.isDoExplore()));
+                }
+            };
+        }
+
+        @Override
+        public Optional<? extends DynamicPDPTWProblem.Creator<AddParcelEvent>> getParcelCreator() {
+            return Optional.of(new DynamicPDPTWProblem.Creator<AddParcelEvent>() {
+                @Override
+                public boolean create(Simulator sim, AddParcelEvent event) {
+                    return sim.register(new BeaconParcel(event.parcelDTO, runtimeConfiguration.getBeaconRadius()));
+                }
+            });
+        }
+
+        private static final class CommunicationModelSupplier implements SupplierRng<CommunicationModel> {
+            @Override public CommunicationModel get(long seed) {
+                return new CommunicationModel(new MersenneTwister(seed), true);
             }
-        };
-    }
-
-    @Override
-    public Optional<? extends DynamicPDPTWProblem.Creator<AddParcelEvent>> getParcelCreator() {
-        return Optional.of(new DynamicPDPTWProblem.Creator<AddParcelEvent>() {
-            @Override
-            public boolean create(Simulator sim, AddParcelEvent event) {
-                return sim.register(new BeaconParcel(event.parcelDTO, runtimeConfiguration.getBeaconRadius()));
-            }
-        });
-    }
-
-    private static final class CommunicationModelSupplier implements SupplierRng<CommunicationModel> {
-        @Override public CommunicationModel get(long seed) {
-            return new CommunicationModel(new MersenneTwister(seed), true);
         }
     }
-}
