@@ -189,14 +189,14 @@ public class ExchangeActivity extends Activity{
             for(Parcel parcel: myParcels){
                 dest = parcel.getDestination();
                 if(otherPoints.contains(dest)){
-                   myPickupList.add(dest);
+                   myDropList.add(dest);
                 }
             }
 
             for(Parcel parcel: otherParcels){
                 dest = parcel.getDestination();
                 if(myPoints.contains(dest)){
-                    myDropList.add(dest);
+                    myPickupList.add(dest);
                 }
             }
 

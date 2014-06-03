@@ -89,8 +89,8 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(endsTick(assignmentActivity, rm, pm, bm, time))
             return;
 
-//        if(endsTick(exchangeActivity, rm, pm, bm, time))
-//            return;
+        if(endsTick(exchangeActivity, rm, pm, bm, time))
+            return;
 
         if(endsTick(new PickupAction(rm, pm ,this), time))
             return;
@@ -110,7 +110,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(endsTick(auctionActivity, rm, pm, bm, time))
             return;
 
-        logger.info(this.toString());
+//        logger.info(this.toString());
 
 //        if(endsTick(new ReturnAction(rm, pm, bm, dto, this), time))
 //            return;
