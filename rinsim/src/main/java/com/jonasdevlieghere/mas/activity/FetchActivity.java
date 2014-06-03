@@ -16,7 +16,6 @@ public class FetchActivity extends Activity{
     public FetchActivity(ActivityUser user, SchedulingStrategy pickupStrategy) {
         super(user);
         this.scheduler = new Scheduler((BeaconTruck)user, pickupStrategy);
-
     }
 
     @Override

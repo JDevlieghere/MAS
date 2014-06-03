@@ -34,10 +34,10 @@ public class SimulationConfiguration extends DefaultMASConfiguration {
             @Override
             public boolean create(Simulator sim, AddVehicleEvent event) {
                 return sim.register(new BeaconTruck(event.vehicleDTO,
-                        sim.getRandomGenerator().nextLong(),
+                        sim.getRandomGenerator().nextInt(),
                         runtimeConfiguration.getBeaconRadius(),
                         runtimeConfiguration.getCommunicationReliability(),
-                        runtimeConfiguration.getBeaconRadius(),
+                        runtimeConfiguration.getCommunicationRadius(),
                         runtimeConfiguration.getPickupStrategy(),
                         runtimeConfiguration.getDeliveryStrategy(),
                         runtimeConfiguration.isDoExchange(),

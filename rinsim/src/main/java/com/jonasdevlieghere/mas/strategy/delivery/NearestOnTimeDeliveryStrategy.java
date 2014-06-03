@@ -71,4 +71,9 @@ public class NearestOnTimeDeliveryStrategy implements SchedulingStrategy {
     public void setScheduler(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
+
+    @Override
+    public String toString() {
+        return "NearestOnTimeDeliveryStrategy";
+    }
 }

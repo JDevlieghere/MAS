@@ -14,14 +14,15 @@ public class RuntimeConfiguration {
     private SchedulingStrategy pickupStrategy;
     private SchedulingStrategy deliveryStrategy;
 
-    public RuntimeConfiguration(double beaconRadius, double communicationRadius, double communicationReliability,
-                                boolean doExplore, boolean doExchange, SchedulingStrategy pickupStrategy, SchedulingStrategy deliveryStrategy)
+    public RuntimeConfiguration(double beaconRadius, double communicationReliability, double communicationRadius,
+                                boolean doExchange, boolean doExplore,
+                                SchedulingStrategy pickupStrategy, SchedulingStrategy deliveryStrategy)
     {
         setBeaconRadius(beaconRadius);
         setCommunicationRadius(communicationRadius);
         setCommunicationReliability(communicationReliability);
-        setDoExplore(doExplore);
         setDoExchange(doExchange);
+        setDoExplore(doExplore);
         setPickupStrategy(pickupStrategy);
         setDeliveryStrategy(deliveryStrategy);
     }

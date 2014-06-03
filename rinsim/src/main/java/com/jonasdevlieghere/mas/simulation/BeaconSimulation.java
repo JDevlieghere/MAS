@@ -8,6 +8,7 @@ import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06ObjectiveFunction;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Parser;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Scenario;
 import com.jonasdevlieghere.mas.strategy.delivery.NearestDeliveryStrategy;
+import com.jonasdevlieghere.mas.strategy.delivery.NearestOnTimeDeliveryStrategy;
 import com.jonasdevlieghere.mas.strategy.pickup.NearestPickupStrategy;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
@@ -89,7 +90,7 @@ public class BeaconSimulation {
                 .parse().get(0);
 
         final Gendreau06ObjectiveFunction objFunc = new BeaconGendreau06ObjectiveFunction();
-        final RuntimeConfiguration runtimeConfiguration = new RuntimeConfiguration(1,10,1,true, true, new NearestPickupStrategy(), new NearestDeliveryStrategy());
+        final RuntimeConfiguration runtimeConfiguration = new RuntimeConfiguration(0.7,10,1, true, true, new NearestPickupStrategy(), new NearestOnTimeDeliveryStrategy());
         Experiment.ExperimentResults results = Experiment
                 .build(objFunc)
                 .withRandomSeed(123)

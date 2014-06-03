@@ -81,7 +81,7 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
      */
     private BeaconStatus status;
 
-    public BeaconTruck(VehicleDTO pDto, long seed, double beaconRadius, double commReliability, double commRadius,
+    public BeaconTruck(VehicleDTO pDto, int seed, double beaconRadius, double commReliability, double commRadius,
                        SchedulingStrategy pickupStrategy, SchedulingStrategy deliveryStrategy,
                        boolean doExchange, boolean doExplore) {
         super(pDto);
@@ -99,11 +99,12 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         this.transportActivity = new TransportActivity(this, deliveryStrategy);
         this.fetchActivity = new FetchActivity(this, pickupStrategy);
         this.exchangeActivity = new ExchangeActivity(this,messageStore);
-        this.setBeaconStatus(BeaconStatus.ACTIVE);
         this.pickupActivity = new PickupActivity(this);
         this.deliverActivity = new DeliverActivity(this);
         this.discoverActivity = new DiscoverActivity(auctionActivity, this);
         this.exploreActivity = new ExploreActivity(this, rand);
+
+        this.setBeaconStatus(BeaconStatus.ACTIVE);
     }
 
     @Override
@@ -145,7 +146,7 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         return new ArrayList<BeaconParcel>(this.pickupQueue);
     }
 
-    public void unqueuePickup(BeaconParcel parcel){
+    public void dequeuePickup(BeaconParcel parcel){
         this.pickupQueue.remove(parcel);
     }
 

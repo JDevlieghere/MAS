@@ -1,6 +1,5 @@
 package com.jonasdevlieghere.mas.beacon;
 
-import com.jonasdevlieghere.mas.config.RuntimeConfiguration;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.Vehicle;
@@ -8,11 +7,6 @@ import rinde.sim.pdptw.common.DefaultParcel;
 import rinde.sim.pdptw.common.ParcelDTO;
 
 public class BeaconParcel extends DefaultParcel implements Beacon {
-
-    /**
-     * RuntimeConfiguration
-     */
-    private RuntimeConfiguration runtimeConfiguration;
 
     private BeaconStatus status;
     private double radius;

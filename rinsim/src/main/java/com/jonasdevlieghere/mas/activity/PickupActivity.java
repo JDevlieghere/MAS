@@ -34,7 +34,7 @@ public class PickupActivity extends Activity {
                 pm.pickup(truck, nearest, time);
                 BeaconParcel beaconParcel = (BeaconParcel) nearest;
                 beaconParcel.setBeaconStatus(BeaconStatus.INACTIVE);
-                truck.unqueuePickup(beaconParcel);
+                truck.dequeuePickup(beaconParcel);
                 setActivityStatus(ActivityStatus.END_TICK);
             }
         }
