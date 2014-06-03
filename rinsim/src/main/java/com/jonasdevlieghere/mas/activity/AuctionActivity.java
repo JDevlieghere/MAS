@@ -30,6 +30,11 @@ public class AuctionActivity extends Activity{
 
     @Override
     public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
+        List<AssignmentMessage> messages = messageStore.retrieve(AssignmentMessage.class);
+        BeaconTruck truck = (BeaconTruck)getUser();
+        for(AssignmentMessage assignment: messages){
+            truck.queuePickup((BeaconParcel) assignment.getParcel());
+        }
         setActivityStatus(TickStatus.NORMAL);
         if(!auctionableParcels.isEmpty()){
             auction();
