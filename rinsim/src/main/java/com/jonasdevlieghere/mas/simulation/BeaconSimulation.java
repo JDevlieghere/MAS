@@ -42,7 +42,7 @@ public class BeaconSimulation {
     }
 
     public static void run(final boolean testing) {
-        logger.warn("Running with testing mode set to {}", testing);
+        logger.debug("Running with testing mode set to {}", testing);
         final ScenarioController.UICreator uic = new ScenarioController.UICreator() {
             @Override
             public void createUI(Simulator sim) {
