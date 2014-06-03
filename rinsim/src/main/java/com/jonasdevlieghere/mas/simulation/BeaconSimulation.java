@@ -2,6 +2,7 @@ package com.jonasdevlieghere.mas.simulation;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import org.apache.commons.cli.*;
 import rinde.sim.core.Simulator;
 import rinde.sim.pdptw.common.DefaultDepot;
 import rinde.sim.pdptw.common.RouteRenderer;
@@ -21,7 +22,19 @@ public class BeaconSimulation {
     private BeaconSimulation() {}
 
     public static void main(String[] args) {
-        run(false);
+        Options options = new Options();
+        options.addOption("t", false, "Testing");
+        CommandLineParser parser = new PosixParser();
+        try {
+            CommandLine cmd = parser.parse(options, args);
+            if(cmd.hasOption("t")){
+                run(true);
+            }else{
+                run(false);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void run(final boolean testing) {
@@ -42,8 +55,7 @@ public class BeaconSimulation {
                                 new PDPModelRenderer(false)
                         );
                 if (testing) {
-                    viewBuilder.enableAutoClose().enableAutoPlay().setSpeedUp(64)
-                            .stopSimulatorAtTime(60 * 60 * 1000);
+                    viewBuilder.enableAutoClose().enableAutoPlay().setSpeedUp(64);
                 }
                 viewBuilder.show();
             }
