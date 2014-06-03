@@ -81,7 +81,6 @@ public class AuctionActivity extends Activity{
                     } else {
                         truck.send(bestTruck, new AssignmentMessage(truck, bpEntry.getKey()));
                     }
-                    bpEntry.getKey().setStatus(BeaconStatus.INACTIVE);
                     setActivityStatus(ActivityStatus.NORMAL);
                     break;
             }

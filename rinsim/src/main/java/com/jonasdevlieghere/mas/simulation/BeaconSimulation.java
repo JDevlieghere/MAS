@@ -22,28 +22,26 @@ import rinde.sim.ui.renderers.UiSchema;
 public class BeaconSimulation {
 
     final static Logger logger = LoggerFactory.getLogger(BeaconSimulation.class);
-    private static final int TESTING_SPEEDUP = 64;
 
     private BeaconSimulation() {}
 
     public static void main(String[] args) {
         Options options = new Options();
-        options.addOption("t", false, "Testing");
+        options.addOption("s", true, "Testing");
         CommandLineParser parser = new PosixParser();
         try {
             CommandLine cmd = parser.parse(options, args);
-            if(cmd.hasOption("t")){
-                run(true);
+            if(cmd.hasOption("s")){
+                run(Integer.parseInt(cmd.getOptionValue("s")));
             }else{
-                run(false);
+                run(0);
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
-    public static void run(final boolean testing) {
-        logger.debug("Running with testing mode set to {}", testing);
+    public static void run(final int speedUp) {
         final ScenarioController.UICreator uic = new ScenarioController.UICreator() {
             @Override
             public void createUI(Simulator sim) {
@@ -60,8 +58,9 @@ public class BeaconSimulation {
                                 new BeaconRenderer(),
                                 new PDPModelRenderer(false)
                         );
-                if (testing) {
-                    viewBuilder.enableAutoClose().enableAutoPlay().setSpeedUp(TESTING_SPEEDUP);
+                if(speedUp > 0) {
+                    logger.debug("Running with speedup set to {}.", speedUp);
+                    viewBuilder.enableAutoClose().enableAutoPlay().setSpeedUp(speedUp);
                 }
                 viewBuilder.show();
             }

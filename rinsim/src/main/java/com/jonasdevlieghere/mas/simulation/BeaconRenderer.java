@@ -17,10 +17,14 @@ import java.util.List;
 
 public class BeaconRenderer implements ModelRenderer {
 
+    private final static int FILL_ALPHA = 10;
+    private final static int DRAW_ALPHA = 50;
+
     protected final static RGB BLACK = new RGB(0, 0, 0);
-    protected final static RGB BORDEAUX = new RGB(95, 2, 31);
+    protected final static RGB RED = new RGB(255, 0, 0);
     protected final static RGB GREEN = new RGB(0, 255, 0);
-    protected final static RGB YELLOW = new RGB(225, 255, 0);
+    protected final static RGB BLUE = new RGB(0, 0, 255);
+    protected final static RGB YELLOW = new RGB(255, 255, 0);
 
     protected BeaconModel beaconModel;
 
@@ -41,11 +45,14 @@ public class BeaconRenderer implements ModelRenderer {
 
                 if(parcel.getStatus() != BeaconStatus.INACTIVE) {
                     RGB rgb = GREEN;
+                    if(parcel.getStatus() == BeaconStatus.SLAVE){
+                        rgb = RED;
+                    }
                     gc.setBackground(new Color(gc.getDevice(), rgb));
                     gc.setForeground(new Color(gc.getDevice(), rgb));
-                    gc.setAlpha(10);
+                    gc.setAlpha(FILL_ALPHA);
                     gc.fillOval(x - r, y - r, 2 * r, 2 * r);
-                    gc.setAlpha(50);
+                    gc.setAlpha(DRAW_ALPHA);
                     gc.drawOval(x - r, y - r, r * 2, r * 2);
                     gc.setAlpha(255);
                 }
@@ -62,13 +69,13 @@ public class BeaconRenderer implements ModelRenderer {
                 final int r = (int) (truck.getRadius() * vp.scale);
                 RGB rgb = BLACK;
                 if(truck.getStatus() == BeaconStatus.MASTER || truck.getStatus() == BeaconStatus.SLAVE){
-                    rgb = BORDEAUX;
+                    rgb = BLUE;
                 }
                 gc.setBackground(new Color(gc.getDevice(), rgb));
                 gc.setForeground(new Color(gc.getDevice(), rgb));
-                gc.setAlpha(10);
+                gc.setAlpha(FILL_ALPHA);
                 gc.fillOval(x - r, y - r, 2 * r, 2 * r);
-                gc.setAlpha(50);
+                gc.setAlpha(DRAW_ALPHA);
                 gc.drawOval(x - r, y - r, r * 2, r * 2);
                 gc.setAlpha(255);
             }

@@ -73,7 +73,6 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
         return trucks;
     }
 
-
     @Override
     public boolean register(Beacon beacon) {
         beacons.add(beacon);
