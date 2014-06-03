@@ -82,6 +82,7 @@ public class ExchangeActivity extends Activity{
                             //At all times there should only be one message of this type.
                             ExchangeRequestMessage request = messages1.get(0);
                             System.out.println("Request recieved");
+                            //TODO: Always send reply for gracefull reset.
                             if(truck.getNbOfParcels() > 0){
                                 otherTruck = (DeliveryTruck) request.getSender();
                                 System.out.println("Replyed");
@@ -197,6 +198,7 @@ public class ExchangeActivity extends Activity{
             setExchangeStatus(ExchangeStatus.MEETING);
             setActivityStatus(ActivityStatus.END_TICK);
         } else {
+            truck.setStatus(BeaconStatus.ACTIVE);
             setExchangeStatus(ExchangeStatus.INITIAL);
             setActivityStatus(ActivityStatus.END_TICK);
         }
@@ -204,10 +206,12 @@ public class ExchangeActivity extends Activity{
 
     private void initiateExchange(DeliveryTruck truck, BeaconModel bm) {
         List<DeliveryTruck> trucks = bm.getDetectableTrucks(truck);
+        //TODO: might be more usefull to put it in getDetectableTrucks()
+        trucks.remove(truck);
         if(trucks.isEmpty())
             return;
-        otherTruck = trucks.get(0);
-        if(otherTruck.ping()){
+        if(trucks.get(0).ping()){
+            otherTruck = trucks.get(0);
             truck.send(otherTruck, new ExchangeRequestMessage(truck));
             truck.setStatus(BeaconStatus.MASTER);
             setExchangeStatus(ExchangeStatus.PENDING);
