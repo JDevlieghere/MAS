@@ -5,6 +5,8 @@ import com.jonasdevlieghere.mas.strategy.SchedulingStrategy;
 
 public class RuntimeConfiguration {
 
+    private String title;
+
     private double beaconRadius;
     private double communicationRadius;
     private double communicationReliability;
@@ -15,10 +17,11 @@ public class RuntimeConfiguration {
     private Class<SchedulingStrategy> pickupStrategy;
     private Class<SchedulingStrategy> deliveryStrategy;
 
-    public <T extends SchedulingStrategy, Y extends SchedulingStrategy> RuntimeConfiguration(double beaconRadius, double communicationRadius,  double communicationReliability,
+    public <T extends SchedulingStrategy, Y extends SchedulingStrategy> RuntimeConfiguration(String title, double beaconRadius, double communicationRadius,  double communicationReliability,
                                 Class<T> pickupStrategy, Class<Y> deliveryStrategy,
                                 boolean doExchange, boolean doExplore)
     {
+        setTitle(title);
         setBeaconRadius(beaconRadius);
         setCommunicationRadius(communicationRadius);
         setCommunicationReliability(communicationReliability);
@@ -100,7 +103,7 @@ public class RuntimeConfiguration {
 
     @Override
     public String toString() {
-        return "RuntimeConfiguration{" +
+        return "RuntimeConfiguration("+getTitle()+"){" +
                 "beaconRadius=" + beaconRadius +
                 "\n, communicationRadius=" + communicationRadius +
                 "\n, communicationReliability=" + communicationReliability +
@@ -109,5 +112,13 @@ public class RuntimeConfiguration {
                 "\n, pickupStrategy=" + pickupStrategy +
                 "\n, deliveryStrategy=" + deliveryStrategy +
                 '}';
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

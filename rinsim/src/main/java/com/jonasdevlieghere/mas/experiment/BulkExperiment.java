@@ -44,10 +44,10 @@ public class BulkExperiment {
     );
 
     public static final List<RuntimeConfiguration> CONFIGURATIONS = Arrays.asList(
-            new RuntimeConfiguration(0.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
-            new RuntimeConfiguration(1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
-            new RuntimeConfiguration(1.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
-            new RuntimeConfiguration(2,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true)
+            new RuntimeConfiguration("Rad_0_5",0.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
+            new RuntimeConfiguration("Rad_1",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
+            new RuntimeConfiguration("Rad_1_5",1.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
+            new RuntimeConfiguration("Rad_2",2,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true)
     );
 
     public static void main(String[] args){
@@ -70,14 +70,16 @@ public class BulkExperiment {
         for(RuntimeConfiguration runtimeConfiguration: runtimeConfigurations){
             ExperimentWriter experimentWriter = new ExperimentWriter();
             for(String dataset: datasets){
-
+                try {
                     experimentWriter.addAll(runExperiment(runtimeConfiguration, dataset));
-
-
+                }catch (RuntimeException e){
+                    experimentWriter.add("/");
+                }
             }
-            File file = new File("output/"+(runtimeConfiguration.hashCode())+".dat");
+            File file = new File("output/"+(runtimeConfiguration.getTitle())+".dat");
             try {
                 experimentWriter.writeTo(file);
+                logger.info("Output file {} created.", file.getName());
             } catch (IOException e) {
                 e.printStackTrace();
             }

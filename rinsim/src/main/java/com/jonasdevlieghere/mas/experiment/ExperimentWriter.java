@@ -64,6 +64,18 @@ public class ExperimentWriter {
         addToLine(LINE_SIMULATIN_TIME, statistics.simulationTime);
     }
 
+    public void add(String str){
+        addToLine(LINE_ACCEPTED_PARCELS, str);
+        addToLine(LINE_COMPUTATION_TIME, str);
+        addToLine(LINE_PICKUP_TARDINESS, str);
+        addToLine(LINE_DELIVR_TARDINESS, str);
+        addToLine(LINE_OVER_TIME, str);
+        addToLine(LINE_TOTAL_DELIVERIES, str);
+        addToLine(LINE_TOTAL_DISTANCE, str);
+        addToLine(LINE_TOTAL_PICKUPS, str);
+        addToLine(LINE_SIMULATIN_TIME, str);
+    }
+
     public void writeTo(File file) throws IOException {
         FileWriter fileWriter = new FileWriter(file);
         for(String line: lines){
