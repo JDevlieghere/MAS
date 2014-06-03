@@ -105,8 +105,11 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(endsTick(auctionActivity, rm, pm, bm, time))
             return;
 
-        if(endsTick(new SmartExploreAction(rm, pm, this, this.rand), time))
+        if(endsTick(new ReturnAction(rm, pm, bm, dto, this), time))
             return;
+
+//        if(endsTick(new SmartExploreAction(rm, pm, this, this.rand), time))
+//            return;
     }
 
 

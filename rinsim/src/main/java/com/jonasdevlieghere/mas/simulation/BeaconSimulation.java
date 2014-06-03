@@ -22,6 +22,7 @@ import rinde.sim.ui.renderers.UiSchema;
 public class BeaconSimulation {
 
     final static Logger logger = LoggerFactory.getLogger(BeaconSimulation.class);
+    private static final int TESTING_SPEEDUP = 64;
 
     private BeaconSimulation() {}
 
@@ -60,7 +61,7 @@ public class BeaconSimulation {
                                 new PDPModelRenderer(false)
                         );
                 if (testing) {
-                    viewBuilder.enableAutoClose().enableAutoPlay().setSpeedUp(64);
+                    viewBuilder.enableAutoClose().enableAutoPlay().setSpeedUp(TESTING_SPEEDUP);
                 }
                 viewBuilder.show();
             }
