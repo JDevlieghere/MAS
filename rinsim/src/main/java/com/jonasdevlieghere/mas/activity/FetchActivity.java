@@ -3,7 +3,7 @@ package com.jonasdevlieghere.mas.activity;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
-import com.jonasdevlieghere.mas.strategy.pickup.NearestPickupStrategy;
+import com.jonasdevlieghere.mas.strategy.SchedulingStrategy;
 import com.jonasdevlieghere.mas.common.Scheduler;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -13,9 +13,9 @@ public class FetchActivity extends Activity{
 
     private Scheduler scheduler;
 
-    public FetchActivity(ActivityUser user) {
+    public FetchActivity(ActivityUser user, SchedulingStrategy pickupStrategy) {
         super(user);
-        this.scheduler = new Scheduler((BeaconTruck)user, new NearestPickupStrategy());
+        this.scheduler = new Scheduler((BeaconTruck)user, pickupStrategy);
 
     }
 

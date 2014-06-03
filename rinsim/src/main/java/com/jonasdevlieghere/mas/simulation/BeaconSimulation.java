@@ -2,10 +2,13 @@ package com.jonasdevlieghere.mas.simulation;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
+import com.jonasdevlieghere.mas.config.RuntimeConfiguration;
 import com.jonasdevlieghere.mas.config.SimulationConfiguration;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06ObjectiveFunction;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Parser;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Scenario;
+import com.jonasdevlieghere.mas.strategy.delivery.NearestDeliveryStrategy;
+import com.jonasdevlieghere.mas.strategy.pickup.NearestPickupStrategy;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,10 +89,11 @@ public class BeaconSimulation {
                 .parse().get(0);
 
         final Gendreau06ObjectiveFunction objFunc = new BeaconGendreau06ObjectiveFunction();
+        final RuntimeConfiguration runtimeConfiguration = new RuntimeConfiguration(1,10,1,true, true, new NearestPickupStrategy(), new NearestDeliveryStrategy());
         Experiment.ExperimentResults results = Experiment
                 .build(objFunc)
                 .withRandomSeed(123)
-                .addConfiguration(new SimulationConfiguration())
+                .addConfiguration(new SimulationConfiguration(runtimeConfiguration))
                 .addScenario(scenario)
                 .showGui(uic)
                 .repeat(1)

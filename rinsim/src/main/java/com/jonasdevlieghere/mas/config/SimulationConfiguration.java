@@ -17,6 +17,11 @@ import rinde.sim.util.SupplierRng;
 
 public class SimulationConfiguration extends DefaultMASConfiguration {
 
+    private RuntimeConfiguration runtimeConfiguration;
+
+    public SimulationConfiguration(RuntimeConfiguration runtimeConfiguration){
+        this.runtimeConfiguration = runtimeConfiguration;
+    }
 
     @Override
     public ImmutableList<? extends SupplierRng<? extends Model<?>>> getModels() {
@@ -28,7 +33,15 @@ public class SimulationConfiguration extends DefaultMASConfiguration {
         return new DynamicPDPTWProblem.Creator<AddVehicleEvent>() {
             @Override
             public boolean create(Simulator sim, AddVehicleEvent event) {
-                return sim.register(new BeaconTruck(event.vehicleDTO));
+                return sim.register(new BeaconTruck(event.vehicleDTO,
+                        sim.getRandomGenerator().nextLong(),
+                        runtimeConfiguration.getBeaconRadius(),
+                        runtimeConfiguration.getCommunicationReliability(),
+                        runtimeConfiguration.getBeaconRadius(),
+                        runtimeConfiguration.getPickupStrategy(),
+                        runtimeConfiguration.getDeliveryStrategy(),
+                        runtimeConfiguration.isDoExchange(),
+                        runtimeConfiguration.isDoExplore()));
             }
         };
     }
@@ -38,7 +51,7 @@ public class SimulationConfiguration extends DefaultMASConfiguration {
         return Optional.of(new DynamicPDPTWProblem.Creator<AddParcelEvent>() {
             @Override
             public boolean create(Simulator sim, AddParcelEvent event) {
-                return sim.register(new BeaconParcel(event.parcelDTO));
+                return sim.register(new BeaconParcel(event.parcelDTO, runtimeConfiguration.getBeaconRadius()));
             }
         });
     }

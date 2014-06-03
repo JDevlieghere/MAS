@@ -82,4 +82,16 @@ public class RuntimeConfiguration {
         this.deliveryStrategy = deliveryStrategy;
     }
 
+    @Override
+    public String toString() {
+        return "RuntimeConfiguration{" +
+                "beaconRadius=" + beaconRadius +
+                "\n, communicationRadius=" + communicationRadius +
+                "\n, communicationReliability=" + communicationReliability +
+                "\n, doExplore=" + doExplore +
+                "\n, doExchange=" + doExchange +
+                "\n, pickupStrategy=" + pickupStrategy +
+                "\n, deliveryStrategy=" + deliveryStrategy +
+                '}';
+    }
 }

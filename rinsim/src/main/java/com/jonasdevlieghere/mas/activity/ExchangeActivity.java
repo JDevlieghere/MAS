@@ -42,7 +42,6 @@ public class ExchangeActivity extends Activity{
         BeaconTruck truck = (BeaconTruck) getUser();
         switch (truck.getBeaconStatus()){
             case ACTIVE:
-                assert(status == ExchangeStatus.INITIATE);
                 masterInitiate(truck, bm);
                 break;
             case MASTER:
@@ -67,7 +66,6 @@ public class ExchangeActivity extends Activity{
                         break;
                     default:
                         logger.warn("This shouldn't happen at the master:" + status);
-                        assert(false);
                         break;
                 }
                 break;
@@ -90,7 +88,6 @@ public class ExchangeActivity extends Activity{
                         break;
                     default:
                         logger.warn("This shouldn't happen at the slave:" + status);
-                        assert(false);
                 }
                 break;
             case INACTIVE:
@@ -169,7 +166,6 @@ public class ExchangeActivity extends Activity{
         //At all times there should only be one message of this type.
         //Also guaranteed reply.
         ExchangeReplyMessage reply = messages.get(0);
-        assert(otherTruck.equals(reply.getSender()));
         ArrayList<Point> pointList = new ArrayList<Point>();
         int mySize = truck.getNbOfParcels();
         int otherSize = reply.getParcels().size();

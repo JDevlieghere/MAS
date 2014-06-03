@@ -31,5 +31,6 @@ public class ExploreActivity extends Activity{
             destination = truck.getExplorationDestination();
         }
         rm.moveTo(truck, destination, time);
+        setActivityStatus(ActivityStatus.END_TICK);
     }
 }

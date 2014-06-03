@@ -5,6 +5,7 @@ import com.jonasdevlieghere.mas.activity.ActivityStatus;
 import com.jonasdevlieghere.mas.communication.MessageStore;
 import com.jonasdevlieghere.mas.config.RuntimeConfiguration;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
+import com.jonasdevlieghere.mas.strategy.SchedulingStrategy;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.slf4j.Logger;
@@ -29,12 +30,13 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
      */
     private static Logger logger = LoggerFactory.getLogger(BeaconTruck.class);
 
-    /**
-     * Constants
-     */
-    private static final double BEACON_RADIUS = 0.7;
-    private static final double COMM_RELIABILITY = 1;
-    private static final double COMM_RADIUS = 10;
+
+    private double beaconRadius;
+    private double commReliability;
+    private double commRadius;
+
+    boolean doExplore;
+    boolean doExchange;
 
     /**
      * Models
@@ -46,7 +48,6 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
      * Random Generator
      */
     private final RandomGenerator rand;
-    private static int count = 0;
 
     /**
      * Parcels ready for pickup by this DeliveryTruck
@@ -80,14 +81,23 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
      */
     private BeaconStatus status;
 
-    public BeaconTruck(VehicleDTO pDto) {
+    public BeaconTruck(VehicleDTO pDto, long seed, double beaconRadius, double commReliability, double commRadius,
+                       SchedulingStrategy pickupStrategy, SchedulingStrategy deliveryStrategy,
+                       boolean doExchange, boolean doExplore) {
         super(pDto);
+
+        this.beaconRadius = beaconRadius;
+        this.commReliability = commReliability;
+        this.commRadius = commRadius;
+        this.doExchange = doExchange;
+        this.doExplore = doExplore;
+
         this.messageStore = new MessageStore();
         this.pickupQueue = new ArrayList<BeaconParcel>();
-        this.rand = new MersenneTwister(123*count++);
+        this.rand = new MersenneTwister(seed);
         this.auctionActivity = new AuctionActivity(this, messageStore);
-        this.transportActivity = new TransportActivity(this);
-        this.fetchActivity = new FetchActivity(this);
+        this.transportActivity = new TransportActivity(this, deliveryStrategy);
+        this.fetchActivity = new FetchActivity(this, pickupStrategy);
         this.exchangeActivity = new ExchangeActivity(this,messageStore);
         this.setBeaconStatus(BeaconStatus.ACTIVE);
         this.pickupActivity = new PickupActivity(this);
@@ -101,7 +111,7 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
-        if(endsTick(exchangeActivity, rm, pm, bm, time))
+        if(doExchange && endsTick(exchangeActivity, rm, pm, bm, time))
             return;
 
         if(endsTick(pickupActivity, rm, pm, bm, time))
@@ -122,10 +132,8 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         if(endsTick(discoverActivity, rm, pm, bm, time))
             return;
 
-//        if(endsTick(exploreActivity, rm, pm, bm, time))
-//            return;
-
-//        logger.info(this.toString());
+        if(doExplore && endsTick(exploreActivity, rm, pm, bm, time))
+            return;
     }
 
 
@@ -143,12 +151,12 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
 
     @Override
     public double getBeaconRadius() {
-        return BEACON_RADIUS;
+        return this.beaconRadius;
     }
 
     @Override
     public double getReliability() {
-        return COMM_RELIABILITY;
+        return commReliability;
     }
 
     @Override
@@ -168,7 +176,7 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
 
     @Override
     public double getRadius() {
-        return COMM_RADIUS;
+        return commRadius;
     }
 
     @Override
