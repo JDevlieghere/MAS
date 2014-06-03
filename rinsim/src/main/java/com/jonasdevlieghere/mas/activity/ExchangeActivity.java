@@ -177,7 +177,7 @@ public class ExchangeActivity extends Activity{
             for(Parcel p:otherParcels){
                 pointList.add(p.getDestination());
             }
-            KMeans km = new KMeans(pointList ,2);
+            KMeans km = new KMeans(pointList ,2, 123);
             ArrayList<Cluster> clusters = km.getClusters();
             ArrayList<Point> myPoints = clusters.get(0).getPoints();
             ArrayList<Point> otherPoints = clusters.get(1).getPoints();

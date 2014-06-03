@@ -6,6 +6,8 @@ import com.jonasdevlieghere.mas.communication.MessageStore;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.communication.CommunicationAPI;
@@ -21,6 +23,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser, ActionUser, ActivityUser {
+
+    private Logger logger;
 
     /**
      * Constants
@@ -73,6 +77,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         this.transportActivity = new TransportActivity(this);
         this.fetchActivity = new FetchActivity(this);
         this.exchangeActivity = new ExchangeActivity(this,messageStore);
+        this.logger = LoggerFactory.getLogger(DeliveryTruck.class);
         this.setStatus(BeaconStatus.ACTIVE);
     }
 
@@ -84,8 +89,8 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(endsTick(assignmentActivity, rm, pm, bm, time))
             return;
 
-        if(endsTick(exchangeActivity, rm, pm, bm, time))
-            return;
+//        if(endsTick(exchangeActivity, rm, pm, bm, time))
+//            return;
 
         if(endsTick(new PickupAction(rm, pm ,this), time))
             return;
@@ -105,8 +110,10 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(endsTick(auctionActivity, rm, pm, bm, time))
             return;
 
-        if(endsTick(new ReturnAction(rm, pm, bm, dto, this), time))
-            return;
+        logger.info(this.toString());
+
+//        if(endsTick(new ReturnAction(rm, pm, bm, dto, this), time))
+//            return;
 
 //        if(endsTick(new SmartExploreAction(rm, pm, this, this.rand), time))
 //            return;

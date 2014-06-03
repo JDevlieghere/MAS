@@ -37,7 +37,7 @@ public class ClusterDeliveryStrategy implements SchedulingStrategy {
             for(Parcel parcel : parcels){
                 points.add(parcel.getDestination());
             }
-            KMeans kMeans = new KMeans(points, K);
+            KMeans kMeans = new KMeans(points, K, 123);
             this.clusters = kMeans.getClusters();
             TreeMap<Double, Cluster> clusterTreeMap = new TreeMap<Double, Cluster>();
             for(Cluster cluster: this.clusters){

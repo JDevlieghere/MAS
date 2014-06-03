@@ -1,6 +1,8 @@
 package com.jonasdevlieghere.mas.cluster;
 
 
+import org.apache.commons.math3.random.MersenneTwister;
+import org.apache.commons.math3.random.RandomGenerator;
 import rinde.sim.core.graph.Point;
 
 import java.util.ArrayList;
@@ -34,6 +36,11 @@ public class KMeans {
     private int k;
 
     /**
+     * Random Generator
+     */
+    private RandomGenerator random;
+
+    /**
      * Initialize a new instance of the k-means algorithm.
      *
      * @param   points
@@ -41,9 +48,10 @@ public class KMeans {
      * @param   k
      *          The desired amount of clusters.
      */
-    public KMeans(ArrayList<Point> points, int k) {
+    public KMeans(ArrayList<Point> points, int k, int seed) {
         setNbClusters(k);
         setPoints(points);
+        this.random = new MersenneTwister(seed);
     }
 
     private void setNbClusters(int k){
@@ -75,8 +83,8 @@ public class KMeans {
         Cluster initial = new Cluster(this.points);
         for(int i = 0; i < getNbClusters(); i++){
             Point c = initial.getCenter();
-            double x = c.x*Math.random();
-            double y = c.y*Math.random();
+            double x = c.x*random.nextDouble();
+            double y = c.y*random.nextDouble();
             centroids.add(new Point(x,y));
         }
     }
