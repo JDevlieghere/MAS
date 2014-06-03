@@ -24,6 +24,7 @@ public class AuctionCost implements Comparable<AuctionCost> {
 
     public double getValue(){
         double result =  Point.distance(truck.getPosition(), parcel.getDestination()) ;
+        result += Point.distance(truck.getPosition(), parcel.getPosition());
         result += truck.getPickupQueue().size();
         result += 0.7*truck.getNbOfParcels();
         return result;
