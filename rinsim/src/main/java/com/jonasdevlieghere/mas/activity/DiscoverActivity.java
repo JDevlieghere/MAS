@@ -2,7 +2,6 @@ package com.jonasdevlieghere.mas.activity;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
-import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -21,7 +20,7 @@ public class DiscoverActivity extends Activity {
 
     @Override
     public void execute(RoadModel rm, PDPModel pm, BeaconModel bm,TimeLapse time) {
-        setActivityStatus(TickStatus.NORMAL);
+        setActivityStatus(ActivityStatus.NORMAL);
         BeaconTruck truck = (BeaconTruck)getUser();
         // Discovery is instantanious and does not end a tick.
 

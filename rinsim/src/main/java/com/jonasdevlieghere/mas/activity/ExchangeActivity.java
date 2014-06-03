@@ -5,7 +5,6 @@ import com.jonasdevlieghere.mas.beacon.BeaconStatus;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import com.jonasdevlieghere.mas.common.Cluster;
 import com.jonasdevlieghere.mas.common.KMeans;
-import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.communication.*;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import org.slf4j.Logger;
@@ -39,7 +38,7 @@ public class ExchangeActivity extends Activity{
     @Override
     public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
         //Reset activity status
-        setActivityStatus(TickStatus.NORMAL);
+        setActivityStatus(ActivityStatus.NORMAL);
         BeaconTruck truck = (BeaconTruck) getUser();
         switch (truck.getBeaconStatus()){
             case ACTIVE:
@@ -107,13 +106,13 @@ public class ExchangeActivity extends Activity{
             otherTruck = (BeaconTruck) request.getSender();
             truck.send(otherTruck, new ExchangeReplyMessage(truck, pm.getContents(truck)));
             setExchangeStatus(ExchangeStatus.PENDING);
-            setActivityStatus(TickStatus.END_TICK);
+            setActivityStatus(ActivityStatus.END_TICK);
         }
     }
 
     private void slaveExchanging() {
         setExchangeStatus(ExchangeStatus.INITIATE);
-        setActivityStatus(TickStatus.END_TICK);
+        setActivityStatus(ActivityStatus.END_TICK);
     }
 
     private void slavePlanning() {
@@ -127,7 +126,7 @@ public class ExchangeActivity extends Activity{
         } else {
             setExchangeStatus(ExchangeStatus.MEETING);
         }
-        setActivityStatus(TickStatus.END_TICK);
+        setActivityStatus(ActivityStatus.END_TICK);
     }
 
     private void masterExchanging(PDPModel pm, BeaconTruck truck, TimeLapse time) {
@@ -152,7 +151,7 @@ public class ExchangeActivity extends Activity{
         logger.debug("AFTER: " + truck);
         logger.debug("other AFTER: " + otherTruck);
         setExchangeStatus(ExchangeStatus.RESETTING);
-        setActivityStatus(TickStatus.END_TICK);
+        setActivityStatus(ActivityStatus.END_TICK);
     }
 
     private void reset(BeaconTruck truck) {
@@ -213,12 +212,12 @@ public class ExchangeActivity extends Activity{
             meetingPoint = new Point(newX, newY);
             truck.send(otherTruck, new ExchangeAssignmentMessage(truck, meetingPoint));
             setExchangeStatus(ExchangeStatus.MEETING);
-            setActivityStatus(TickStatus.END_TICK);
+            setActivityStatus(ActivityStatus.END_TICK);
         } else {
             //let other truck know to end the masterExchanging
             truck.send(otherTruck, new ExchangeAssignmentMessage(truck, null));
             setExchangeStatus(ExchangeStatus.RESETTING);
-            setActivityStatus(TickStatus.END_TICK);
+            setActivityStatus(ActivityStatus.END_TICK);
         }
     }
 
@@ -231,7 +230,7 @@ public class ExchangeActivity extends Activity{
             truck.send(otherTruck, new ExchangeRequestMessage(truck));
             truck.setBeaconStatus(BeaconStatus.MASTER);
             setExchangeStatus(ExchangeStatus.PENDING);
-            setActivityStatus(TickStatus.END_TICK);
+            setActivityStatus(ActivityStatus.END_TICK);
         }
     }
 
@@ -239,12 +238,12 @@ public class ExchangeActivity extends Activity{
         if(rm.getObjectsAt(truck,BeaconTruck.class).contains(otherTruck))
             setExchangeStatus(ExchangeStatus.EXCHANGING);
         rm.moveTo(truck, meetingPoint, time);
-        setActivityStatus(TickStatus.END_TICK);
+        setActivityStatus(ActivityStatus.END_TICK);
     }
 
     private void pending() {
         setExchangeStatus(ExchangeStatus.PLANNING);
-        setActivityStatus(TickStatus.END_TICK);
+        setActivityStatus(ActivityStatus.END_TICK);
     }
 
     private void setExchangeStatus(ExchangeStatus status){

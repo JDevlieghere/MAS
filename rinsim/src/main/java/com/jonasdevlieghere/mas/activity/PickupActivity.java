@@ -5,7 +5,6 @@ import com.google.common.base.Predicate;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconStatus;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
-import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -22,7 +21,7 @@ public class PickupActivity extends Activity {
 
     @Override
     public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
-        setActivityStatus(TickStatus.NORMAL);
+        setActivityStatus(ActivityStatus.NORMAL);
         final DefaultParcel nearest = getNearestParcel(rm, pm);
         BeaconTruck truck = (BeaconTruck)getUser();
 
@@ -36,7 +35,7 @@ public class PickupActivity extends Activity {
                 BeaconParcel beaconParcel = (BeaconParcel) nearest;
                 beaconParcel.setBeaconStatus(BeaconStatus.INACTIVE);
                 truck.unqueuePickup(beaconParcel);
-                setActivityStatus(TickStatus.END_TICK);
+                setActivityStatus(ActivityStatus.END_TICK);
             }
         }
     }
