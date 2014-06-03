@@ -1,7 +1,7 @@
 /**
  * 
  */
-package rinde.sim.pdptw.gendreau06;
+package com.jonasdevlieghere.mas.gendreau;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -9,6 +9,7 @@ import com.google.common.math.DoubleMath;
 import rinde.sim.core.graph.Point;
 import rinde.sim.pdptw.common.*;
 import rinde.sim.pdptw.common.DynamicPDPTWScenario.ProblemClass;
+import rinde.sim.pdptw.gendreau06.GendreauProblemClass;
 import rinde.sim.scenario.ScenarioBuilder;
 import rinde.sim.scenario.ScenarioBuilder.ScenarioCreator;
 import rinde.sim.scenario.TimedEvent;
@@ -52,7 +53,7 @@ import static rinde.sim.core.model.pdp.PDPScenarioEvent.*;
  * </ul>
  * @author Rinde van Lon <rinde.vanlon@cs.kuleuven.be>
  */
-public final class TripleDJGendreau06Parser {
+public final class BeaconGendreau06Parser {
 
   private static final String REGEX = ".*req_rapide_(1|2|3|4|5)_(450|240)_(24|33)";
   private static final double TIME_MULTIPLIER = 1000d;
@@ -67,7 +68,7 @@ public final class TripleDJGendreau06Parser {
   @Nullable
   private ImmutableList<ProblemClass> problemClasses;
 
-  private TripleDJGendreau06Parser() {
+  private BeaconGendreau06Parser() {
     allowDiversion = false;
     online = true;
     numVehicles = -1;
@@ -78,8 +79,8 @@ public final class TripleDJGendreau06Parser {
   /**
    * @return A {@link rinde.sim.pdptw.gendreau06.Gendreau06Parser}.
    */
-  public static TripleDJGendreau06Parser parser() {
-    return new TripleDJGendreau06Parser();
+  public static BeaconGendreau06Parser parser() {
+    return new BeaconGendreau06Parser();
   }
 
   /**
@@ -87,7 +88,7 @@ public final class TripleDJGendreau06Parser {
    * @param file The file to parse.
    * @return The scenario as described by the file.
    */
-  public static TripleDJGendreau06Scenario parse(File file) {
+  public static BeaconGendreau06Scenario parse(File file) {
     return parser().addFile(file).parse().get(0);
   }
 
@@ -96,7 +97,7 @@ public final class TripleDJGendreau06Parser {
    * @param file The file to add.
    * @return This, as per the builder pattern.
    */
-  public TripleDJGendreau06Parser addFile(File file) {
+  public BeaconGendreau06Parser addFile(File file) {
     checkValidFileName(file.getName());
     try {
       streams.put(file.getName(), new FileInputStream(file));
@@ -111,7 +112,7 @@ public final class TripleDJGendreau06Parser {
    * @param file The file to add.
    * @return This, as per the builder pattern.
    */
-  public TripleDJGendreau06Parser addFile(String file) {
+  public BeaconGendreau06Parser addFile(String file) {
     return addFile(new File(file));
   }
 
@@ -123,7 +124,7 @@ public final class TripleDJGendreau06Parser {
    *          instance.
    * @return This, as per the builder pattern.
    */
-  public TripleDJGendreau06Parser addFile(InputStream stream, String fileName) {
+  public BeaconGendreau06Parser addFile(InputStream stream, String fileName) {
     checkValidFileName(fileName);
     streams.put(fileName, stream);
     return this;
@@ -134,7 +135,7 @@ public final class TripleDJGendreau06Parser {
    * @param dir The directory to search.
    * @return This, as per the builder pattern.
    */
-  public TripleDJGendreau06Parser addDirectory(String dir) {
+  public BeaconGendreau06Parser addDirectory(String dir) {
     return addDirectory(new File(dir));
   }
 
@@ -143,7 +144,7 @@ public final class TripleDJGendreau06Parser {
    * @param dir The directory to search.
    * @return This, as per the builder pattern.
    */
-  public TripleDJGendreau06Parser addDirectory(File dir) {
+  public BeaconGendreau06Parser addDirectory(File dir) {
     final File[] files = dir.listFiles(
         new FileFilter() {
           @Override
@@ -165,7 +166,7 @@ public final class TripleDJGendreau06Parser {
    * {@link rinde.sim.pdptw.common.PDPRoadModel}.
    * @return This, as per the builder pattern.
    */
-  public TripleDJGendreau06Parser allowDiversion() {
+  public BeaconGendreau06Parser allowDiversion() {
     allowDiversion = true;
     return this;
   }
@@ -178,7 +179,7 @@ public final class TripleDJGendreau06Parser {
    * scenario file.
    * @return This, as per the builder pattern.
    */
-  public TripleDJGendreau06Parser offline() {
+  public BeaconGendreau06Parser offline() {
     online = false;
     return this;
   }
@@ -190,7 +191,7 @@ public final class TripleDJGendreau06Parser {
    *          scenarios. Must be positive.
    * @return This, as per the builder pattern.
    */
-  public TripleDJGendreau06Parser setNumVehicles(int num) {
+  public BeaconGendreau06Parser setNumVehicles(int num) {
     checkArgument(num > 0, "The number of vehicles must be positive.");
     numVehicles = num;
     return this;
@@ -201,7 +202,7 @@ public final class TripleDJGendreau06Parser {
    * @param tick Must be positive.
    * @return This, as per the builder pattern.
    */
-  public TripleDJGendreau06Parser setTickSize(long tick) {
+  public BeaconGendreau06Parser setTickSize(long tick) {
     checkArgument(tick > 0L, "Tick size must be positive.");
     tickSize = tick;
     return this;
@@ -213,7 +214,7 @@ public final class TripleDJGendreau06Parser {
    * @param classes The problem classes which should be parsed.
    * @return This, as per the builder pattern.
    */
-  public TripleDJGendreau06Parser filter(GendreauProblemClass... classes) {
+  public BeaconGendreau06Parser filter(GendreauProblemClass... classes) {
     problemClasses = ImmutableList.<ProblemClass> copyOf(classes);
     return this;
   }
@@ -224,8 +225,8 @@ public final class TripleDJGendreau06Parser {
    * of these problem classes will be parsed.
    * @return A list of scenarios in order of adding them to the parser.
    */
-  public ImmutableList<TripleDJGendreau06Scenario> parse() {
-    final ImmutableList.Builder<TripleDJGendreau06Scenario> scenarios = ImmutableList
+  public ImmutableList<BeaconGendreau06Scenario> parse() {
+    final ImmutableList.Builder<BeaconGendreau06Scenario> scenarios = ImmutableList
         .builder();
     for (final Entry<String, InputStream> entry : streams.build().entrySet()) {
       boolean include = false;
@@ -287,7 +288,7 @@ public final class TripleDJGendreau06Parser {
         REGEX, name);
   }
 
-  private static TripleDJGendreau06Scenario parse(InputStream inputStream,
+  private static BeaconGendreau06Scenario parse(InputStream inputStream,
       String fileName, int numVehicles, final long tickSize,
       final boolean allowDiversion, boolean online) {
 
@@ -369,11 +370,11 @@ public final class TripleDJGendreau06Parser {
       throw new IllegalArgumentException(e);
     }
 
-    return sb.build(new ScenarioCreator<TripleDJGendreau06Scenario>() {
+    return sb.build(new ScenarioCreator<BeaconGendreau06Scenario>() {
       @Override
-      public TripleDJGendreau06Scenario create(List<TimedEvent> eventList,
+      public BeaconGendreau06Scenario create(List<TimedEvent> eventList,
           Set<Enum<?>> eventTypes) {
-        return new TripleDJGendreau06Scenario(eventList, eventTypes, tickSize,
+        return new BeaconGendreau06Scenario(eventList, eventTypes, tickSize,
             problemClass, instanceNumber, allowDiversion);
       }
     });

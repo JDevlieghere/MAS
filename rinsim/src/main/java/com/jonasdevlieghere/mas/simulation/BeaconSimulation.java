@@ -2,6 +2,9 @@ package com.jonasdevlieghere.mas.simulation;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
+import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06ObjectiveFunction;
+import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Parser;
+import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Scenario;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +13,6 @@ import rinde.sim.pdptw.common.DefaultDepot;
 import rinde.sim.pdptw.common.RouteRenderer;
 import rinde.sim.pdptw.experiment.Experiment;
 import rinde.sim.pdptw.gendreau06.Gendreau06ObjectiveFunction;
-import rinde.sim.pdptw.gendreau06.TripleDJGendreau06Parser;
-import rinde.sim.pdptw.gendreau06.TripleDJGendreau06Scenario;
 import rinde.sim.scenario.ScenarioController;
 import rinde.sim.ui.View;
 import rinde.sim.ui.renderers.PDPModelRenderer;
@@ -66,21 +67,21 @@ public class BeaconSimulation {
             }
         };
 
-        final TripleDJGendreau06Scenario scenario = TripleDJGendreau06Parser
+        final BeaconGendreau06Scenario scenario = BeaconGendreau06Parser
                 .parser().addFile(BeaconSimulation.class
                                 .getResourceAsStream("/data/gendreau06/req_rapide_1_240_24"),
                         "req_rapide_1_240_24")
                 .allowDiversion()
                 .parse().get(0);
 
-        final Gendreau06ObjectiveFunction objFunc = new Gendreau06ObjectiveFunction();
+        final Gendreau06ObjectiveFunction objFunc = new BeaconGendreau06ObjectiveFunction();
         Experiment
                 .build(objFunc)
                 .withRandomSeed(123)
                 .addConfiguration(new BeaconConfiguration())
                 .addScenario(scenario)
                 .showGui(uic)
-                .repeat(1)
+                .repeat(4)
                 .perform();
     }
 }

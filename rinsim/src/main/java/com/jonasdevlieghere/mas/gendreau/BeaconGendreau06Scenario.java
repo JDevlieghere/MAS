@@ -1,4 +1,4 @@
-package rinde.sim.pdptw.gendreau06;
+package com.jonasdevlieghere.mas.gendreau;
 
 import java.util.Collection;
 import java.util.Set;
@@ -11,6 +11,7 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
+import com.jonasdevlieghere.mas.simulation.BeaconStopCondition;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -24,6 +25,7 @@ import rinde.sim.pdptw.common.DynamicPDPTWProblem.SimulationInfo;
 import rinde.sim.pdptw.common.DynamicPDPTWProblem.StopCondition;
 import rinde.sim.pdptw.common.DynamicPDPTWScenario;
 import rinde.sim.pdptw.common.PDPRoadModel;
+import rinde.sim.pdptw.gendreau06.GendreauProblemClass;
 import rinde.sim.scenario.TimedEvent;
 import rinde.sim.util.TimeWindow;
 import rinde.sim.util.spec.Specification;
@@ -47,7 +49,7 @@ import rinde.sim.util.spec.Specification.ISpecification;
  * @auther Dieter Castel <dietercastel@gmail.com>
  * @author Jonas Devlieghere <info@jonasdevlieghere.com> 
  */
-public final class TripleDJGendreau06Scenario extends DynamicPDPTWScenario {
+public final class BeaconGendreau06Scenario extends DynamicPDPTWScenario {
   private static final long serialVersionUID = 1386559671732721432L;
 
   private static final Point MIN = new Point(0, 0);
@@ -60,9 +62,9 @@ public final class TripleDJGendreau06Scenario extends DynamicPDPTWScenario {
   private final int instanceNumber;
   private final boolean allowDiversion;
 
-  TripleDJGendreau06Scenario(Collection<? extends TimedEvent> pEvents,
-      Set<Enum<?>> pSupportedTypes, long ts, GendreauProblemClass problemClass,
-      int instanceNumber, boolean diversion) {
+  BeaconGendreau06Scenario(Collection<? extends TimedEvent> pEvents,
+                           Set<Enum<?>> pSupportedTypes, long ts, GendreauProblemClass problemClass,
+                           int instanceNumber, boolean diversion) {
     super(pEvents, pSupportedTypes);
     tickSize = ts;
     this.problemClass = problemClass;
@@ -88,8 +90,7 @@ public final class TripleDJGendreau06Scenario extends DynamicPDPTWScenario {
 
   @Override
   public ISpecification<SimulationInfo> getStopCondition() {
-    return Specification.of(StopCondition.VEHICLES_DONE_AND_BACK_AT_DEPOT)
-        .and(StopCondition.TIME_OUT_EVENT).build();
+    return Specification.of(new BeaconStopCondition()).build();
   }
 
   @Override
