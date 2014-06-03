@@ -75,13 +75,15 @@ public class BeaconSimulation {
                 .parse().get(0);
 
         final Gendreau06ObjectiveFunction objFunc = new BeaconGendreau06ObjectiveFunction();
-        Experiment
+        Experiment.ExperimentResults results = Experiment
                 .build(objFunc)
                 .withRandomSeed(123)
                 .addConfiguration(new BeaconConfiguration())
                 .addScenario(scenario)
                 .showGui(uic)
-                .repeat(4)
+                .repeat(1)
                 .perform();
+        System.out.println("----- RESULTS -----");
+        System.out.println(results.results);
     }
 }
