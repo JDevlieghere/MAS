@@ -5,7 +5,7 @@ import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import com.jonasdevlieghere.mas.common.Scheduler;
-import com.jonasdevlieghere.mas.strategy.SmartDeliveryStrategy;
+import com.jonasdevlieghere.mas.strategy.delivery.SmartDeliveryStrategy;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.road.RoadModel;

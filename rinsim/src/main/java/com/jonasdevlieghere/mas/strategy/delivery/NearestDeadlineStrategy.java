@@ -1,34 +1,40 @@
-package com.jonasdevlieghere.mas.strategy;
+package com.jonasdevlieghere.mas.strategy.delivery;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import com.jonasdevlieghere.mas.common.Scheduler;
+import com.jonasdevlieghere.mas.strategy.SchedulingStrategy;
 import rinde.sim.core.TimeLapse;
-import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.pdp.Parcel;
 import rinde.sim.core.model.road.RoadModel;
+import rinde.sim.util.TimeWindow;
 
-public class NearestDeliveryStrategy implements SchedulingStrategy {
+public class NearestDeadlineStrategy implements SchedulingStrategy {
 
     private Scheduler scheduler;
 
     @Override
     public BeaconParcel next(RoadModel rm, PDPModel pm, TimeLapse time) {
         BeaconTruck truck = scheduler.getUser();
-        double minDistance = Double.POSITIVE_INFINITY;
+        long minTime = Long.MAX_VALUE;
         BeaconParcel bestParcel = null;
 
         for (final Parcel parcel : pm.getContents(truck)) {
-            double distance = Point.distance(truck.getPosition(), parcel.getDestination());
-            if (distance < minDistance){
-                if(parcel.canBeDelivered(truck, time.getTime())) {
-                    minDistance = distance;
-                    bestParcel = (BeaconParcel) parcel;
+            BeaconParcel bp = (BeaconParcel)parcel;
+            long timeRemaining = timeRemaining(time, parcel.getDeliveryTimeWindow());
+            if (timeRemaining < minTime) {
+                if (bp.canBeDelivered(truck, time.getTime())) {
+                    minTime = timeRemaining;
+                    bestParcel = bp;
                 }
             }
         }
         return bestParcel;
+    }
+
+    private long timeRemaining(TimeLapse time, TimeWindow window){
+        return window.end - time.getTime();
     }
 
     @Override

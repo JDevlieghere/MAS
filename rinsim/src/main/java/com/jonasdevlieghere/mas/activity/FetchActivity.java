@@ -4,7 +4,7 @@ import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
-import com.jonasdevlieghere.mas.strategy.NearestPickupStrategy;
+import com.jonasdevlieghere.mas.strategy.pickup.NearestPickupStrategy;
 import com.jonasdevlieghere.mas.common.Scheduler;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;

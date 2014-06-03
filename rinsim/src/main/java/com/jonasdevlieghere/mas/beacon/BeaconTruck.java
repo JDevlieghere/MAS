@@ -18,7 +18,9 @@ import rinde.sim.core.model.road.RoadModel;
 import rinde.sim.pdptw.common.DefaultVehicle;
 import rinde.sim.pdptw.common.VehicleDTO;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class BeaconTruck extends DefaultVehicle implements Beacon, CommunicationUser, ActivityUser {
@@ -50,7 +52,7 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
     /**
      * Parcels ready for pickup by this DeliveryTruck
      */
-    private Set<BeaconParcel> pickupQueue;
+    private List<BeaconParcel> pickupQueue;
 
     /**
      * Message Storage
@@ -82,7 +84,7 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
     public BeaconTruck(VehicleDTO pDto) {
         super(pDto);
         this.messageStore = new MessageStore();
-        this.pickupQueue = new HashSet<BeaconParcel>();
+        this.pickupQueue = new ArrayList<BeaconParcel>();
         this.rand = new MersenneTwister(123*count++);
         this.auctionActivity = new AuctionActivity(this, messageStore);
         this.transportActivity = new TransportActivity(this);
@@ -131,8 +133,8 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         this.pickupQueue.add(parcel);
     }
 
-    public Set<BeaconParcel> getPickupQueue(){
-        return new HashSet<BeaconParcel>(this.pickupQueue);
+    public List<BeaconParcel> getPickupQueue(){
+        return new ArrayList<BeaconParcel>(this.pickupQueue);
     }
 
     public void unqueuePickup(BeaconParcel parcel){

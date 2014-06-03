@@ -1,4 +1,4 @@
-package com.jonasdevlieghere.mas.strategy;
+package com.jonasdevlieghere.mas.strategy.delivery;
 
 import com.google.common.collect.ImmutableSet;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
@@ -6,6 +6,7 @@ import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import com.jonasdevlieghere.mas.common.Cluster;
 import com.jonasdevlieghere.mas.common.KMeans;
 import com.jonasdevlieghere.mas.common.Scheduler;
+import com.jonasdevlieghere.mas.strategy.SchedulingStrategy;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
