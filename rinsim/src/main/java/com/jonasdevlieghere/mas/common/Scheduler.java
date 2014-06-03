@@ -21,7 +21,7 @@ public class Scheduler {
         this.strategy.setScheduler(this);
     }
 
-    public BeaconParcel next(RoadModel rm, PDPModel pm, TimeLapse time){
+    public BeaconParcel nextDeliverable(RoadModel rm, PDPModel pm, TimeLapse time){
         return this.strategy.next(rm, pm, time);
     }
 

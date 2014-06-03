@@ -276,7 +276,7 @@ public class Demo {
       label.setFont(newFont);
 
       final Button next = new Button(group, SWT.PUSH);
-      next.setText("next");
+      next.setText("nextDeliverable");
       next.addSelectionListener(new SelectionListener() {
         @Override
         public void widgetSelected(SelectionEvent e) {
