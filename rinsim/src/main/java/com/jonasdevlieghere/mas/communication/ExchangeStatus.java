@@ -8,7 +8,7 @@ package com.jonasdevlieghere.mas.communication;
  * To change this template use File | Settings | File Templates.
  */
 public enum ExchangeStatus {
-    INITIAL,
+    INITIATE,
     PENDING,
     PLANNING,
     MEETING,

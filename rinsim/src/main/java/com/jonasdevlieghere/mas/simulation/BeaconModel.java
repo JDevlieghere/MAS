@@ -70,6 +70,7 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
                     && Point.distance(truck.getPosition(), t.getPosition()) <= truck.getRadius() + t.getRadius())
                 trucks.add(t);
         }
+        trucks.remove(truck);
         return trucks;
     }
 
