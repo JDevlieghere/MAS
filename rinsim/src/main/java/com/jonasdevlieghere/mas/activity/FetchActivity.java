@@ -23,7 +23,7 @@ public class FetchActivity extends Activity{
     public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
         setActivityStatus(ActivityStatus.NORMAL);
 
-        BeaconParcel parcel = scheduler.next(rm, pm, time);
+        BeaconParcel parcel = scheduler.nextDeliverable(rm, pm, time);
         if(parcel != null){
             BeaconTruck truck = (BeaconTruck)getUser();
             if(parcel.canBePickedUp(truck, time.getTime())){

@@ -190,7 +190,7 @@ public final class DefaultTripleDJPDPModel extends TripleDJPDPModel {
 			roadModel.get().removeObject(parcel);
 
 			// in this case we know we cannot finish this action with the
-			// available time. We must continue in the next tick.
+			// available time. We must continue in the nextDeliverable tick.
 			if (time.getTimeLeft() < parcel.getPickupDuration()) {
 				vehicleState.put(vehicle, VehicleState.PICKING_UP);
 				parcelState.put(ParcelState.PICKING_UP, parcel);

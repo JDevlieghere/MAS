@@ -67,7 +67,7 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
     private PickupActivity pickupActivity;
     private DeliverActivity deliverActivity;
     private DiscoverActivity discoverActivity;
-    private SmartExploreActivity smartExploreActivity;
+    private ExploreActivity exploreActivity;
 
     /**
      * Point for Exploration Activity
@@ -92,7 +92,7 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         this.pickupActivity = new PickupActivity(this);
         this.deliverActivity = new DeliverActivity(this);
         this.discoverActivity = new DiscoverActivity(auctionActivity, this);
-        this.smartExploreActivity = new SmartExploreActivity(this, rand);
+        this.exploreActivity = new ExploreActivity(this, rand);
     }
 
     @Override
@@ -121,8 +121,9 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         if(endsTick(discoverActivity, rm, pm, bm, time))
             return;
 
-        //if(endsTick(new SmartExploreActivity(rm, pm, this, this.rand), time))
-            //return;
+        if(endsTick(exploreActivity, rm, pm, bm, time))
+            return;
+
 //        logger.info(this.toString());
     }
 

@@ -61,7 +61,7 @@ public class BeaconSimulation {
                         );
                 if(speedUp > 0) {
                     logger.debug("Running with speedup set to {}.", speedUp);
-                    viewBuilder.enableAutoClose().enableAutoPlay().setSpeedUp(speedUp);
+                    viewBuilder.enableAutoPlay().setSpeedUp(speedUp);
                 }
                 viewBuilder.show();
             }
