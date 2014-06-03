@@ -4,6 +4,9 @@ target/
 *.class
 *.iml
 
+# Output
+rinsim/output/*
+
 # LaTeX
 *.acn
 *.acr
@@ -38,3 +41,4 @@ target/
 *.xdy
 *.tdo
 *.pdf
+
