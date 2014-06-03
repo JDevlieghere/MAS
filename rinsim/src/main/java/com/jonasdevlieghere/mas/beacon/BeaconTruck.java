@@ -62,7 +62,6 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
      * Activities
      */
     private AuctionActivity auctionActivity;
-    private AssignmentActivity assignmentActivity;
     private TransportActivity transportActivity;
     private FetchActivity fetchActivity;
     private ExchangeActivity exchangeActivity;
@@ -83,7 +82,6 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         this.pickupQueue = new HashSet<BeaconParcel>();
         this.rand = new MersenneTwister(123*count++);
         this.auctionActivity = new AuctionActivity(this, messageStore);
-        this.assignmentActivity = new AssignmentActivity(this, messageStore);
         this.transportActivity = new TransportActivity(this);
         this.fetchActivity = new FetchActivity(this);
         this.exchangeActivity = new ExchangeActivity(this,messageStore);
@@ -95,11 +93,8 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
-        if(endsTick(assignmentActivity, rm, pm, bm, time))
+        if(endsTick(exchangeActivity, rm, pm, bm, time))
             return;
-
-//        if(endsTick(exchangeActivity, rm, pm, bm, time))
-//            return;
 
         if(endsTick(new PickupAction(rm, pm ,this), time))
             return;
@@ -113,19 +108,15 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         if(endsTick(transportActivity, rm, pm, bm, time))
             return;
 
-        if(endsTick(new DiscoverAction(rm, pm, bm, auctionActivity, this), time))
-            return;
-
         if(endsTick(auctionActivity, rm, pm, bm, time))
             return;
 
+        if(endsTick(new DiscoverAction(rm, pm, bm, auctionActivity, this), time))
+            return;
+
+        //if(endsTick(new SmartExploreAction(rm, pm, this, this.rand), time))
+            //return;
 //        logger.info(this.toString());
-
-//        if(endsTick(new ReturnAction(rm, pm, bm, dto, this), time))
-//            return;
-
-//        if(endsTick(new SmartExploreAction(rm, pm, this, this.rand), time))
-//            return;
     }
 
 
