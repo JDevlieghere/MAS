@@ -1,8 +1,6 @@
 package com.jonasdevlieghere.mas.simulation;
 
 import com.google.common.collect.ImmutableList;
-import com.jonasdevlieghere.mas.beacon.BeaconParcel;
-import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import com.jonasdevlieghere.mas.config.RuntimeConfiguration;
 import com.jonasdevlieghere.mas.config.SimulationConfiguration;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06ObjectiveFunction;
@@ -10,6 +8,8 @@ import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Parser;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Scenario;
 import com.jonasdevlieghere.mas.strategy.delivery.NearestDeliveryStrategy;
 import com.jonasdevlieghere.mas.strategy.pickup.NearestPickupStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rinde.sim.pdptw.experiment.Experiment;
 import rinde.sim.pdptw.gendreau06.Gendreau06ObjectiveFunction;
 
@@ -18,6 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BeaconSimulationTester {
+
+    final static Logger logger = LoggerFactory.getLogger(BeaconSimulationTester.class);
+
 
     public static final List<String> GENDREAU = Arrays.asList(
             "req_rapide_1_240_24",
@@ -37,10 +40,16 @@ public class BeaconSimulationTester {
             "req_rapide_5_450_24"
     );
 
+    public static final List<RuntimeConfiguration> CONFIGURATIONS = Arrays.asList(
+            new RuntimeConfiguration(0.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
+            new RuntimeConfiguration(1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
+            new RuntimeConfiguration(1.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
+            new RuntimeConfiguration(2,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true)
+    );
+
     public static void main(String[] args){
-        ArrayList<RuntimeConfiguration> runtimeConfigurations = new ArrayList<RuntimeConfiguration>();
+        ArrayList<RuntimeConfiguration> runtimeConfigurations = new ArrayList<RuntimeConfiguration>(CONFIGURATIONS);
         ArrayList<String> datasets = new ArrayList<String>(GENDREAU);
-        runtimeConfigurations.add(new RuntimeConfiguration(1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true));
         BeaconSimulationTester tester = new BeaconSimulationTester(runtimeConfigurations, datasets);
         tester.run();
     }
@@ -56,8 +65,12 @@ public class BeaconSimulationTester {
     public void run(){
         for(RuntimeConfiguration runtimeConfiguration: runtimeConfigurations){
             for(String dataset: datasets){
-                System.out.println(runtimeConfiguration);
-                System.out.println(runExperiment(runtimeConfiguration, dataset));
+                try{
+                    logger.info(runtimeConfiguration.toString());
+                    logger.info(runExperiment(runtimeConfiguration, dataset).toString());
+                }catch (Exception e){
+                    logger.error(e.toString());
+                }
             }
         }
     }
