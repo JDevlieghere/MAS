@@ -189,7 +189,11 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     @Override
     public String toString() {
-        return "DeliveryTruck("+this.hashCode()+"){Pickups: " +this.getPickupQueue().size()+ ", Parcels: "+ getNbOfParcels() +"}";
+        try{
+            return "DeliveryTruck("+this.hashCode()+"){Pickups: " +this.getPickupQueue().size()+ ", Parcels: "+ getNbOfParcels() +"}";
+        }catch (IllegalStateException e){
+            return "DeliveryTruck("+this.hashCode()+")";
+        }
     }
 
     public int getNbOfParcels() {
