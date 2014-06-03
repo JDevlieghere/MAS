@@ -1,5 +1,6 @@
 package com.jonasdevlieghere.mas.action;
 
+import com.jonasdevlieghere.mas.activity.AuctionActivity;
 import com.jonasdevlieghere.mas.beacon.*;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
@@ -10,8 +11,11 @@ import java.util.List;
 
 public class DiscoverAction extends Action {
 
-    public DiscoverAction(RoadModel rm, PDPModel pm, BeaconModel bm, DeliveryTruck truck) {
+    private AuctionActivity auctionActivity;
+
+    public DiscoverAction(RoadModel rm, PDPModel pm, BeaconModel bm, AuctionActivity auctionActivity, DeliveryTruck truck) {
         super(rm, pm, bm, truck);
+        this.auctionActivity = auctionActivity;
     }
 
     @Override
@@ -26,10 +30,10 @@ public class DiscoverAction extends Action {
         if(!parcels.isEmpty() && pm.getVehicleState(truck) == PDPModel.VehicleState.IDLE){
             for(BeaconParcel bp : parcels){
                     if(bp.ping()){
-                        truck.addAuctionableParcel(bp);
+                        auctionActivity.addAuctionableParcel(bp);
                     }  else {
-                        if(!truck.hasDiscovered(bp)){
-                            truck.addDiscoveredParcel(bp);
+                        if(!auctionActivity.hasDiscovered(bp)){
+                            auctionActivity.addDiscoveredParcel(bp);
                     }
                 }
             }

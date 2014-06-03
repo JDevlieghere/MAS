@@ -24,7 +24,10 @@ import java.util.Set;
 
 public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser, ActionUser, ActivityUser {
 
-    private Logger logger;
+    /**
+     * Logger
+     */
+    private static Logger logger = LoggerFactory.getLogger(DeliveryTruck.class);
 
     /**
      * Constants
@@ -63,8 +66,14 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     private FetchActivity fetchActivity;
     private ExchangeActivity exchangeActivity;
 
+    /**
+     * Point for Exploration Activity
+     */
     private Point explorationDestination;
-    private Parcel cheatParcel;
+
+    /**
+     * Beacon Status
+     */
     private BeaconStatus status;
 
     public DeliveryTruck(VehicleDTO pDto) {
@@ -77,7 +86,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         this.transportActivity = new TransportActivity(this);
         this.fetchActivity = new FetchActivity(this);
         this.exchangeActivity = new ExchangeActivity(this,messageStore);
-        this.logger = LoggerFactory.getLogger(DeliveryTruck.class);
         this.setStatus(BeaconStatus.ACTIVE);
     }
 
@@ -104,7 +112,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(endsTick(transportActivity, rm, pm, bm, time))
             return;
 
-        if(endsTick(new DiscoverAction(rm, pm, bm, this), time))
+        if(endsTick(new DiscoverAction(rm, pm, bm, auctionActivity, this), time))
             return;
 
         if(endsTick(auctionActivity, rm, pm, bm, time))
@@ -159,7 +167,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
 
     @Override
     public BeaconStatus getStatus() {
-        return status;
+        return this.status;
     }
 
     @Override
@@ -179,14 +187,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     @Override
     public void setModel(BeaconModel model) {
         this.bm = model;
-    }
-
-    public void addDiscoveredParcel(BeaconParcel parcel) {
-        auctionActivity.addDiscoveredParcel(parcel);
-    }
-
-    public void addAuctionableParcel(BeaconParcel parcel) {
-        auctionActivity.addAuctionableParcel(parcel);
     }
 
     public void send(CommunicationUser recipient, Message message){
@@ -224,10 +224,6 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
         if(activity.getStatus() == ActivityStatus.END_TICK)
             return true;
         return false;
-    }
-
-    public boolean hasDiscovered(BeaconParcel bp) {
-        return auctionActivity.hasDiscovered(bp);
     }
 
     public Point getExplorationDestination(){
