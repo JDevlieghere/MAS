@@ -79,11 +79,11 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
      */
     private BeaconStatus status;
 
-    public BeaconTruck(VehicleDTO pDto) {
+    public BeaconTruck(VehicleDTO pDto, long seed) {
         super(pDto);
         this.messageStore = new MessageStore();
         this.pickupQueue = new ArrayList<BeaconParcel>();
-        this.rand = new MersenneTwister(123*count++);
+        this.rand = new MersenneTwister(seed);
         this.auctionActivity = new AuctionActivity(this, messageStore);
         this.transportActivity = new TransportActivity(this);
         this.fetchActivity = new FetchActivity(this);
