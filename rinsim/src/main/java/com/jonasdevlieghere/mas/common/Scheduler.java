@@ -1,8 +1,9 @@
-package com.jonasdevlieghere.mas.schedule;
+package com.jonasdevlieghere.mas.common;
 
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import com.jonasdevlieghere.mas.beacon.BeaconTruck;
+import com.jonasdevlieghere.mas.strategy.SchedulingStrategy;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.road.RoadModel;
@@ -11,10 +12,10 @@ public class Scheduler {
 
     private RoadModel rm;
     private PDPModel pm;
-    private DeliveryTruck truck;
+    private BeaconTruck truck;
     private SchedulingStrategy strategy;
 
-    public Scheduler(DeliveryTruck truck, SchedulingStrategy strategy){
+    public Scheduler(BeaconTruck truck, SchedulingStrategy strategy){
         this.truck = truck;
         this.strategy = strategy;
         this.strategy.setScheduler(this);
@@ -24,7 +25,7 @@ public class Scheduler {
         return this.strategy.next(rm, pm, time);
     }
 
-    public DeliveryTruck getUser(){
+    public BeaconTruck getUser(){
         return this.truck;
     }
 }

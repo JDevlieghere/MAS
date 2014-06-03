@@ -1,7 +1,7 @@
 package com.jonasdevlieghere.mas.action;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import org.apache.commons.math3.random.RandomGenerator;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
@@ -14,7 +14,7 @@ public class SmartExploreAction extends Action {
 
     private final RandomGenerator rand;
 
-    public SmartExploreAction(RoadModel rm, PDPModel pm, DeliveryTruck truck, RandomGenerator rand) {
+    public SmartExploreAction(RoadModel rm, PDPModel pm, BeaconTruck truck, RandomGenerator rand) {
         super(rm, pm, null, truck);
         this.rand = rand;
     }
@@ -24,7 +24,7 @@ public class SmartExploreAction extends Action {
         final RoadModel rm = getRoadModel();
         final PDPModel pm = getPDPModel();
 
-        DeliveryTruck truck = (DeliveryTruck)getUser();
+        BeaconTruck truck = (BeaconTruck)getUser();
         double minDistance = Double.POSITIVE_INFINITY;
         BeaconParcel bestParcel = null;
 

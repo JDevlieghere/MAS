@@ -13,7 +13,7 @@ public class DiscoverAction extends Action {
 
     private AuctionActivity auctionActivity;
 
-    public DiscoverAction(RoadModel rm, PDPModel pm, BeaconModel bm, AuctionActivity auctionActivity, DeliveryTruck truck) {
+    public DiscoverAction(RoadModel rm, PDPModel pm, BeaconModel bm, AuctionActivity auctionActivity, BeaconTruck truck) {
         super(rm, pm, bm, truck);
         this.auctionActivity = auctionActivity;
     }
@@ -22,9 +22,8 @@ public class DiscoverAction extends Action {
     public void execute(TimeLapse time) {
         final PDPModel pm = getPDPModel();
         final BeaconModel bm = getBeaconModel();
-        DeliveryTruck truck = (DeliveryTruck)getUser();
+        BeaconTruck truck = (BeaconTruck)getUser();
         // Discovery is instantanious and does not end a tick.
-        setStatus(ActionStatus.FAILURE);
 
         List<BeaconParcel> parcels = bm.getDetectableParcels(truck);
         if(!parcels.isEmpty() && pm.getVehicleState(truck) == PDPModel.VehicleState.IDLE){

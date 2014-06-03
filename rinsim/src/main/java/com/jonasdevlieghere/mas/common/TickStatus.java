@@ -1,4 +1,4 @@
-package com.jonasdevlieghere.mas.activity;
+package com.jonasdevlieghere.mas.common;
 
 /**
  * Created with IntelliJ IDEA.
@@ -7,7 +7,7 @@ package com.jonasdevlieghere.mas.activity;
  * Time: 3:29 PM
  * To change this template use File | Settings | File Templates.
  */
-public enum ActivityStatus {
+public enum TickStatus {
     NORMAL,
     END_TICK
 }

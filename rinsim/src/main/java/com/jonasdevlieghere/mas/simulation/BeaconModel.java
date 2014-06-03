@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.jonasdevlieghere.mas.beacon.Beacon;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconStatus;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.Model;
 import rinde.sim.core.model.ModelProvider;
@@ -31,11 +31,11 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
         this.beacons = new CopyOnWriteArrayList<Beacon>();
     }
 
-    public List<DeliveryTruck> getAllTruckBeacons() {
-        final List<DeliveryTruck> trucks = new ArrayList<DeliveryTruck>();
+    public List<BeaconTruck> getAllTruckBeacons() {
+        final List<BeaconTruck> trucks = new ArrayList<BeaconTruck>();
         for (final Beacon beacon : beacons) {
-            if (beacon instanceof DeliveryTruck) {
-                trucks.add((DeliveryTruck) beacon);
+            if (beacon instanceof BeaconTruck) {
+                trucks.add((BeaconTruck) beacon);
             }
         }
         return trucks;
@@ -51,7 +51,7 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
         return parcels;
     }
 
-    public List<BeaconParcel> getDetectableParcels(DeliveryTruck truck) {
+    public List<BeaconParcel> getDetectableParcels(BeaconTruck truck) {
         final List<BeaconParcel> parcels = new ArrayList<BeaconParcel>();
         for (final BeaconParcel parcel : getAllParcelBeacons()) {
             if((parcel.getStatus() == BeaconStatus.ACTIVE  || parcel.getStatus() == BeaconStatus.SLAVE)
@@ -62,9 +62,9 @@ public class BeaconModel implements Model<Beacon>, ModelReceiver {
         return parcels;
     }
 
-    public List<DeliveryTruck> getDetectableTrucks(DeliveryTruck truck){
-        final List<DeliveryTruck> trucks = new ArrayList<DeliveryTruck>();
-        for (final DeliveryTruck t : getAllTruckBeacons()) {
+    public List<BeaconTruck> getDetectableTrucks(BeaconTruck truck){
+        final List<BeaconTruck> trucks = new ArrayList<BeaconTruck>();
+        for (final BeaconTruck t : getAllTruckBeacons()) {
             //TODO:check whether slave is correct.
             if((t.getStatus() == BeaconStatus.ACTIVE  || t.getStatus() == BeaconStatus.SLAVE)
                     && Point.distance(truck.getPosition(), t.getPosition()) <= truck.getRadius() + t.getRadius())

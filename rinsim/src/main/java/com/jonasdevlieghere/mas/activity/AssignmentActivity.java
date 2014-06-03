@@ -1,7 +1,7 @@
 package com.jonasdevlieghere.mas.activity;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import com.jonasdevlieghere.mas.communication.AssignmentMessage;
 import com.jonasdevlieghere.mas.communication.MessageStore;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
@@ -30,7 +30,7 @@ public class AssignmentActivity extends Activity {
     @Override
     public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
         List<AssignmentMessage> messages = messageStore.retrieve(AssignmentMessage.class);
-        DeliveryTruck truck = (DeliveryTruck)getUser();
+        BeaconTruck truck = (BeaconTruck)getUser();
         for(AssignmentMessage assignment: messages){
                 truck.queuePickup((BeaconParcel) assignment.getParcel());
         }

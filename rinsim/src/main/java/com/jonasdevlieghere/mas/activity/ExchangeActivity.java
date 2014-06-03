@@ -2,9 +2,10 @@ package com.jonasdevlieghere.mas.activity;
 
 import com.google.common.collect.ImmutableSet;
 import com.jonasdevlieghere.mas.beacon.BeaconStatus;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
-import com.jonasdevlieghere.mas.cluster.Cluster;
-import com.jonasdevlieghere.mas.cluster.KMeans;
+import com.jonasdevlieghere.mas.beacon.BeaconTruck;
+import com.jonasdevlieghere.mas.common.Cluster;
+import com.jonasdevlieghere.mas.common.KMeans;
+import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.communication.*;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ public class ExchangeActivity extends Activity{
     private Point meetingPoint;
     private ArrayList<Point> myDropList;
     private ArrayList<Point> myPickupList;
-    DeliveryTruck otherTruck;
+    BeaconTruck otherTruck;
 
     public ExchangeActivity(ActivityUser user, MessageStore messageStore){
         super(user);
@@ -38,8 +39,8 @@ public class ExchangeActivity extends Activity{
     @Override
     public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
         //Reset activity status
-        setActivityStatus(ActivityStatus.NORMAL);
-        DeliveryTruck truck = (DeliveryTruck) getUser();
+        setActivityStatus(TickStatus.NORMAL);
+        BeaconTruck truck = (BeaconTruck) getUser();
         switch (truck.getStatus()){
             case ACTIVE:
                 assert(status == ExchangeStatus.INITIATE);
@@ -98,21 +99,21 @@ public class ExchangeActivity extends Activity{
         }
     }
 
-    private void slaveInitiate(PDPModel pm, DeliveryTruck truck) {
+    private void slaveInitiate(PDPModel pm, BeaconTruck truck) {
         List<ExchangeRequestMessage> messages1 = messageStore.retrieve(ExchangeRequestMessage.class);
         if(!messages1.isEmpty()){
             //At all times there should only be one message of this type.
             ExchangeRequestMessage request = messages1.get(0);
-            otherTruck = (DeliveryTruck) request.getSender();
+            otherTruck = (BeaconTruck) request.getSender();
             truck.send(otherTruck, new ExchangeReplyMessage(truck, pm.getContents(truck)));
             setExchangeStatus(ExchangeStatus.PENDING);
-            setActivityStatus(ActivityStatus.END_TICK);
+            setActivityStatus(TickStatus.END_TICK);
         }
     }
 
     private void slaveExchanging() {
         setExchangeStatus(ExchangeStatus.INITIATE);
-        setActivityStatus(ActivityStatus.END_TICK);
+        setActivityStatus(TickStatus.END_TICK);
     }
 
     private void slavePlanning() {
@@ -126,10 +127,10 @@ public class ExchangeActivity extends Activity{
         } else {
             setExchangeStatus(ExchangeStatus.MEETING);
         }
-        setActivityStatus(ActivityStatus.END_TICK);
+        setActivityStatus(TickStatus.END_TICK);
     }
 
-    private void masterExchanging(PDPModel pm, DeliveryTruck truck, TimeLapse time) {
+    private void masterExchanging(PDPModel pm, BeaconTruck truck, TimeLapse time) {
         logger.debug("BEFORE: " + truck);
         logger.debug("other BEFORE: " + otherTruck);
         ImmutableSet<Parcel> myContents = pm.getContents(truck);
@@ -151,10 +152,10 @@ public class ExchangeActivity extends Activity{
         logger.debug("AFTER: " + truck);
         logger.debug("other AFTER: " + otherTruck);
         setExchangeStatus(ExchangeStatus.RESETTING);
-        setActivityStatus(ActivityStatus.END_TICK);
+        setActivityStatus(TickStatus.END_TICK);
     }
 
-    private void reset(DeliveryTruck truck) {
+    private void reset(BeaconTruck truck) {
         otherTruck.setStatus(BeaconStatus.ACTIVE);
         truck.setStatus(BeaconStatus.ACTIVE);
         setExchangeStatus(ExchangeStatus.INITIATE);
@@ -164,7 +165,7 @@ public class ExchangeActivity extends Activity{
         myPickupList = new ArrayList<Point>();
     }
 
-    private void masterPlanning(PDPModel pm, DeliveryTruck truck) {
+    private void masterPlanning(PDPModel pm, BeaconTruck truck) {
         List<ExchangeReplyMessage> messages = messageStore.retrieve(ExchangeReplyMessage.class);
         //At all times there should only be one message of this type.
         //Also guaranteed reply.
@@ -212,17 +213,17 @@ public class ExchangeActivity extends Activity{
             meetingPoint = new Point(newX, newY);
             truck.send(otherTruck, new ExchangeAssignmentMessage(truck, meetingPoint));
             setExchangeStatus(ExchangeStatus.MEETING);
-            setActivityStatus(ActivityStatus.END_TICK);
+            setActivityStatus(TickStatus.END_TICK);
         } else {
             //let other truck know to end the masterExchanging
             truck.send(otherTruck, new ExchangeAssignmentMessage(truck, null));
             setExchangeStatus(ExchangeStatus.RESETTING);
-            setActivityStatus(ActivityStatus.END_TICK);
+            setActivityStatus(TickStatus.END_TICK);
         }
     }
 
-    private void masterInitiate(DeliveryTruck truck, BeaconModel bm) {
-        List<DeliveryTruck> trucks = bm.getDetectableTrucks(truck);
+    private void masterInitiate(BeaconTruck truck, BeaconModel bm) {
+        List<BeaconTruck> trucks = bm.getDetectableTrucks(truck);
         if(trucks.isEmpty())
             return;
         if(trucks.get(0).ping()){
@@ -230,20 +231,20 @@ public class ExchangeActivity extends Activity{
             truck.send(otherTruck, new ExchangeRequestMessage(truck));
             truck.setStatus(BeaconStatus.MASTER);
             setExchangeStatus(ExchangeStatus.PENDING);
-            setActivityStatus(ActivityStatus.END_TICK);
+            setActivityStatus(TickStatus.END_TICK);
         }
     }
 
-    private void meeting(RoadModel rm, TimeLapse time, DeliveryTruck truck) {
-        if(rm.getObjectsAt(truck,DeliveryTruck.class).contains(otherTruck))
+    private void meeting(RoadModel rm, TimeLapse time, BeaconTruck truck) {
+        if(rm.getObjectsAt(truck,BeaconTruck.class).contains(otherTruck))
             setExchangeStatus(ExchangeStatus.EXCHANGING);
         rm.moveTo(truck, meetingPoint, time);
-        setActivityStatus(ActivityStatus.END_TICK);
+        setActivityStatus(TickStatus.END_TICK);
     }
 
     private void pending() {
         setExchangeStatus(ExchangeStatus.PLANNING);
-        setActivityStatus(ActivityStatus.END_TICK);
+        setActivityStatus(TickStatus.END_TICK);
     }
 
     private void setExchangeStatus(ExchangeStatus status){

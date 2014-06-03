@@ -1,5 +1,6 @@
 package com.jonasdevlieghere.mas.action;
 
+import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -7,7 +8,7 @@ import rinde.sim.core.model.road.RoadModel;
 
 public abstract class Action {
 
-    private ActionStatus status;
+    private TickStatus status;
     private final RoadModel rm;
     private final PDPModel pm;
     private final BeaconModel bm;
@@ -18,16 +19,16 @@ public abstract class Action {
         this.pm = pm;
         this.bm = bm;
         this.user = user;
-        setStatus(ActionStatus.PENDING);
+        setStatus(TickStatus.NORMAL);
     }
 
     public abstract void execute(TimeLapse time);
 
-    protected void setStatus(ActionStatus status){
+    protected void setStatus(TickStatus status){
         this.status = status;
     }
 
-    public ActionStatus getStatus(){
+    public TickStatus getStatus(){
         return this.status;
     }
 

@@ -1,8 +1,8 @@
 package com.jonasdevlieghere.mas.activity;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
-import com.jonasdevlieghere.mas.beacon.BeaconStatus;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import com.jonasdevlieghere.mas.beacon.BeaconTruck;
+import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.communication.*;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
@@ -30,7 +30,7 @@ public class AuctionActivity extends Activity{
 
     @Override
     public void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
-        setActivityStatus(ActivityStatus.NORMAL);
+        setActivityStatus(TickStatus.NORMAL);
         if(!auctionableParcels.isEmpty()){
             auction();
         }
@@ -41,25 +41,25 @@ public class AuctionActivity extends Activity{
 
     public void auction(){
         Set<BeaconParcel> toRemove = new HashSet<BeaconParcel>();
-        DeliveryTruck truck = (DeliveryTruck)this.getUser();
+        BeaconTruck truck = (BeaconTruck)this.getUser();
         for(Map.Entry<BeaconParcel,AuctionStatus> bpEntry: auctionableParcels.entrySet()){
             switch (bpEntry.getValue()){
                 case UNAUCTIONED:
                     //System.out.println("UNAUC at " + truck.toString() + ", parcel = " + bpEntry.getKey());
                     truck.broadcast(new ParticipationRequestMessage(truck, bpEntry.getKey()));
                     auctionableParcels.put(bpEntry.getKey(),AuctionStatus.PENDING);
-                    setActivityStatus(ActivityStatus.END_TICK);
+                    setActivityStatus(TickStatus.END_TICK);
                     break;
                 case PENDING:
                     // Waiting for replies to come back.
                     auctionableParcels.put(bpEntry.getKey(), AuctionStatus.AUCTIONING);
-                    setActivityStatus(ActivityStatus.END_TICK);
+                    setActivityStatus(TickStatus.END_TICK);
                     break;
                 case AUCTIONING:
                     //System.out.println("Bidders for all auctions (except me) = " + messageStore.getSize(ParticipationReplyMessage.class));
                     List<ParticipationReplyMessage> messages = messageStore.retrieve(ParticipationReplyMessage.class);
                     toRemove.add(bpEntry.getKey());
-                    DeliveryTruck bestTruck = truck;
+                    BeaconTruck bestTruck = truck;
                     AuctionCost lowestAuctionCost = new AuctionCost(truck,bpEntry.getKey());
                     //System.out.println("MY "+ truck + " BID:"+ lowestAuctionCost);
                     for(Message msg : messages){
@@ -69,7 +69,7 @@ public class AuctionActivity extends Activity{
                                 //System.out.println("OTHER "+ reply.getSender()+" BID:"+ reply.getAuctionCost() + " FOR:" + reply.getRequest().getAuctionableParcel());
                                 if(lowestAuctionCost.compareTo(reply.getAuctionCost()) > 0){
                                     lowestAuctionCost = reply.getAuctionCost();
-                                    bestTruck = (DeliveryTruck) reply.getSender();
+                                    bestTruck = (BeaconTruck) reply.getSender();
                                 }
                             }
                         } catch (ClassCastException e){
@@ -81,7 +81,7 @@ public class AuctionActivity extends Activity{
                     } else {
                         truck.send(bestTruck, new AssignmentMessage(truck, bpEntry.getKey()));
                     }
-                    setActivityStatus(ActivityStatus.NORMAL);
+                    setActivityStatus(TickStatus.NORMAL);
                     break;
             }
         }
@@ -94,7 +94,7 @@ public class AuctionActivity extends Activity{
     private void bid() {
         //System.out.println("Bidding " + messages.size());
         List<ParticipationRequestMessage> messages = messageStore.retrieve(ParticipationRequestMessage.class);
-        DeliveryTruck truck = (DeliveryTruck)this.getUser();
+        BeaconTruck truck = (BeaconTruck)this.getUser();
         for(ParticipationRequestMessage request : messages){
             if(hasDiscovered(request.getAuctionableParcel())){
                 CommunicationUser sender = request.getSender();
@@ -106,7 +106,7 @@ public class AuctionActivity extends Activity{
             }
         }
         if(messages.size() > 0 )
-            setActivityStatus(ActivityStatus.END_TICK);
+            setActivityStatus(TickStatus.END_TICK);
         return;
     }
 

@@ -69,23 +69,23 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
 
     @Override
     public boolean canBeDelivered(Vehicle v, long time) {
-        long destinationTime = getDestinationTime((DeliveryTruck) v, time);
+        long destinationTime = getDestinationTime((BeaconTruck) v, time);
         return getPDPModel().getTimeWindowPolicy().canDeliver(this.getDeliveryTimeWindow(), time, destinationTime);
     }
 
     @Override
     public boolean canBePickedUp(Vehicle v, long time) {
-        long originTime = getOriginTime((DeliveryTruck) v, time);
+        long originTime = getOriginTime((BeaconTruck) v, time);
         return getPDPModel().getTimeWindowPolicy().canPickup(this.getPickupTimeWindow(), time, originTime);
     }
 
-    private long getOriginTime(DeliveryTruck truck, long currentTime){
+    private long getOriginTime(BeaconTruck truck, long currentTime){
         double distance = Point.distance(truck.getPosition(), this.getPosition());
         double speed = truck.getSpeed();
         return currentTime + (long)(distance/speed) + this.getPickupDuration();
     }
 
-    private long getDestinationTime(DeliveryTruck truck, long currentTime){
+    private long getDestinationTime(BeaconTruck truck, long currentTime){
         double distance = Point.distance(truck.getPosition(), this.getDestination());
         double speed = truck.getSpeed();
         return currentTime + (long)(distance/speed) + this.getPickupDuration();

@@ -1,12 +1,12 @@
 package com.jonasdevlieghere.mas.communication;
 
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.communication.Message;
 public class ExchangeAssignmentMessage extends Message {
     private Point meetingPoint;
 
-    public ExchangeAssignmentMessage(DeliveryTruck truck, Point meetingPoint) {
+    public ExchangeAssignmentMessage(BeaconTruck truck, Point meetingPoint) {
         super(truck);
         setMeetingPoint(meetingPoint);
     }

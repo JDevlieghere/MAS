@@ -2,6 +2,7 @@ package com.jonasdevlieghere.mas.beacon;
 
 import com.jonasdevlieghere.mas.action.*;
 import com.jonasdevlieghere.mas.activity.*;
+import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.communication.MessageStore;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import org.apache.commons.math3.random.MersenneTwister;
@@ -14,7 +15,6 @@ import rinde.sim.core.model.communication.CommunicationAPI;
 import rinde.sim.core.model.communication.CommunicationUser;
 import rinde.sim.core.model.communication.Message;
 import rinde.sim.core.model.pdp.PDPModel;
-import rinde.sim.core.model.pdp.Parcel;
 import rinde.sim.core.model.road.RoadModel;
 import rinde.sim.pdptw.common.DefaultVehicle;
 import rinde.sim.pdptw.common.VehicleDTO;
@@ -22,12 +22,12 @@ import rinde.sim.pdptw.common.VehicleDTO;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DeliveryTruck extends DefaultVehicle implements Beacon, CommunicationUser, ActionUser, ActivityUser {
+public class BeaconTruck extends DefaultVehicle implements Beacon, CommunicationUser, ActionUser, ActivityUser {
 
     /**
      * Logger
      */
-    private static Logger logger = LoggerFactory.getLogger(DeliveryTruck.class);
+    private static Logger logger = LoggerFactory.getLogger(BeaconTruck.class);
 
     /**
      * Constants
@@ -76,7 +76,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
      */
     private BeaconStatus status;
 
-    public DeliveryTruck(VehicleDTO pDto) {
+    public BeaconTruck(VehicleDTO pDto) {
         super(pDto);
         this.messageStore = new MessageStore();
         this.pickupQueue = new HashSet<BeaconParcel>();
@@ -213,7 +213,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     @Override
     public boolean endsTick(Action action, TimeLapse time) {
         action.execute(time);
-        if(action.getStatus() == ActionStatus.SUCCESS)
+        if(action.getStatus() == TickStatus.END_TICK)
             return true;
         return false;
     }
@@ -221,7 +221,7 @@ public class DeliveryTruck extends DefaultVehicle implements Beacon, Communicati
     @Override
     public boolean endsTick(Activity activity, RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
         activity.execute(rm, pm, bm, time);
-        if(activity.getStatus() == ActivityStatus.END_TICK)
+        if(activity.getStatus() == TickStatus.END_TICK)
             return true;
         return false;
     }

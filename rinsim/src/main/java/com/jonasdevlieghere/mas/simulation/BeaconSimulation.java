@@ -1,7 +1,7 @@
 package com.jonasdevlieghere.mas.simulation;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class BeaconSimulation {
             @Override
             public void createUI(Simulator sim) {
                 final UiSchema schema = new UiSchema(false);
-                schema.add(DeliveryTruck.class, "/graphics/perspective/deliverytruck.png");
+                schema.add(BeaconTruck.class, "/graphics/perspective/deliverytruck.png");
                 schema.add(DefaultDepot.class, "/graphics/flat/warehouse-32.png");
                 schema.add(BeaconParcel.class, "/graphics/perspective/deliverypackage2.png");
 

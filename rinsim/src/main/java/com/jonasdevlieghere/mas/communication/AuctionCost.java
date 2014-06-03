@@ -1,14 +1,14 @@
 package com.jonasdevlieghere.mas.communication;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import rinde.sim.core.graph.Point;
 
 public class AuctionCost implements Comparable<AuctionCost> {
-    private DeliveryTruck truck;
+    private BeaconTruck truck;
     private BeaconParcel parcel;
 
-    public AuctionCost(DeliveryTruck truck, BeaconParcel parcel){
+    public AuctionCost(BeaconTruck truck, BeaconParcel parcel){
         this.truck = truck;
         this.parcel = parcel;
     }

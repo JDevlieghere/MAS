@@ -1,9 +1,8 @@
 package com.jonasdevlieghere.mas.strategy;
 
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
-import com.jonasdevlieghere.mas.schedule.Scheduler;
-import com.jonasdevlieghere.mas.schedule.SchedulingStrategy;
+import com.jonasdevlieghere.mas.beacon.BeaconTruck;
+import com.jonasdevlieghere.mas.common.Scheduler;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -16,7 +15,7 @@ public class NearestDeliveryStrategy implements SchedulingStrategy {
 
     @Override
     public BeaconParcel next(RoadModel rm, PDPModel pm, TimeLapse time) {
-        DeliveryTruck truck = scheduler.getUser();
+        BeaconTruck truck = scheduler.getUser();
         double minDistance = Double.POSITIVE_INFINITY;
         BeaconParcel bestParcel = null;
 

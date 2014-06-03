@@ -1,6 +1,7 @@
 package com.jonasdevlieghere.mas.action;
 
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
+import com.jonasdevlieghere.mas.beacon.BeaconTruck;
+import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -21,8 +22,8 @@ public class ReturnAction extends Action {
     public void execute(TimeLapse time) {
         RoadModel rm = getRoadModel();
         if (rm.getObjectsOfType(Parcel.class).isEmpty()) {
-            rm.moveTo((DeliveryTruck)getUser(), dto.startPosition, time);
-            setStatus(ActionStatus.SUCCESS);
+            rm.moveTo((BeaconTruck)getUser(), dto.startPosition, time);
+            setStatus(TickStatus.END_TICK);
         }
     }
 }

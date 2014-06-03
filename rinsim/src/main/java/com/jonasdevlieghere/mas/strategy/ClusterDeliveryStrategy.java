@@ -2,11 +2,10 @@ package com.jonasdevlieghere.mas.strategy;
 
 import com.google.common.collect.ImmutableSet;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
-import com.jonasdevlieghere.mas.beacon.DeliveryTruck;
-import com.jonasdevlieghere.mas.cluster.Cluster;
-import com.jonasdevlieghere.mas.cluster.KMeans;
-import com.jonasdevlieghere.mas.schedule.Scheduler;
-import com.jonasdevlieghere.mas.schedule.SchedulingStrategy;
+import com.jonasdevlieghere.mas.beacon.BeaconTruck;
+import com.jonasdevlieghere.mas.common.Cluster;
+import com.jonasdevlieghere.mas.common.KMeans;
+import com.jonasdevlieghere.mas.common.Scheduler;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -30,7 +29,7 @@ public class ClusterDeliveryStrategy implements SchedulingStrategy {
     @Override
     public BeaconParcel next(RoadModel rm, PDPModel pm, TimeLapse time) {
         try {
-            DeliveryTruck truck = scheduler.getUser();
+            BeaconTruck truck = scheduler.getUser();
             ImmutableSet<Parcel> parcels = pm.getContents(truck);
 
             ArrayList<Point> points = new ArrayList<Point>();

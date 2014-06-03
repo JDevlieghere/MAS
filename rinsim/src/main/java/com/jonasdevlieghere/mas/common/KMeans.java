@@ -1,4 +1,4 @@
-package com.jonasdevlieghere.mas.cluster;
+package com.jonasdevlieghere.mas.common;
 
 
 import org.apache.commons.math3.random.MersenneTwister;

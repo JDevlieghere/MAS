@@ -1,4 +1,4 @@
-package com.jonasdevlieghere.mas.cluster;
+package com.jonasdevlieghere.mas.common;
 
 import rinde.sim.core.graph.Point;
 

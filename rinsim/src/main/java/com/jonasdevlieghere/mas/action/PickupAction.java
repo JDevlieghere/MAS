@@ -2,6 +2,7 @@ package com.jonasdevlieghere.mas.action;
 
 
 import com.google.common.base.Predicate;
+import com.jonasdevlieghere.mas.common.TickStatus;
 import com.jonasdevlieghere.mas.beacon.*;
 import rinde.sim.core.TimeLapse;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -12,7 +13,7 @@ import rinde.sim.pdptw.common.DefaultParcel;
 
 public class PickupAction extends Action {
 
-    public PickupAction(RoadModel rm, PDPModel pm, DeliveryTruck truck) {
+    public PickupAction(RoadModel rm, PDPModel pm, BeaconTruck truck) {
         super(rm, pm, null, truck);
     }
 
@@ -21,7 +22,7 @@ public class PickupAction extends Action {
         final RoadModel rm = getRoadModel();
         final PDPModel pm = getPDPModel();
         final DefaultParcel nearest = getNearestParcel();
-        DeliveryTruck truck = (DeliveryTruck)getUser();
+        BeaconTruck truck = (BeaconTruck)getUser();
 
         if (nearest != null && rm.equalPosition(nearest, truck)
                 && pm.getTimeWindowPolicy().canPickup(nearest.getPickupTimeWindow(),
@@ -33,19 +34,15 @@ public class PickupAction extends Action {
                 BeaconParcel beaconParcel = (BeaconParcel) nearest;
                 beaconParcel.setStatus(BeaconStatus.INACTIVE);
                 truck.unqueuePickup(beaconParcel);
-                setStatus(ActionStatus.SUCCESS);
-            }else{
-                setStatus(ActionStatus.FAILURE);
+                setStatus(TickStatus.END_TICK);
             }
-        }else{
-            setStatus(ActionStatus.FAILURE);
         }
     }
 
     private DefaultParcel getNearestParcel(){
         final RoadModel rm = getRoadModel();
         final PDPModel pm = getPDPModel();
-        DeliveryTruck truck = (DeliveryTruck)getUser();
+        BeaconTruck truck = (BeaconTruck)getUser();
 
         return (DefaultParcel) RoadModels.findClosestObject(
                 rm.getPosition(truck), rm, new Predicate<RoadUser>() {
