@@ -6,7 +6,7 @@ import rinde.sim.core.model.communication.Message;
 import rinde.sim.core.model.pdp.Parcel;
 
 public class ExchangeReplyMessage extends Message{
-    ImmutableSet<Parcel> parcels;
+    private ImmutableSet<Parcel> parcels;
 
     public ExchangeReplyMessage(CommunicationUser sender ) {
         super(sender);

@@ -1,7 +1,22 @@
 package com.jonasdevlieghere.mas.gendreau;
 
-import java.util.Collection;
-import java.util.Set;
+import com.jonasdevlieghere.mas.simulation.BeaconStopCondition;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import rinde.sim.core.graph.Point;
+import rinde.sim.core.model.pdp.DefaultTripleDJPDPModel;
+import rinde.sim.core.model.pdp.PDPModel;
+import rinde.sim.core.model.pdp.twpolicy.TardyAllowedPolicy;
+import rinde.sim.core.model.road.PlaneRoadModel;
+import rinde.sim.core.model.road.RoadModel;
+import rinde.sim.pdptw.common.DynamicPDPTWProblem.SimulationInfo;
+import rinde.sim.pdptw.common.DynamicPDPTWScenario;
+import rinde.sim.pdptw.common.PDPRoadModel;
+import rinde.sim.pdptw.gendreau06.GendreauProblemClass;
+import rinde.sim.scenario.TimedEvent;
+import rinde.sim.util.TimeWindow;
+import rinde.sim.util.spec.Specification;
+import rinde.sim.util.spec.Specification.ISpecification;
 
 import javax.measure.Measure;
 import javax.measure.quantity.Duration;
@@ -10,26 +25,8 @@ import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
-
-import com.jonasdevlieghere.mas.simulation.BeaconStopCondition;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
-import rinde.sim.core.graph.Point;
-import rinde.sim.core.model.pdp.PDPModel;
-import rinde.sim.core.model.pdp.DefaultTripleDJPDPModel;
-import rinde.sim.core.model.pdp.twpolicy.TardyAllowedPolicy;
-import rinde.sim.core.model.road.PlaneRoadModel;
-import rinde.sim.core.model.road.RoadModel;
-import rinde.sim.pdptw.common.DynamicPDPTWProblem.SimulationInfo;
-import rinde.sim.pdptw.common.DynamicPDPTWProblem.StopCondition;
-import rinde.sim.pdptw.common.DynamicPDPTWScenario;
-import rinde.sim.pdptw.common.PDPRoadModel;
-import rinde.sim.pdptw.gendreau06.GendreauProblemClass;
-import rinde.sim.scenario.TimedEvent;
-import rinde.sim.util.TimeWindow;
-import rinde.sim.util.spec.Specification;
-import rinde.sim.util.spec.Specification.ISpecification;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * 
@@ -43,10 +40,11 @@ import rinde.sim.util.spec.Specification.ISpecification;
  * Distance is expressed in km, time is expressed in ms (the original format is
  * in seconds, however it allows fractions as such it was translated to ms),
  * speed is expressed as km/h.
+ *
  * @author Rinde van Lon <rinde.vanlon@cs.kuleuven.be>
  * @author Dennis Degryse <dennisdegryse@gmail.com>
  * @author Dennis Frett <dennis.frett@live.com>
- * @auther Dieter Castel <dietercastel@gmail.com>
+ * @author Dieter Castel <dietercastel@gmail.com>
  * @author Jonas Devlieghere <info@jonasdevlieghere.com> 
  */
 public final class BeaconGendreau06Scenario extends DynamicPDPTWScenario {

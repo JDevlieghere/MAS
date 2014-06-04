@@ -42,24 +42,24 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
     /**
      * Parcels ready for pickup by this DeliveryTruck
      */
-    private List<BeaconParcel> pickupQueue;
+    private final List<BeaconParcel> pickupQueue;
 
     /**
      * Message Storage
      */
-    private MessageStore messageStore;
+    private final MessageStore messageStore;
 
     /**
      * Activities
      */
-    private AuctionActivity auctionActivity;
-    private TransportActivity transportActivity;
-    private FetchActivity fetchActivity;
-    private ExchangeActivity exchangeActivity;
-    private PickupActivity pickupActivity;
-    private DeliverActivity deliverActivity;
-    private DiscoverActivity discoverActivity;
-    private ExploreActivity exploreActivity;
+    private final AuctionActivity auctionActivity;
+    private final TransportActivity transportActivity;
+    private final FetchActivity fetchActivity;
+    private final ExchangeActivity exchangeActivity;
+    private final PickupActivity pickupActivity;
+    private final DeliverActivity deliverActivity;
+    private final DiscoverActivity discoverActivity;
+    private final ExploreActivity exploreActivity;
 
     /**
      * Point for Exploration Activity
@@ -122,19 +122,37 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         if(endsTick(discoverActivity, rm, pm, bm, time))
             return;
 
-        if(endsTick(exploreActivity, rm, pm, bm, time))
-            return;
+        if(endsTick(exploreActivity, rm, pm, bm, time)) {
+            // DONE
+        }
     }
 
 
+    /**
+     * Add the given BeaconParcel to this Truck's pickup queue
+     *
+     * @param   parcel
+     *          The parcel to be added
+     */
     public void queuePickup(BeaconParcel parcel){
         this.pickupQueue.add(parcel);
     }
 
+    /**
+     * Get the pickup queue of this Truck
+     *
+     * @return  The pickup queue
+     */
     public List<BeaconParcel> getPickupQueue(){
         return new ArrayList<BeaconParcel>(this.pickupQueue);
     }
 
+    /**
+     * Remove the given BeaconParcel to this Truck's pickup queue
+     *
+     * @param   parcel
+     *          The parcel to be removed
+     */
     public void dequeuePickup(BeaconParcel parcel){
         this.pickupQueue.remove(parcel);
     }
@@ -217,15 +235,23 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
     @Override
     public boolean endsTick(Activity activity, RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time) {
         activity.execute(rm, pm, bm, time);
-        if(activity.getStatus() == ActivityStatus.END_TICK)
-            return true;
-        return false;
+        return activity.getStatus() == ActivityStatus.END_TICK;
     }
 
+    /**
+     * Returns this Truck's exploration destination
+     *
+     * @return  The Point that is the exploration destination.
+     */
     public Point getExplorationDestination(){
         return explorationDestination;
     }
 
+    /**
+     * Set this Truck's exploration destination
+     * @param   destination
+     *          The Point that is the exploration destination.
+     */
     public void setExplorationDestination(Point destination) {
              explorationDestination = destination;
     }

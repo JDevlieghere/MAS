@@ -8,24 +8,52 @@ import rinde.sim.core.model.road.RoadModel;
 public abstract class Activity {
 
     private ActivityStatus status;
-    private ActivityUser user;
+    private final ActivityUser user;
 
-    public Activity(ActivityUser user){
+    /**
+     * Create a new Activity associated with the given ActivityUser
+     *
+     * @param   user
+     *          The ActivityUser associated with this Activity
+     */
+    Activity(ActivityUser user){
         this.user = user;
         setActivityStatus(ActivityStatus.NORMAL);
     }
 
+    /**
+     * Execute the current Activity
+     *
+     * @param   rm
+     *          The RoadModel
+     * @param   pm
+     *          The PDPModel
+     * @param   bm
+     *          The BeaconModel
+     * @param   time
+     *          The Current TimeLapse
+     */
     public abstract void execute(RoadModel rm, PDPModel pm, BeaconModel bm, TimeLapse time);
 
-    public void setActivityStatus(ActivityStatus status){
+    void setActivityStatus(ActivityStatus status){
         this.status = status;
     }
 
+    /**
+     * Get the ActivityStatus of this Activity
+     *
+     * @return  The ActivityStatus of this Activity
+     */
     public ActivityStatus getStatus(){
         return this.status;
     }
 
-    public ActivityUser getUser() {
+    /**
+     * Get the ActivityUSer of this Activity
+     *
+     * @return The ActivityUSer of this Activity
+     */
+    ActivityUser getUser() {
         return user;
     }
 }

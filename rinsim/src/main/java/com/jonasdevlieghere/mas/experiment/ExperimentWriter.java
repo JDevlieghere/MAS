@@ -10,10 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Jonas on 3/06/2014.
- */
-public class ExperimentWriter {
+class ExperimentWriter {
 
     private static final String DELIMITER = ", ";
     private static final String EOL_DELIM = "\n";
@@ -30,7 +27,7 @@ public class ExperimentWriter {
     private static final int LINE_COST_FUNCTION = 9;
     private static final int LINE_MESSAGES = 10;
 
-    private ArrayList<String> lines;
+    private final ArrayList<String> lines;
 
     public ExperimentWriter(){
         this.lines = new ArrayList<String>();
@@ -57,7 +54,7 @@ public class ExperimentWriter {
         }
     }
 
-    public void add(Experiment.SimulationResult simulationResult, ObjectiveFunction function, int messages) {
+    void add(Experiment.SimulationResult simulationResult, ObjectiveFunction function, int messages) {
         StatisticsDTO statistics = simulationResult.stats;
         addToLine(LINE_ACCEPTED_PARCELS, statistics.acceptedParcels);
         addToLine(LINE_COMPUTATION_TIME, statistics.computationTime);
@@ -73,18 +70,18 @@ public class ExperimentWriter {
 
     }
 
-    public void add(String str){
-        addToLine(LINE_ACCEPTED_PARCELS, str);
-        addToLine(LINE_COMPUTATION_TIME, str);
-        addToLine(LINE_PICKUP_TARDINESS, str);
-        addToLine(LINE_DELIVR_TARDINESS, str);
-        addToLine(LINE_OVER_TIME, str);
-        addToLine(LINE_TOTAL_DELIVERIES, str);
-        addToLine(LINE_TOTAL_DISTANCE, str);
-        addToLine(LINE_TOTAL_PICKUPS, str);
-        addToLine(LINE_SIMULATIN_TIME, str);
-        addToLine(LINE_COST_FUNCTION, str);
-        addToLine(LINE_MESSAGES, str);
+    public void add(){
+        addToLine(LINE_ACCEPTED_PARCELS, "/");
+        addToLine(LINE_COMPUTATION_TIME, "/");
+        addToLine(LINE_PICKUP_TARDINESS, "/");
+        addToLine(LINE_DELIVR_TARDINESS, "/");
+        addToLine(LINE_OVER_TIME, "/");
+        addToLine(LINE_TOTAL_DELIVERIES, "/");
+        addToLine(LINE_TOTAL_DISTANCE, "/");
+        addToLine(LINE_TOTAL_PICKUPS, "/");
+        addToLine(LINE_SIMULATIN_TIME, "/");
+        addToLine(LINE_COST_FUNCTION, "/");
+        addToLine(LINE_MESSAGES, "/");
     }
 
     public void writeTo(File file) throws IOException {

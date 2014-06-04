@@ -21,13 +21,13 @@ import java.util.List;
 
 public class ExchangeActivity extends Activity{
 
-    final Logger logger = LoggerFactory.getLogger(ExchangeActivity.class);
+    private final Logger logger = LoggerFactory.getLogger(ExchangeActivity.class);
     private ExchangeStatus status;
-    private MessageStore messageStore;
+    private final MessageStore messageStore;
     private Point meetingPoint;
     private ArrayList<Point> myDropList;
     private ArrayList<Point> myPickupList;
-    BeaconTruck otherTruck;
+    private BeaconTruck otherTruck;
 
     public ExchangeActivity(ActivityUser user, MessageStore messageStore){
         super(user);
@@ -180,7 +180,7 @@ public class ExchangeActivity extends Activity{
             for(Parcel p:otherParcels){
                 pointList.add(p.getDestination());
             }
-            KMeans km = new KMeans(pointList ,2, 123);
+            KMeans km = new KMeans(pointList ,2);
             ArrayList<Cluster> clusters = km.getClusters();
             ArrayList<Point> myPoints = clusters.get(0).getPoints();
             ArrayList<Point> otherPoints = clusters.get(1).getPoints();

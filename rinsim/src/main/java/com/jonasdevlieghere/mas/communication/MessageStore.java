@@ -2,10 +2,11 @@ package com.jonasdevlieghere.mas.communication;
 
 import rinde.sim.core.model.communication.Message;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MessageStore {
-    private List<Message> messages;
+    private final List<Message> messages;
     private static int totalNbOfMessages = 0;
 
     public MessageStore(){

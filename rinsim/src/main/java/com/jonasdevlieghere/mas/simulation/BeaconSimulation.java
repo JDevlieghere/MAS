@@ -8,7 +8,6 @@ import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06ObjectiveFunction;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Parser;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Scenario;
 import com.jonasdevlieghere.mas.strategy.delivery.NearestDeliveryStrategy;
-import com.jonasdevlieghere.mas.strategy.delivery.NearestOnTimeDeliveryStrategy;
 import com.jonasdevlieghere.mas.strategy.pickup.NearestPickupStrategy;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
@@ -27,27 +26,33 @@ import rinde.sim.ui.renderers.UiSchema;
 
 public class BeaconSimulation {
 
-    final static String DEFAULT_DATASET = "req_rapide_1_240_24";
-    final static Logger logger = LoggerFactory.getLogger(BeaconSimulation.class);
-    final static RuntimeConfiguration CONFIGURATION = new RuntimeConfiguration("DeliverLast",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false);
+    private final static String SPEEDUP_ARG = "speedup";
+    private final static String DATASET_ARG = "dataset";
+
+    private final static String DEFAULT_DATASET = "req_rapide_1_240_24";
+    private final static Logger logger = LoggerFactory.getLogger(BeaconSimulation.class);
+
+    private final static RuntimeConfiguration CONFIGURATION = new RuntimeConfiguration("GUI",1, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false);
 
     private BeaconSimulation() {}
 
     public static void main(String[] args) {
         Options options = new Options();
-        options.addOption("s", true, "Testing");
-        CommandLineParser parser = new PosixParser();
+        options.addOption(SPEEDUP_ARG, true, "Speedup");
+        options.addOption(DATASET_ARG, true, "Dataset");
+
+        CommandLineParser parser = new GnuParser();
         try {
             CommandLine cmd = parser.parse(options, args);
             int speedUp;
             String dataSet;
-            if(cmd.hasOption("s")){
-                speedUp = Integer.parseInt(cmd.getOptionValue("s"));
+            if(cmd.hasOption(SPEEDUP_ARG)){
+                speedUp = Integer.parseInt(cmd.getOptionValue(SPEEDUP_ARG));
             }else{
                 speedUp = 0;
             }
-            if(cmd.hasOption("d")){
-                dataSet = cmd.getOptionValue("d");
+            if(cmd.hasOption(DATASET_ARG)){
+                dataSet = cmd.getOptionValue(DATASET_ARG);
             }else{
                 dataSet = DEFAULT_DATASET;
             }
@@ -57,7 +62,7 @@ public class BeaconSimulation {
         }
     }
 
-    public static void run(final int speedUp, String dataset) {
+    private static void run(final int speedUp, String dataset) {
         final ScenarioController.UICreator uic = new ScenarioController.UICreator() {
             @Override
             public void createUI(Simulator sim) {

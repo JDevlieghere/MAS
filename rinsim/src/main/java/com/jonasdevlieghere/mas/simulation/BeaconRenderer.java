@@ -15,18 +15,18 @@ import rinde.sim.ui.renderers.ViewRect;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BeaconRenderer implements ModelRenderer {
+class BeaconRenderer implements ModelRenderer {
 
     private final static int FILL_ALPHA = 10;
     private final static int DRAW_ALPHA = 50;
 
-    protected final static RGB BLACK = new RGB(0, 0, 0);
-    protected final static RGB RED = new RGB(255, 0, 0);
-    protected final static RGB GREEN = new RGB(0, 255, 0);
-    protected final static RGB BLUE = new RGB(0, 0, 255);
+    private final static RGB BLACK = new RGB(0, 0, 0);
+    private final static RGB RED = new RGB(255, 0, 0);
+    private final static RGB GREEN = new RGB(0, 255, 0);
+    private final static RGB BLUE = new RGB(0, 0, 255);
     protected final static RGB YELLOW = new RGB(255, 255, 0);
 
-    protected BeaconModel beaconModel;
+    private BeaconModel beaconModel;
 
     @Override
     public void renderStatic(GC gc, ViewPort vp) {}

@@ -12,15 +12,33 @@ public class Scheduler {
 
     private RoadModel rm;
     private PDPModel pm;
-    private BeaconTruck truck;
-    private SchedulingStrategy strategy;
+    private final BeaconTruck truck;
+    private final SchedulingStrategy strategy;
 
+    /**
+     * Create a new Scheduler
+     *
+     * @param   truck
+     *          The BeaconTruck associated with this Scheduler
+     * @param   strategy
+     *          The Strategy associated with this Scheduler
+     */
     public Scheduler(BeaconTruck truck, SchedulingStrategy strategy){
         this.truck = truck;
         this.strategy = strategy;
         this.strategy.setScheduler(this);
     }
 
+    /**
+     * Returns the next deliverable BeaconParcel
+     * @param   rm
+     *          The RoadModel
+     * @param   pm
+     *          The PDPModel
+     * @param   time
+     *          The current TimeLapse
+     * @return  The next deliverable BeaconParcel
+     */
     public BeaconParcel nextDeliverable(RoadModel rm, PDPModel pm, TimeLapse time){
         return this.strategy.next(rm, pm, time);
     }

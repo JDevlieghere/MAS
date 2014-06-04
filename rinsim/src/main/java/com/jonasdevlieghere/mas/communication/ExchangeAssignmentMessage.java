@@ -15,7 +15,7 @@ public class ExchangeAssignmentMessage extends Message {
         return meetingPoint;
     }
 
-    public void setMeetingPoint(Point meetingPoint) {
+    void setMeetingPoint(Point meetingPoint) {
         this.meetingPoint = meetingPoint;
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DiscoverActivity extends Activity {
 
-    private AuctionActivity auctionActivity;
+    private final AuctionActivity auctionActivity;
 
     public DiscoverActivity(AuctionActivity auctionActivity, BeaconTruck truck) {
         super(truck);

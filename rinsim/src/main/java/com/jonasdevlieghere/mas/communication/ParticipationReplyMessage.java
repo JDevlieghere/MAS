@@ -12,8 +12,8 @@ import rinde.sim.core.model.communication.Message;
  */
 public class ParticipationReplyMessage extends Message {
 
-    private ParticipationRequestMessage request;
-    private AuctionCost auctionCost;
+    private final ParticipationRequestMessage request;
+    private final AuctionCost auctionCost;
 
     public ParticipationReplyMessage(CommunicationUser sender, ParticipationRequestMessage request, AuctionCost auctionCost){
         super(sender);

@@ -1,15 +1,12 @@
 package com.jonasdevlieghere.mas.communication;
 
-import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 
 public class AuctionCost implements Comparable<AuctionCost> {
-    private BeaconTruck truck;
-    private BeaconParcel parcel;
+    private final BeaconTruck truck;
 
-    public AuctionCost(BeaconTruck truck, BeaconParcel parcel){
+    public AuctionCost(BeaconTruck truck){
         this.truck = truck;
-        this.parcel = parcel;
     }
 
     @Override
@@ -21,7 +18,7 @@ public class AuctionCost implements Comparable<AuctionCost> {
         return 1;
     }
 
-    public double getValue(){
+    double getValue(){
         double result = truck.getPickupQueue().size();
         result += 0.7*truck.getNbOfParcels();
         return result;

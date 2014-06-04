@@ -5,7 +5,6 @@ import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import com.jonasdevlieghere.mas.communication.*;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import rinde.sim.core.TimeLapse;
-import rinde.sim.core.graph.Point;
 import rinde.sim.core.model.communication.CommunicationUser;
 import rinde.sim.core.model.communication.Message;
 import rinde.sim.core.model.pdp.PDPModel;
@@ -16,9 +15,9 @@ import java.util.*;
 
 public class AuctionActivity extends Activity{
 
-    private MessageStore messageStore;
-    private Map<BeaconParcel,AuctionStatus> auctionableParcels;
-    private Set<BeaconParcel> discoveredParcels;
+    private final MessageStore messageStore;
+    private final Map<BeaconParcel,AuctionStatus> auctionableParcels;
+    private final Set<BeaconParcel> discoveredParcels;
 
     public AuctionActivity(ActivityUser user, MessageStore messageStore){
         super(user);
@@ -44,7 +43,7 @@ public class AuctionActivity extends Activity{
         }
     }
 
-    public void auction(){
+    void auction(){
         Set<BeaconParcel> toRemove = new HashSet<BeaconParcel>();
         BeaconTruck truck = (BeaconTruck)this.getUser();
         for(Map.Entry<BeaconParcel,AuctionStatus> bpEntry: auctionableParcels.entrySet()){
@@ -65,7 +64,7 @@ public class AuctionActivity extends Activity{
                     List<ParticipationReplyMessage> messages = messageStore.retrieve(ParticipationReplyMessage.class);
                     toRemove.add(bpEntry.getKey());
                     BeaconTruck bestTruck = truck;
-                    AuctionCost lowestAuctionCost = new AuctionCost(truck,bpEntry.getKey());
+                    AuctionCost lowestAuctionCost = new AuctionCost(truck);
                     //System.out.println("MY "+ truck + " BID:"+ lowestAuctionCost);
                     for(Message msg : messages){
                         try {
@@ -92,7 +91,6 @@ public class AuctionActivity extends Activity{
         for(BeaconParcel bp : toRemove){
             auctionableParcels.remove(bp);
         }
-        return;
     }
 
     private void bid() {
@@ -103,19 +101,13 @@ public class AuctionActivity extends Activity{
             if(hasDiscovered(request.getAuctionableParcel())){
                 CommunicationUser sender = request.getSender();
                 //System.out.println("Bidding on " + request.getAuctionableParcel().toString());
-                double distance = Point.distance(truck.getPosition(), request.getAuctionableParcel().getDestination()) + truck.getPickupQueue().size();
                 //System.out.println("Biddin from " + truck.getPosition().toString());
-                truck.send(sender, new ParticipationReplyMessage(truck, request,new AuctionCost(truck, request.getAuctionableParcel())));
+                truck.send(sender, new ParticipationReplyMessage(truck, request,new AuctionCost(truck)));
                 discoveredParcels.remove(request.getAuctionableParcel());
             }
         }
         if(messages.size() > 0 )
             setActivityStatus(ActivityStatus.END_TICK);
-        return;
-    }
-
-    private Map<BeaconParcel,AuctionStatus> getAuctionableParcels(){
-        return new HashMap<BeaconParcel,AuctionStatus>(auctionableParcels);
     }
 
     public void addAuctionableParcel(BeaconParcel parcel) {
@@ -126,9 +118,6 @@ public class AuctionActivity extends Activity{
         discoveredParcels.add(parcel);
     }
 
-    public Set<BeaconParcel> getDiscoveredParcels() {
-        return new HashSet<BeaconParcel>(discoveredParcels);
-    }
 
     public boolean hasDiscovered(Parcel bp) {
         return discoveredParcels.contains(bp);

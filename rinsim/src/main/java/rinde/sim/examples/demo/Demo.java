@@ -311,7 +311,7 @@ public class Demo {
   }
 
   enum DemoType {
-    FACTORY, TAXI;
+    FACTORY, TAXI
   }
 
   static class DemoRunner implements Runnable, rinde.sim.event.Listener {
