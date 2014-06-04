@@ -1,6 +1,5 @@
 package com.jonasdevlieghere.mas.experiment;
 
-import com.google.common.collect.ImmutableList;
 import com.jonasdevlieghere.mas.config.RuntimeConfiguration;
 import com.jonasdevlieghere.mas.config.SimulationConfiguration;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06ObjectiveFunction;
@@ -11,7 +10,6 @@ import com.jonasdevlieghere.mas.strategy.delivery.NearestDeliveryStrategy;
 import com.jonasdevlieghere.mas.strategy.pickup.NearestPickupStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rinde.sim.pdptw.common.ObjectiveFunction;
 import rinde.sim.pdptw.experiment.Experiment;
 import rinde.sim.pdptw.gendreau06.Gendreau06ObjectiveFunction;
 
