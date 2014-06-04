@@ -1,6 +1,5 @@
 package com.jonasdevlieghere.mas.experiment;
 
-import com.google.common.collect.ImmutableList;
 import com.jonasdevlieghere.mas.config.RuntimeConfiguration;
 import com.jonasdevlieghere.mas.config.SimulationConfiguration;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06ObjectiveFunction;
@@ -16,9 +15,7 @@ import rinde.sim.pdptw.gendreau06.Gendreau06ObjectiveFunction;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class BulkExperiment {
 
@@ -71,7 +68,8 @@ public class BulkExperiment {
             ExperimentWriter experimentWriter = new ExperimentWriter();
             for(String dataset: datasets){
                 try {
-                    experimentWriter.addAll(runExperiment(runtimeConfiguration, dataset));
+                    Experiment.ExperimentResults r = runExperiment(runtimeConfiguration, dataset);
+                    experimentWriter.addAll(r.results, r.objectiveFunction);
                 }catch (RuntimeException e){
                     experimentWriter.add("/");
                 }
@@ -86,7 +84,7 @@ public class BulkExperiment {
         }
     }
 
-    ImmutableList<Experiment.SimulationResult> runExperiment(RuntimeConfiguration runtimeConfiguration, String dataset){
+    Experiment.ExperimentResults runExperiment(RuntimeConfiguration runtimeConfiguration, String dataset){
         final BeaconGendreau06Scenario scenario = BeaconGendreau06Parser
                 .parser().addFile(BeaconSimulation.class
                                 .getResourceAsStream("/data/gendreau06/" + dataset),
@@ -101,7 +99,7 @@ public class BulkExperiment {
                 .addConfiguration(new SimulationConfiguration(runtimeConfiguration))
                 .addScenario(scenario)
                 .repeat(1)
-                .perform().results;
+                .perform();
     }
 
 }

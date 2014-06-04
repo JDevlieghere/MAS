@@ -4,18 +4,18 @@ Our research consists of three objectives:
 \begin{itemize}
 	\item \textit{Optimisation:} Determine the optimal radio frequency range of the parcels in relation to the objective function.
 	\item \textit{Discovery:} Determine the reduction of the communication cost in comparison to the centralised case.
-	\item \textit{Discovery:} Determine whether re-auctioning tasks of nearby trucks has a positive effect on the objective function. 
+	\item \textit{Discovery:} Determine whether re-auctioning tasks of nearby trucks has a positive effect on the objective function.
 \end{itemize}
 
 \subsubsection{Cost Function}
-Our objective function is the cost function used in Gendreau et al. \cite{gendreau2006neighborhood}.
+Our objective function is the cost function used by Gendreau et al. \cite{gendreau2006neighborhood}.
 $$
-C = \sum_{k \in M}{T_k} + \alpha \sum_{v \in V} \text{max} \left\{ 0, t_v - l_v \right\} + \beta \sum_{k \in M} \text{max} \left\{0, t_k - l_0 \right\} 
+C = \sum_{k \in M}{T_k} + \alpha \sum_{v \in V} \text{max} \left\{ 0, t_v - l_v \right\} + \beta \sum_{k \in M} \text{max} \left\{0, \bar{t_k} - l_0 \right\}
 $$
 
-In order of appearance the terms symbolize the values for
+With $T_k$ the total travel time on route $R_k$ and $\alpha$I and $\beta$ weighting parameters. In order of appearance the terms symbolize the values for
 \begin{enumerate}
-	\item the total travel time 
+	\item the total travel time on route
 	\item the sum of lateness over all pick-up and delivery locations
 	\item the sum of overtime over all vehicles
 \end{enumerate}
@@ -24,14 +24,14 @@ In order of appearance the terms symbolize the values for
 \subsubsection{Independant Variables }
 \begin{enumerate}
 	\item $c$ radius of circle in which contact with the parcel can be established.
-	\item 
-	\item 
+	\item
+	\item
 \end{enumerate}
 \subsubsection{Dependant Variables}
 \begin{enumerate}
-	\item $x$ the amount of send messages in the whole system.  
+	\item $x$ the amount of send messages in the whole system.
 	\item $T_K$
-	\item 
-	\item 
+	\item
+	\item
 \end{enumerate}
 \end{document}
