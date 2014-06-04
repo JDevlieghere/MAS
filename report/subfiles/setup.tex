@@ -4,26 +4,6 @@ The experiments were conducted using the RinSim multi-agent simulator \cite{van2
 
 \runtimeconfig{TestConfig}{0.5}{10}{1}{NearestPickupStrategy}{NearestDeliveryStrategy}{false}{true}{An example of a experiment configuration.}
 
-Throughout this documents, data sets are identified by a number for readability. The corresponding data set name and number are shown in Table~\ref{table:datasets}.
-
-\begin{table}
-	\centering
-	\begin{tabular}{cccc}
-	\toprule
-	Data Set Number  & Data Set Name & Data Set Number  & Data Set Name \\
-	\midrule
-	1 & req\_rapide\_1\_240\_24 & 	9 & req\_rapide\_3\_450\_24 \\
-	2 & req\_rapide\_1\_240\_33 & 10 & req\_rapide\_4\_240\_24 \\
-	3 & req\_rapide\_1\_450\_24 & 11 & req\_rapide\_4\_240\_33 \\
-	4 & req\_rapide\_2\_240\_24 & 12 & req\_rapide\_4\_450\_24 \\
-	5 & req\_rapide\_2\_240\_33 & 13 & req\_rapide\_5\_240\_24 \\
-	6 & req\_rapide\_2\_450\_24 & 14 & req\_rapide\_5\_240\_33 \\
-	7 & req\_rapide\_3\_240\_24 & 15 & req\_rapide\_5\_450\_24 \\
-	8 & req\_rapide\_3\_240\_33 & & \\
-	\bottomrule
-	\end{tabular}
-	\label{table:datasets}
-	\caption{The numbering of Gendreau et al. data sets used in this document.}
-\end{table}
+The locations of the PDP problem are distributed among a square plane. Because of this, the agents, i.e. trucks, operate in an empty plane with the same dimensions. The euclidean distance is used to determine the distance between two positions. The assumption is made that a truck is never obstructed by an obstacle, e.g a parcel or other agent and can move unimpeded in a straight line between two locations. Additionally, trucks are assumed to have unlimited container capacity. The experiment ends when all accepted parcels are delivered. The delivery trucks are not required to return to the central depot.
 
 \end{document}
