@@ -43,19 +43,20 @@ public class ExperimentWriter {
         lines.add("Total Pickups");
         lines.add("Simulation Time");
         lines.add("Cost Function");
+        lines.add("Total Messages");
     }
 
     private void addToLine(int line, Object o){
         lines.set(line, lines.get(line).concat(DELIMITER).concat(String.valueOf(o)));
     }
 
-    public void addAll(List<Experiment.SimulationResult> simulationResults, ObjectiveFunction function, String messages){
+    public void addAll(List<Experiment.SimulationResult> simulationResults, ObjectiveFunction function, int messages){
         for(Experiment.SimulationResult simulationResult: simulationResults){
             add(simulationResult, function, messages);
         }
     }
 
-    public void add(Experiment.SimulationResult simulationResult, ObjectiveFunction function, String messages) {
+    public void add(Experiment.SimulationResult simulationResult, ObjectiveFunction function, int messages) {
         StatisticsDTO statistics = simulationResult.stats;
         addToLine(LINE_ACCEPTED_PARCELS, statistics.acceptedParcels);
         addToLine(LINE_COMPUTATION_TIME, statistics.computationTime);

@@ -42,9 +42,9 @@ public class MessageStore {
     }
 
 
-    public static int retrieveNbOfMessages(){
+    public static int retreiveNbOfMessages(){
         int result = totalNbOfMessages;
-        this.totalNbOfMessages = 0;
+        totalNbOfMessages = 0;
         return result;
     }
 }
