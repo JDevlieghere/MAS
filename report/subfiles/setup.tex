@@ -1,5 +1,9 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
+The experiments were conducted using the RinSim multi-agent simulator \cite{van2012rinsim}. The simulator supports the Gendreau et al. \cite{gendreau2006neighborhood} (2006) data set which is used for the experiments. Each experiment is characterized by a fixed configuration which consists of the independent variables we're testing. Table~\ref{table:config:TestConfig} shows an example experiment configuration.
 
+\runtimeconfig{TestConfig}{0.5}{10}{1}{NearestPickupStrategy}{NearestDeliveryStrategy}{false}{true}{An example of a experiment configuration.}
+
+The locations of the PDP problem are distributed among a square plane. Because of this, the agents, i.e. trucks, operate in an empty plane with the same dimensions. The euclidean distance is used to determine the distance between two positions. The assumption is made that a truck is never obstructed by an obstacle, e.g a parcel or other agent and can move unimpeded in a straight line between two locations. Additionally, trucks are assumed to have unlimited container capacity. The experiment ends when all accepted parcels are delivered. The delivery trucks are not required to return to the central depot.
 
 \end{document}

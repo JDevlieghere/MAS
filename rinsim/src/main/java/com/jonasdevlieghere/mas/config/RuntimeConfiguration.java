@@ -1,6 +1,5 @@
 package com.jonasdevlieghere.mas.config;
 
-import com.jonasdevlieghere.mas.activity.PickupActivity;
 import com.jonasdevlieghere.mas.strategy.SchedulingStrategy;
 
 public class RuntimeConfiguration {

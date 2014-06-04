@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper,oneside]{article}
+\documentclass[10pt,a4paper,oneside]{article}
 
 \usepackage[USenglish,english,american]{babel}
 \usepackage[hidelinks]{hyperref}
@@ -10,6 +10,27 @@
 \usepackage{multicol}
 \usepackage{booktabs}
 \usepackage{geometry}
+
+\newcommand{\runtimeconfig}[9]{%
+\begin{table}
+	\centering
+	\begin{tabular}{lc}
+	\toprule
+	Property & Value \\
+	\midrule
+	Beacon Radius & #2 \\
+	Communication Radius & #3 \\
+	Communication Reliability & #4 \\
+	Pickup Strategy & \texttt{#5} \\
+	Delivery Strategy & \texttt{#6} \\
+	Exchange & \texttt{#7} \\
+	Exploration & \texttt{#8} \\
+	\bottomrule
+	\end{tabular}
+	\label{table:config:#1}
+	\caption{#9}
+\end{table}
+}
 
 \geometry{tmargin=3cm, bmargin=2.5cm, lmargin=2.5cm, rmargin=2cm}
 
