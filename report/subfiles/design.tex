@@ -74,6 +74,8 @@ An already pinged agent won't try to ping the other agent and becomes the slave 
 	This case is for when either the exchange is succesfully completed or stopped permaturely.
 	The master checks as soon as the other truck is out of range and then resets it's beacon and exchange status.
 \end{description}
+
+\paragraph{Slave exchange flow}
 \begin{description}
 	\item[Tick 1-2:SLAVE INITIATE]
 	The slave checks for incoming exchange request messages.
@@ -115,7 +117,10 @@ PickupActivity and DeliverActivity are obviously executed first since all other 
 They are executed soley if the truck is on either a pickup or delivery location of a parcel it should picklup or deliver.
 Secondly the exchange activity is executed because we want to avoid missing a chance to improve the performance two nearby trucks.
 After that Fetching and Transporting is our main concern.
-If there is 
+Because auctioning is based on how occupied the agent currently is auctioning is only allowed when the agent is not actively fetching or transporting a parcel.
+Discovery is executed after auctioning because discovery of another parcel could disturb an auction that is in progress.
+Lastly exporation is executed. This has ofcourse (even when enabled) the lowest priority.
+Only when no other activity being exectuted active exploration could be useful.
 
 \subsection{Scheduling strategies}
 \subsubsection{Pickup Strategy}
