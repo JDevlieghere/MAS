@@ -104,14 +104,47 @@ The order of these activities influences the entire system.
 \begin{enumerate}
 	\item PickupActivity: This is the activity of loading the truck with a parcel when the truck is standing on the pickup location of the parcel.
 	\item DeliverActivity: This is the activity of unloading the truck with a parcel at it's delivery location. 
-	\item ExchangeActivity: In
-	\item FetchActivity: 
-	\item TransportActivity: 
-	\item AuctionActivity: 
-	\item ExploreActivity: 
+	\item ExchangeActivity: This activity starts or continues the exchange protocol between two agents. 
+	\item FetchActivity: This activity is used for going to and determining the order of pickup locations. 
+	\item TransportActivity: This activity is used for going to and determining the order of delivery locations.   
+	\item AuctionActivity: Participating or starting an auctiong for newly discovered parcels.
+	\item DiscoverActivity: Discover parcels which are emitting their beacon signal. 
+	\item ExploreActivity: Explore the world in search for new parcels.  
 \end{enumerate}
-\subsection{Scheduling strategies}
+PickupActivity and DeliverActivity are obviously executed first since all other activities lead up to this two activities. 
+They are executed soley if the truck is on either a pickup or delivery location of a parcel it should picklup or deliver.
+Secondly the exchange activity is executed because we want to avoid missing a chance to improve the performance two nearby trucks.
+After that Fetching and Transporting is our main concern.
+If there is 
 
+\subsection{Scheduling strategies}
 \subsubsection{Pickup Strategy}
+In the FetchActivity two possible scheduling startegies were used.
+One naive FIFOPickupStrategy which was mainly used for testing.
+And a second NearestPickupFirstStrategy which is used in all our real experiments.
+As the name suggest this strategy reschedules pickups depending on the distance from current location of the truck to the parcels to pickup.
+
 \subsubsection{Delivery Strategy}
+A number of different delivery strategies were implemented and tested. 
+
+The idea for the ClusterDeliveryStrategy is that we try to cluster the parcels by there delivery locations. 
+Using K-means clustering deliverable parcels are being grouped by their delivery location.
+This strategy does not take tardiness into account.
+This could be a useful strategy for minimizing the total driven distance. 
+
+Another strategy mainly based on location is the NearestDeliveryFristStrategy.
+This is strategy is completly analogous to the NearestPickupFirstStrategy but ofcourse for deliveries the time windows are taken into account.
+\\\\
+The three other delivery strategies are more focussed on reducing time penalties.
+The EarliestDeadlineStrategy tries to schedule deliveries as close to their time window.
+The strategy first tries to reduce the earlieness to avoid long waits at the delivery location.
+If by looking at earlieness there is no optimal parcel found the tardiness will be used to decide which parcel to deliver first. 
+
+The MostTardyFirstStrategy first tries to deliver parcels that are already late or have the smallest window of delivery left. 
+This could be a logical to ensure parcels are not starved.
+
+NearestOnTimeDeliveryStrategy is the strategy we use for most of our experiments. 
+Parcels that can be delivered in their time windows are the first candidates for delivery.
+From those candidates the nearest delivery location is scheduled first.
+
 \end{document}
