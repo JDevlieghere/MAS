@@ -1,8 +1,6 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
 
-
-
 Two forms of interaction are implemented between agents.
 Both forms make use of the beacons placed either on the parcels or the trucks and a messaging system.
 Beacons provide a ping interface that replies true only the first time when it is pinged (after a reset).
@@ -48,51 +46,55 @@ As soon as two agents are within eachothers beacon range the protocol is started
 The first agent to send a ping message to the other agent becomes the master of the exchange.
 An already pinged agent won't try to ping the other agent and becomes the slave of the exchange.
 
-\paragraph{Tick 1:MASTER INITIATE}
-The master agent received it's status by being the first agent to ping the other agent.
-The master sends an exchange request message to the slave agent.
-\paragraph{Tick 2:MASTER PENDING}
-The master waits for request to be received and replied to be send.
-\paragraph{Tick 3:MASTER PLANNING}
-The master analyzes the reply to decide whether an exchange could be beneficial.
-Now two options should be considered:
-Option 1: Exchange is not beneficial.
-This can be the case if each agent has exactly one parcel or if there is only one parcel for the two agents.
-In this case an empty assignment message is sent and the master sets it's exchange status on resetting.
-Option 2: Exchange is beneficial.
-In any other case both agents could benefit from exchanging parcels.
-The master runs a k-means clustering on all the parcels to create two groups with delivery locations clustered.
-When this is done an assignment message is sent with the meeting location which is halfway between both agents.
-The master sets it's exchange status to MEETING.
-\paragraph{Tick 4-n:MASTER MEETING}
-The master drives to the location it decided in the PLANNING stage and waits till the slave arrives (which shouldn't be long).
-
-\paragraph{Tick n+1:MASTER EXCHANGING}
-The master executes the exchange as it was planned in the PLANNIG stage.
-When the exchange is sucessfully completed it sets it's status to RESETTING.
-\paragraph{Tick 4/n+2:MASTER RESETTING}
-This case is for when either the exchange is succesfully completed or stopped permaturely.
-The master checks as soon as the other truck is out of range and then resets it's beacon and exchange status.
-
-\paragraph{Tick 1-2:SLAVE INITIATE}
-The slave checks for incoming exchange request messages.
-\paragraph{Tick 3:SLAVE PENDING}
-The slave waits for reply to be received and for further instructions to be send.
-\paragraph{Tick 4:SLAVE PLANNING}
-The slave checks for incoming assignment messages.
-Again two options are possible.
-
-Option 1: Empty assignment message.
-This means the exchange will not take place.
-The slave sets it's status to RESET.
-
-Option 2: Assignment with meeting point.
-This means an exchange will take place at the given meeting point.
-The slave sets it's status to MEETING.
-\paragraph{Tick 5-n:SLAVE MEETING}
-The slave drives to the location it decided in the PLANNING stage and waits till the master arrives (which shouldn't be long).
-\paragraph{Tick n+1:SLAVE EXCHANGING}
-The slave participates in the exchange.
-\paragraph{Tick 4/n+2:SLAVE RESETTING}
-The slave checks whether the master agent is out of range an then resets it's beacon and exchange status.
+\paragraph{Master exchange flow}
+\begin{description}
+	\item [Tick 1:MASTER INITIATE]
+	The master agent received it's status by being the first agent to ping the other agent.
+	The master sends an exchange request message to the slave agent.
+	\item[Tick 2:MASTER PENDING]
+	The master waits for request to be received and replied to be send.
+	\item[Tick 3:MASTER PLANNING]
+	The master analyzes the reply to decide whether an exchange could be beneficial.
+	Now two options should be considered: \\
+	\textbf{Option 1}: Exchange is not beneficial.
+	This can be the case if each agent has exactly one parcel or if there is only one parcel for the two agents.
+	In this case an empty assignment message is sent and the master sets it's exchange status on resetting.
+	\\
+	\textbf{Option 2}: Exchange is beneficial.
+	In any other case both agents could benefit from exchanging parcels.
+	The master runs a k-means clustering on all the parcels to create two groups with delivery locations clustered.
+	When this is done an assignment message is sent with the meeting location which is halfway between both agents.
+	The master sets it's exchange status to MEETING.
+	\item[Tick 4-n:MASTER MEETING]
+	The master drives to the location it decided in the PLANNING stage and waits till the slave arrives (which shouldn't be long).
+	\item[Tick n+1:MASTER EXCHANGING]
+	The master executes the exchange as it was planned in the PLANNIG stage.
+	When the exchange is sucessfully completed it sets it's status to RESETTING.
+	\item[Tick 4/n+2:MASTER RESETTING] 
+	This case is for when either the exchange is succesfully completed or stopped permaturely.
+	The master checks as soon as the other truck is out of range and then resets it's beacon and exchange status.
+\end{description}
+\begin{description}
+	\item[Tick 1-2:SLAVE INITIATE]
+	The slave checks for incoming exchange request messages.
+	\item[Tick 3:SLAVE PENDING]
+	The slave waits for reply to be received and for further instructions to be send.
+	\item[Tick 4:SLAVE PLANNING]
+	The slave checks for incoming assignment messages.
+	Again two options are possible.
+	\\
+	\textbf{Option 1}: Empty assignment message.
+	This means the exchange will not take place.
+	The slave sets it's status to RESET.
+	\\
+	\textbf{Option 2}: Assignment with meeting point.
+	This means an exchange will take place at the given meeting point.
+	The slave sets it's status to MEETING.
+	\item[Tick 5-n:SLAVE MEETING]
+	The slave drives to the location it decided in the PLANNING stage and waits till the master arrives (which shouldn't be long).
+	\item[Tick n+1:SLAVE EXCHANGING] 
+	The slave participates in the exchange.
+	\item[Tick 4/n+2:SLAVE RESETTING]
+	The slave checks whether the master agent is out of range an then resets it's beacon and exchange status.
+\end{description}
 \end{document}
