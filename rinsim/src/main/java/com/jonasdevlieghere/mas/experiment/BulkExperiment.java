@@ -7,7 +7,9 @@ import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06ObjectiveFunction;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Parser;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06Scenario;
 import com.jonasdevlieghere.mas.simulation.BeaconSimulation;
+import com.jonasdevlieghere.mas.strategy.delivery.EarliestDeadlineStrategy;
 import com.jonasdevlieghere.mas.strategy.delivery.NearestDeliveryStrategy;
+import com.jonasdevlieghere.mas.strategy.delivery.NearestOnTimeDeliveryStrategy;
 import com.jonasdevlieghere.mas.strategy.pickup.NearestPickupStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,24 +44,40 @@ public class BulkExperiment {
     );
 
     public static final List<RuntimeConfiguration> RADIUS_CONFIGURATIONS = Arrays.asList(
-            new RuntimeConfiguration("Rad05",0.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
-            new RuntimeConfiguration("Rad1",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
-            new RuntimeConfiguration("Rad15",1.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
-            new RuntimeConfiguration("Rad2",2,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
-            new RuntimeConfiguration("Rad3",3,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true)
+            new RuntimeConfiguration("Radius010",0.1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius025",0.25,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius050",0.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius075",0.75,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius100",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius125",1.25,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius150",1.50,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius175",1.75,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius200",2,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius225",2.25,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius250",2.50,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius275",2.75,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius300",3.00,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false)
     );
 
-    public static final List<RuntimeConfiguration> ACTIVITY_CONFIGURATIONS = Arrays.asList(
-            new RuntimeConfiguration("ExchangeExplore",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
-            new RuntimeConfiguration("NoExchangeExplore",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true)
+    public static final List<RuntimeConfiguration> EXCHANGE_CONFIGURATIONS = Arrays.asList(
+            new RuntimeConfiguration("Exchange",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true),
+            new RuntimeConfiguration("NoExchange",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false)
     );
+
+    public static final List<RuntimeConfiguration> STRATEGY_CONFIGURATIONS = Arrays.asList(
+            new RuntimeConfiguration("NearestDeliveryStrategy",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true),
+            new RuntimeConfiguration("EarliestDeadlineStrategy",1,10,1, NearestPickupStrategy.class, EarliestDeadlineStrategy.class, true),
+            new RuntimeConfiguration("NearestOnTimeDeliveryStrategy",1,10,1, NearestPickupStrategy.class, NearestOnTimeDeliveryStrategy.class, true)
+    );
+
 
     public static void main(String[] args){
         ArrayList<RuntimeConfiguration> runtimeConfigurations = new ArrayList<RuntimeConfiguration>();
         ArrayList<String> datasets = new ArrayList<String>(GENDREAU);
 
-        runtimeConfigurations.addAll(RADIUS_CONFIGURATIONS);
-        runtimeConfigurations.addAll(ACTIVITY_CONFIGURATIONS);
+//        runtimeConfigurations.addAll(RADIUS_CONFIGURATIONS);
+        runtimeConfigurations.addAll(STRATEGY_CONFIGURATIONS);
+//        runtimeConfigurations.addAll(EXCHANGE_CONFIGURATIONS);
 
         BulkExperiment tester = new BulkExperiment(runtimeConfigurations, datasets);
         tester.run();

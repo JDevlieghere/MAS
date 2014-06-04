@@ -10,7 +10,6 @@ public class RuntimeConfiguration {
     private double communicationRadius;
     private double communicationReliability;
 
-    private boolean doExplore;
     private boolean doExchange;
 
     private Class<SchedulingStrategy> pickupStrategy;
@@ -18,14 +17,13 @@ public class RuntimeConfiguration {
 
     public <T extends SchedulingStrategy, Y extends SchedulingStrategy> RuntimeConfiguration(String title, double beaconRadius, double communicationRadius,  double communicationReliability,
                                 Class<T> pickupStrategy, Class<Y> deliveryStrategy,
-                                boolean doExchange, boolean doExplore)
+                                boolean doExchange)
     {
         setTitle(title);
         setBeaconRadius(beaconRadius);
         setCommunicationRadius(communicationRadius);
         setCommunicationReliability(communicationReliability);
         setDoExchange(doExchange);
-        setDoExplore(doExplore);
         setPickupStrategy(pickupStrategy);
         setDeliveryStrategy(deliveryStrategy);
     }
@@ -52,14 +50,6 @@ public class RuntimeConfiguration {
 
     public void setCommunicationReliability(double communicationReliability) {
         this.communicationReliability = communicationReliability;
-    }
-
-    public boolean isDoExplore() {
-        return doExplore;
-    }
-
-    public void setDoExplore(boolean doExplore) {
-        this.doExplore = doExplore;
     }
 
     public boolean isDoExchange() {
@@ -106,7 +96,6 @@ public class RuntimeConfiguration {
                 "beaconRadius=" + beaconRadius +
                 "\n, communicationRadius=" + communicationRadius +
                 "\n, communicationReliability=" + communicationReliability +
-                "\n, doExplore=" + doExplore +
                 "\n, doExchange=" + doExchange +
                 "\n, pickupStrategy=" + pickupStrategy +
                 "\n, deliveryStrategy=" + deliveryStrategy +

@@ -5,8 +5,6 @@ import com.google.common.collect.ImmutableList;
 import com.jonasdevlieghere.mas.beacon.BeaconParcel;
 import com.jonasdevlieghere.mas.beacon.BeaconTruck;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
-import com.jonasdevlieghere.mas.strategy.delivery.NearestOnTimeDeliveryStrategy;
-import com.jonasdevlieghere.mas.strategy.pickup.NearestPickupStrategy;
 import org.apache.commons.math3.random.MersenneTwister;
 import rinde.sim.core.Simulator;
 import rinde.sim.core.model.Model;
@@ -36,7 +34,7 @@ public class SimulationConfiguration extends DefaultMASConfiguration {
             return new DynamicPDPTWProblem.Creator<AddVehicleEvent>() {
                 @Override
                 public boolean create(Simulator sim, AddVehicleEvent event) {
-                    return sim.register(new BeaconTruck(event.vehicleDTO, sim.getRandomGenerator().nextInt(), runtimeConfiguration.getBeaconRadius(), runtimeConfiguration.getCommunicationRadius(), runtimeConfiguration.getCommunicationReliability(), runtimeConfiguration.getPickupStrategy(), runtimeConfiguration.getDeliveryStrategy(), runtimeConfiguration.isDoExchange(), runtimeConfiguration.isDoExplore()));
+                    return sim.register(new BeaconTruck(event.vehicleDTO, sim.getRandomGenerator().nextInt(), runtimeConfiguration.getBeaconRadius(), runtimeConfiguration.getCommunicationRadius(), runtimeConfiguration.getCommunicationReliability(), runtimeConfiguration.getPickupStrategy(), runtimeConfiguration.getDeliveryStrategy(), runtimeConfiguration.isDoExchange()));
                 }
             };
         }

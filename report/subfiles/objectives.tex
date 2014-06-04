@@ -10,11 +10,11 @@ To determine whether the solution is improved, we make use of the cost function 
 $$
 C = \sum_{k \in M}{T_k} + \alpha \sum_{v \in V} \text{max} \left\{ 0, t_v - l_v \right\} + \beta \sum_{k \in M} \text{max} \left\{0, \bar{t_k} - l_0 \right\}
 $$
-With $T_k$ the total travel time on route $R_k$ and $\alpha$I and $\beta$ weighting parameters. In order of appearance the terms symbolize the values for
+With $T_k$ the total travel time on route $R_k$ and $\alpha$I and $\beta$ weighting parameters. In order of appearance the terms symbolize the following values:
 \begin{enumerate}
-	\item the total travel time on route
-	\item the sum of lateness over all pick-up and delivery locations
-	\item the sum of overtime over all vehicles
+	\item The total travel time on route
+	\item The sum of lateness over all pick-up and delivery locations
+	\item The sum of overtime over all vehicles
 \end{enumerate}
 
 \subsubsection{Independant Variables}

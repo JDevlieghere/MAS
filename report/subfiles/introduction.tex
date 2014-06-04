@@ -1,19 +1,6 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-This research paper will describe a pick up delivery problem and a Multi-Agent solution to it.
-For easy comparison with Genreau et al. we will be using their dataset.
-Since their dataset uses specifice coordinates we will be using an empty plane instead of a road map as the area on which the delivery trucks drive.
-
-In our paper parcels are discovered by a radio signal they emit as soon as they are available for pickup.
-Every truck in range gets to bid in an auction for the parcel. 
-If there is only a single truck within range it recieves the pickup task automatically and instantly.
-As bidding system we use a one shot sealed bid dependant on two factors: 
-\begin{enumerate}
-	\item The amount of parcels the truck has picked up  
-	\item The amount of planned pickups of a truck
-\end{enumerate}
-Initally as soon as the auction is complete the truck that recieved the task is blindly commited to this task.
-
-As an extention we will look at the case in which trucks that are in eachother neighborhood can reauction their given tasks to improve both their schedules.
-This can be seen as more open-minded commitment in which the opportunity of being near another truck can be used to reschdule the task and become a more efficient solution.
+This research paper describes a multi-agent approach for a dynamic pick-up and deliver problem. The problem consists of pick-ups and deliveries that have a given time window wherein the parcel is required to be picked up and delivered respectively.
+\\\\
+To allow for a multi-agent solution, beacons are introduced into the environment. Both trucks and parcels are fitted with a beacon. Once a parcel becomes available for pickup, its beacon is enabled. When the radius of a truck's beacon overlaps with the radius of a parcel's beacon, the truck detects the parcel. This is the only way a parcel can be intercepted by a delivery truck. Using an auction, the parcel is assigned to a truck. The problem consists of (1) assigning the parcel to a proper truck, i.e. one that can deliver the parcel within its time window and (2) scheduling deliveries so that the parcel's delivery deadlines are met.
 \end{document}

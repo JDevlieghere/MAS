@@ -31,8 +31,6 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
     private final double beaconRadius;
     private final double commReliability;
     private final double commRadius;
-
-    private final boolean doExplore;
     private final boolean doExchange;
 
     /**
@@ -76,14 +74,13 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
     public BeaconTruck(VehicleDTO pDto, int seed,
                        double beaconRadius, double commRadius, double commReliability,
                        SchedulingStrategy pickupStrategy, SchedulingStrategy deliveryStrategy,
-                       boolean doExchange, boolean doExplore) {
+                       boolean doExchange) {
         super(pDto);
 
         this.beaconRadius = beaconRadius;
         this.commReliability = commReliability;
         this.commRadius = commRadius;
         this.doExchange = doExchange;
-        this.doExplore = doExplore;
 
         this.messageStore = new MessageStore();
         this.pickupQueue = new ArrayList<BeaconParcel>();
@@ -125,7 +122,7 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         if(endsTick(discoverActivity, rm, pm, bm, time))
             return;
 
-        if(doExplore && endsTick(exploreActivity, rm, pm, bm, time))
+        if(endsTick(exploreActivity, rm, pm, bm, time))
             return;
     }
 
