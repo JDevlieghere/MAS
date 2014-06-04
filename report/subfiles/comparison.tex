@@ -1,8 +1,13 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
 This section compares the choices made in our multi-agent design with other approaches used in existing multi-agent systems.
-
-\subsubsection{Communication \& Negotiation}
+\\\\
 New parcels are auctioned by the truck first detecting its beacon using a first-price sealed-bid auction. Because the bid placed by an agent is determined by its capacity, which is assumed to remain unchanged throughout the bidding process, there is no advantage in using ascending or descending auctions such as an English or Dutch auction. As a consequence there is no point in using an open-cry protocol since agents aren't going to change their bids based on bids by their peers.
+\\\\
+A truck always tries to complete it's deliveries before taking part in auctions. Because of this the solution presented makes use of a greedy pick-up and delivery strategy which operate independently of each other. Combining the two might allow for a more efficient algorithm. Additionally, neither of the two algorithm schedules a path therefore effectively omitting valuable information.
+\\\\
+The exchange makes use of location based clustering. In combination with a time-based pick-up or delivery strategy this might not be beneficial. An alternative approach might consider a different exchange strategy based on the current deliver strategy.
+\\\\
+The random exploration algorithm is unaware of the scheduling of future pick-up or deliveries. A smarter approach might consist of taking these values into account. For example, instead of exploring a random location, the algorithm could point the truck in the direction of future deliveries, effectively reducing the delivery time.
 
 \end{document}
