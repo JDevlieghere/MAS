@@ -13,12 +13,12 @@ The figure clearly indicates a minimum at a beacon radius of 0.75.
 \end{figure}
 
 \subsubsection{Comparing Exchange}
-One of the objectives is to find out whether exchanging parcels between agents is benifical with respect to the objective function.
+One of the objectives is to find out whether exchanging parcels between agents is beneficial with respect to the objective function.
 In figure \ref{fig:exch} the results of running all data sets, ceteris paribus, with and without exchanges enabled are displayed.
 There is no clear difference which choice is better only 8 of the 15 datasets yields better results with the exchanges enabled.
 Neither the averages in table \ref{tab:avgstrat} show a clear difference between the two cases.
 Note however that this could be due to the way we implemented the exchange.
-The implemenation is quite naive and tries to exchange very often.
+The implementation is quite naive and tries to exchange very often.
 An improvement could be looking at how much distance would be covered between the parcels in both agents and only exchange if the new clustering would improve this number.
 Of course this would have to take the distance to drive for the exchange into account.
 This could then probably eliminate a whole lot of unnecessary exchanges and reduces the cost.
@@ -31,10 +31,10 @@ This could then probably eliminate a whole lot of unnecessary exchanges and redu
 \end{figure}
 
 \subsubsection{Comparing Delivery Strategies}
-The third and last objectivce was determining how a delivery strategy improves the solution.
-In figures \ref{fig:stat_ex} and \ref{fig:strat_noex} we can clearly see that NearestOnTimeDeliveryStrategy is, outliers excluded, consitently better.
+The third and last objective was determining how a delivery strategy improves the solution.
+In figures \ref{fig:stat_ex} and \ref{fig:strat_noex} we can clearly see that NearestOnTimeDeliveryStrategy is, outliers excluded, consistently better.
 This is also very easy to see in table \ref{tab:avgstrat} where we find in both the exchange and no exchange case it is clearly the lowest average.
-Second in place would be the NearestDeliveryStrategy although the difference with the last place is not as clear compared to the first place.
+Second in place would be the NearestDeliveryStrategy although the difference with the last place is not as clear compared to the first place. Unfortunately the differences in Table~\ref{tab:avgstrat} are negligible and therefore statistically not irrelevant.
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{exchangestrategy.png}
