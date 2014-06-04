@@ -89,6 +89,7 @@ public class BulkExperiment {
             }
             File file = new File("output/"+(runtimeConfiguration.getTitle())+".csv");
             try {
+                file.getParentFile().mkdirs();
                 experimentWriter.writeTo(file);
                 logger.info("Output file {} created.", file.getName());
             } catch (IOException e) {

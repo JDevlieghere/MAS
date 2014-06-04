@@ -12,7 +12,7 @@
 
 \geometry{tmargin=1cm, bmargin=1cm, lmargin=1cm, rmargin=1cm}
 
-\newcommand{\runtimeconfig}[8]{%
+\newcommand{\runtimeconfig}[9]{%
 \begin{table}
 	\centering
 	\begin{tabular}{lc}
@@ -20,8 +20,8 @@
 	Property & Value \\
 	\midrule
 	Beacon Radius & #2 \\
-	Communication Radius & #2 \\
-	Communication Reliability & #3 \\
+	Communication Radius & #3 \\
+	Communication Reliability & #4 \\
 	Pickup Strategy & \texttt{#5} \\
 	Delivery Strategy & \texttt{#6} \\
 	Exchange & \texttt{#7} \\
@@ -29,7 +29,7 @@
 	\bottomrule
 	\end{tabular}
 	\label{table:config:#1}
-	\caption{Configuration for #1}
+	\caption{#9}
 \end{table}
 }
 
