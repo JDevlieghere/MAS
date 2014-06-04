@@ -1,0 +1,24 @@
+\documentclass[11pt,a4paper,oneside]{article}
+\usepackage[USenglish,english,american]{babel}
+\usepackage[hidelinks]{hyperref}
+\usepackage{subfiles}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage[a4paper,landscape]{geometry}
+
+\geometry{tmargin=3cm, bmargin=2.5cm, lmargin=2.5cm, rmargin=2cm}
+
+\begin{document}
+
+
+\begin{tabular}{lccccccccccccccc}
+\toprule
+Property & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15
+\bottomrule
+\end{tabular}
+
+\end{document}

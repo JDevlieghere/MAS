@@ -33,17 +33,17 @@ public class ExperimentWriter {
 
     public ExperimentWriter(){
         this.lines = new ArrayList<String>();
-        lines.add("Accepted Parcels");
-        lines.add("Computation Time");
-        lines.add("Pickup Tardiness");
-        lines.add("Delivery Tardiness");
-        lines.add("Overtime");
-        lines.add("Total Deliveries");
-        lines.add("Total Distance");
-        lines.add("Total Pickups");
-        lines.add("Simulation Time");
-        lines.add("Cost Function");
-        lines.add("Total Messages");
+        lines.add("Accepted Parcels \t");
+        lines.add("Computation Time \t");
+        lines.add("Pickup Tardiness \t");
+        lines.add("Delivery Tardiness \t");
+        lines.add("Overtime \t");
+        lines.add("Total Deliveries \t");
+        lines.add("Total Distance \t");
+        lines.add("Total Pickups \t");
+        lines.add("Simulation Time \t");
+        lines.add("Cost Function \t");
+        lines.add("Total Messages \t");
     }
 
     private void addToLine(int line, Object o){
@@ -64,10 +64,10 @@ public class ExperimentWriter {
         addToLine(LINE_DELIVR_TARDINESS, statistics.deliveryTardiness);
         addToLine(LINE_OVER_TIME, statistics.overTime);
         addToLine(LINE_TOTAL_DELIVERIES, statistics.totalDeliveries);
-        addToLine(LINE_TOTAL_DISTANCE, statistics.totalDistance);
+        addToLine(LINE_TOTAL_DISTANCE, Math.round(statistics.totalDistance));
         addToLine(LINE_TOTAL_PICKUPS, statistics.totalPickups);
         addToLine(LINE_SIMULATIN_TIME, statistics.simulationTime);
-        addToLine(LINE_COST_FUNCTION, function.computeCost(statistics));
+        addToLine(LINE_COST_FUNCTION, Math.round(function.computeCost(statistics)));
         addToLine(LINE_MESSAGES, messages);
 
     }
@@ -89,7 +89,7 @@ public class ExperimentWriter {
     public void writeTo(File file) throws IOException {
         FileWriter fileWriter = new FileWriter(file);
         for(String line: lines){
-            fileWriter.write(line + '\n');
+            fileWriter.write(line + "\\\\\n");
         }
         fileWriter.close();
     }

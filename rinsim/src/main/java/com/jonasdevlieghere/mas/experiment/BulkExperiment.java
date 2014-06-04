@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rinde.sim.pdptw.experiment.Experiment;
 import rinde.sim.pdptw.gendreau06.Gendreau06ObjectiveFunction;
-import sun.plugin2.message.Message;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,10 +42,13 @@ public class BulkExperiment {
     );
 
     public static final List<RuntimeConfiguration> CONFIGURATIONS = Arrays.asList(
-            new RuntimeConfiguration("Rad_0_5",0.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
-            new RuntimeConfiguration("Rad_1",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
-            new RuntimeConfiguration("Rad_1_5",1.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
-            new RuntimeConfiguration("Rad_2",2,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true)
+            new RuntimeConfiguration("Rad_0_5",0.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
+            new RuntimeConfiguration("Rad_1",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
+            new RuntimeConfiguration("Rad_1_5",1.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
+            new RuntimeConfiguration("Rad_2",2,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
+            new RuntimeConfiguration("Rad_3",3,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
+            new RuntimeConfiguration("Rad_5",3,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true)
+
     );
 
     public static void main(String[] args){
@@ -66,6 +68,7 @@ public class BulkExperiment {
 
     public void run(){
         int i = 0;
+        long startTime = System.currentTimeMillis();
         for(RuntimeConfiguration runtimeConfiguration: runtimeConfigurations){
             ExperimentWriter experimentWriter = new ExperimentWriter();
             for(String dataset: datasets){
@@ -84,6 +87,9 @@ public class BulkExperiment {
                 e.printStackTrace();
             }
         }
+        long endTime   = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+        logger.info("Total run time of experiments: {}", totalTime);
     }
 
     Experiment.ExperimentResults runExperiment(RuntimeConfiguration runtimeConfiguration, String dataset){
