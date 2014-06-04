@@ -27,6 +27,7 @@ public class ExperimentWriter {
     private static final int LINE_TOTAL_PICKUPS = 7;
     private static final int LINE_SIMULATIN_TIME = 8;
     private static final int LINE_COST_FUNCTION = 9;
+    private static final int LINE_MESSAGES = 10;
 
     private ArrayList<String> lines;
 
@@ -48,13 +49,13 @@ public class ExperimentWriter {
         lines.set(line, lines.get(line).concat(DELIMITER).concat(String.valueOf(o)));
     }
 
-    public void addAll(List<Experiment.SimulationResult> simulationResults, ObjectiveFunction function){
+    public void addAll(List<Experiment.SimulationResult> simulationResults, ObjectiveFunction function, String messages){
         for(Experiment.SimulationResult simulationResult: simulationResults){
-            add(simulationResult, function);
+            add(simulationResult, function, messages);
         }
     }
 
-    public void add(Experiment.SimulationResult simulationResult, ObjectiveFunction function) {
+    public void add(Experiment.SimulationResult simulationResult, ObjectiveFunction function, String messages) {
         StatisticsDTO statistics = simulationResult.stats;
         addToLine(LINE_ACCEPTED_PARCELS, statistics.acceptedParcels);
         addToLine(LINE_COMPUTATION_TIME, statistics.computationTime);
@@ -66,6 +67,8 @@ public class ExperimentWriter {
         addToLine(LINE_TOTAL_PICKUPS, statistics.totalPickups);
         addToLine(LINE_SIMULATIN_TIME, statistics.simulationTime);
         addToLine(LINE_COST_FUNCTION, function.computeCost(statistics));
+        addToLine(LINE_MESSAGES, messages);
+
     }
 
     public void add(String str){
@@ -79,6 +82,7 @@ public class ExperimentWriter {
         addToLine(LINE_TOTAL_PICKUPS, str);
         addToLine(LINE_SIMULATIN_TIME, str);
         addToLine(LINE_COST_FUNCTION, str);
+        addToLine(LINE_MESSAGES, str);
     }
 
     public void writeTo(File file) throws IOException {

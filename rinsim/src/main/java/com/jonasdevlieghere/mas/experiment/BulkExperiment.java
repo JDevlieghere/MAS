@@ -1,5 +1,6 @@
 package com.jonasdevlieghere.mas.experiment;
 
+import com.jonasdevlieghere.mas.communication.MessageStore;
 import com.jonasdevlieghere.mas.config.RuntimeConfiguration;
 import com.jonasdevlieghere.mas.config.SimulationConfiguration;
 import com.jonasdevlieghere.mas.gendreau.BeaconGendreau06ObjectiveFunction;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rinde.sim.pdptw.experiment.Experiment;
 import rinde.sim.pdptw.gendreau06.Gendreau06ObjectiveFunction;
+import sun.plugin2.message.Message;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,7 +71,7 @@ public class BulkExperiment {
             for(String dataset: datasets){
                 try {
                     Experiment.ExperimentResults r = runExperiment(runtimeConfiguration, dataset);
-                    experimentWriter.addAll(r.results, r.objectiveFunction);
+                    experimentWriter.addAll(r.results, r.objectiveFunction, MessageStore.retreiveNbOfMessages());
                 }catch (RuntimeException e){
                     experimentWriter.add("/");
                 }
