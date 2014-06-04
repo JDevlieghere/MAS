@@ -15,13 +15,28 @@ public class RuntimeConfiguration {
     private Class<SchedulingStrategy> pickupStrategy;
     private Class<SchedulingStrategy> deliveryStrategy;
 
-    public <T extends SchedulingStrategy, Y extends SchedulingStrategy> RuntimeConfiguration(String title, double beaconRadius, double communicationRadius,  double communicationReliability,
-                                Class<T> pickupStrategy, Class<Y> deliveryStrategy,
-                                boolean doExchange)
+    /**
+     * Create a new RuntimeConfiguration
+     *  @param   title
+     *          The title of the configuration
+     * @param   beaconRadius
+     *          The beacon radius of the Beacons
+     * @param   communicationReliability
+     *          The communication reliability of the BeaconTruck
+     * @param   pickupStrategy
+     *          The SchedulingStrategy used for pick ups
+     * @param   deliveryStrategy
+     *          The SchedulingStrategy used for deliveries
+     * @param   doExchange
+     *          Whether BeaconTruck should perform Exchanges
+     */
+    public <T extends SchedulingStrategy, Y extends SchedulingStrategy> RuntimeConfiguration(String title, double beaconRadius, double communicationReliability,
+                                                                                             Class<T> pickupStrategy, Class<Y> deliveryStrategy,
+                                                                                             boolean doExchange)
     {
         setTitle(title);
         setBeaconRadius(beaconRadius);
-        setCommunicationRadius(communicationRadius);
+        setCommunicationRadius((double) 10);
         setCommunicationReliability(communicationReliability);
         setDoExchange(doExchange);
         setPickupStrategy(pickupStrategy);
@@ -32,7 +47,7 @@ public class RuntimeConfiguration {
         return beaconRadius;
     }
 
-    public void setBeaconRadius(double beaconRadius) {
+    void setBeaconRadius(double beaconRadius) {
         this.beaconRadius = beaconRadius;
     }
 
@@ -40,7 +55,7 @@ public class RuntimeConfiguration {
         return communicationRadius;
     }
 
-    public void setCommunicationRadius(double communicationRadius) {
+    void setCommunicationRadius(double communicationRadius) {
         this.communicationRadius = communicationRadius;
     }
 
@@ -48,7 +63,7 @@ public class RuntimeConfiguration {
         return communicationReliability;
     }
 
-    public void setCommunicationReliability(double communicationReliability) {
+    void setCommunicationReliability(double communicationReliability) {
         this.communicationReliability = communicationReliability;
     }
 
@@ -56,7 +71,7 @@ public class RuntimeConfiguration {
         return doExchange;
     }
 
-    public void setDoExchange(boolean doExchange) {
+    void setDoExchange(boolean doExchange) {
         this.doExchange = doExchange;
     }
 
@@ -71,7 +86,7 @@ public class RuntimeConfiguration {
         return null;
     }
 
-    public <T extends SchedulingStrategy> void setPickupStrategy(Class<T> pickupStrategy) {
+    <T extends SchedulingStrategy> void setPickupStrategy(Class<T> pickupStrategy) {
         this.pickupStrategy = (Class< SchedulingStrategy>)pickupStrategy;
     }
 
@@ -86,7 +101,7 @@ public class RuntimeConfiguration {
         return null;
     }
 
-    public <T extends SchedulingStrategy> void setDeliveryStrategy(Class<T> deliveryStrategy) {
+    <T extends SchedulingStrategy> void setDeliveryStrategy(Class<T> deliveryStrategy) {
         this.deliveryStrategy = (Class< SchedulingStrategy>)deliveryStrategy;
     }
 
@@ -106,7 +121,7 @@ public class RuntimeConfiguration {
         return title;
     }
 
-    public void setTitle(String title) {
+    void setTitle(String title) {
         this.title = title;
     }
 }

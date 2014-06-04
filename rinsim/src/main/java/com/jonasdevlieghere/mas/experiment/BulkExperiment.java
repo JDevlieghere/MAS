@@ -18,14 +18,16 @@ import rinde.sim.pdptw.gendreau06.Gendreau06ObjectiveFunction;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class BulkExperiment {
 
-    final static Logger logger = LoggerFactory.getLogger(BulkExperiment.class);
+    private final static Logger logger = LoggerFactory.getLogger(BulkExperiment.class);
 
 
-    public static final List<String> GENDREAU = Arrays.asList(
+    private static final List<String> GENDREAU = Arrays.asList(
             "req_rapide_1_240_24",
             "req_rapide_1_240_33",
             "req_rapide_1_450_24",
@@ -43,34 +45,34 @@ public class BulkExperiment {
             "req_rapide_5_450_24"
     );
 
-    public static final List<RuntimeConfiguration> RADIUS_CONFIGURATIONS = Arrays.asList(
-            new RuntimeConfiguration("Radius010",0.1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
-            new RuntimeConfiguration("Radius025",0.25,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
-            new RuntimeConfiguration("Radius050",0.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
-            new RuntimeConfiguration("Radius075",0.75,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
-            new RuntimeConfiguration("Radius100",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
-            new RuntimeConfiguration("Radius125",1.25,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
-            new RuntimeConfiguration("Radius150",1.50,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
-            new RuntimeConfiguration("Radius175",1.75,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
-            new RuntimeConfiguration("Radius200",2,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
-            new RuntimeConfiguration("Radius225",2.25,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
-            new RuntimeConfiguration("Radius250",2.50,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
-            new RuntimeConfiguration("Radius275",2.75,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
-            new RuntimeConfiguration("Radius300",3.00,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false)
+    private static final List<RuntimeConfiguration> RADIUS_CONFIGURATIONS = Arrays.asList(
+            new RuntimeConfiguration("Radius010",0.1, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius025",0.25, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius050",0.5, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius075",0.75, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius100",1, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius125",1.25, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius150",1.50, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius175",1.75, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius200",2, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius225",2.25, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius250",2.50, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius275",2.75, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("Radius300",3.00, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false)
     );
 
-    public static final List<RuntimeConfiguration> EXCHANGE_CONFIGURATIONS = Arrays.asList(
-            new RuntimeConfiguration("Exchange",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true),
-            new RuntimeConfiguration("NoExchange",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false)
+    private static final List<RuntimeConfiguration> EXCHANGE_CONFIGURATIONS = Arrays.asList(
+            new RuntimeConfiguration("Exchange",1, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true),
+            new RuntimeConfiguration("NoExchange",1, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false)
     );
 
-    public static final List<RuntimeConfiguration> STRATEGY_CONFIGURATIONS = Arrays.asList(
-            new RuntimeConfiguration("NearestDeliveryStrategy",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true),
-            new RuntimeConfiguration("EarliestDeadlineStrategy",1,10,1, NearestPickupStrategy.class, EarliestDeadlineStrategy.class, true),
-            new RuntimeConfiguration("NearestOnTimeDeliveryStrategy",1,10,1, NearestPickupStrategy.class, NearestOnTimeDeliveryStrategy.class, true),
-            new RuntimeConfiguration("NoExNearestDeliveryStrategy",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
-            new RuntimeConfiguration("NoExEarliestDeadlineStrategy",1,10,1, NearestPickupStrategy.class, EarliestDeadlineStrategy.class, false),
-            new RuntimeConfiguration("NoExNearestOnTimeDeliveryStrategy",1,10,1, NearestPickupStrategy.class, NearestOnTimeDeliveryStrategy.class, false)
+    private static final List<RuntimeConfiguration> STRATEGY_CONFIGURATIONS = Arrays.asList(
+            new RuntimeConfiguration("NearestDeliveryStrategy",1, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true),
+            new RuntimeConfiguration("EarliestDeadlineStrategy",1, 1, NearestPickupStrategy.class, EarliestDeadlineStrategy.class, true),
+            new RuntimeConfiguration("NearestOnTimeDeliveryStrategy",1, 1, NearestPickupStrategy.class, NearestOnTimeDeliveryStrategy.class, true),
+            new RuntimeConfiguration("NoExNearestDeliveryStrategy",1, 1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("NoExEarliestDeadlineStrategy",1, 1, NearestPickupStrategy.class, EarliestDeadlineStrategy.class, false),
+            new RuntimeConfiguration("NoExNearestOnTimeDeliveryStrategy",1, 1, NearestPickupStrategy.class, NearestOnTimeDeliveryStrategy.class, false)
     );
 
 
@@ -86,16 +88,15 @@ public class BulkExperiment {
         tester.run();
     }
 
-    private List<RuntimeConfiguration> runtimeConfigurations;
-    private List<String> datasets;
+    private final List<RuntimeConfiguration> runtimeConfigurations;
+    private final List<String> datasets;
 
-    public BulkExperiment(List<RuntimeConfiguration> runtimeConfigurations, List<String> datasets){
+    private BulkExperiment(List<RuntimeConfiguration> runtimeConfigurations, List<String> datasets){
         this.runtimeConfigurations = runtimeConfigurations;
         this.datasets = datasets;
     }
 
-    public void run(){
-        int i = 0;
+    void run(){
         long startTime = System.currentTimeMillis();
         for(RuntimeConfiguration runtimeConfiguration: runtimeConfigurations){
             ExperimentWriter experimentWriter = new ExperimentWriter();
@@ -105,7 +106,7 @@ public class BulkExperiment {
                     Experiment.ExperimentResults r = runExperiment(runtimeConfiguration, dataset);
                     experimentWriter.addAll(r.results, r.objectiveFunction, MessageStore.retreiveNbOfMessages());
                 }catch (RuntimeException e){
-                    experimentWriter.add("/");
+                    experimentWriter.add();
                 }
             }
             File file = new File("output/"+(runtimeConfiguration.getTitle())+".csv");

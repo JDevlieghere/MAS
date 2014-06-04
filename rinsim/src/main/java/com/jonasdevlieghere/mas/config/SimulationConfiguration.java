@@ -17,7 +17,7 @@ import rinde.sim.util.SupplierRng;
 
 public class SimulationConfiguration extends DefaultMASConfiguration {
 
-        private RuntimeConfiguration runtimeConfiguration;
+        private final RuntimeConfiguration runtimeConfiguration;
 
 
         public SimulationConfiguration(RuntimeConfiguration runtimeConfiguration){

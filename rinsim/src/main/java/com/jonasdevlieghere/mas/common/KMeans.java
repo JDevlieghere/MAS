@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
  */
 public class KMeans {
 
-    public static final int MAX_ITERATIONS = 1000;
+    private static final int MAX_ITERATIONS = 1000;
 
     /**
      * List of points
@@ -38,20 +38,19 @@ public class KMeans {
     /**
      * Random Generator
      */
-    private RandomGenerator random;
+    private final RandomGenerator random;
 
     /**
      * Initialize a new instance of the k-means algorithm.
-     *
      * @param   points
      *          The list of points to cluster.
      * @param   k
-     *          The desired amount of clusters.
+     *          The amount of Clusters
      */
-    public KMeans(ArrayList<Point> points, int k, int seed) {
+    public KMeans(ArrayList<Point> points, int k) {
         setNbClusters(k);
         setPoints(points);
-        this.random = new MersenneTwister(seed);
+        this.random = new MersenneTwister(123);
     }
 
     private void setNbClusters(int k){
@@ -65,7 +64,7 @@ public class KMeans {
      *
      * @return  The number of clusters
      */
-    public int getNbClusters(){
+    int getNbClusters(){
         return this.k;
     }
 

@@ -13,15 +13,17 @@ import rinde.sim.core.model.pdp.PDPModel;
 import rinde.sim.core.model.pdp.Parcel;
 import rinde.sim.core.model.road.RoadModel;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.TreeMap;
 
 public class ClusterDeliveryStrategy implements SchedulingStrategy {
 
-    public static final int K = 2;
-    private ArrayList<Cluster> clusters;
+    private static final int K = 2;
 
     private Scheduler scheduler;
-    private SchedulingStrategy fallback;
+    private final SchedulingStrategy fallback;
 
     public ClusterDeliveryStrategy(){
         this.fallback = new NearestDeliveryStrategy();
@@ -37,10 +39,10 @@ public class ClusterDeliveryStrategy implements SchedulingStrategy {
             for(Parcel parcel : parcels){
                 points.add(parcel.getDestination());
             }
-            KMeans kMeans = new KMeans(points, K, 123);
-            this.clusters = kMeans.getClusters();
+            KMeans kMeans = new KMeans(points, K);
+            ArrayList<Cluster> clusters = kMeans.getClusters();
             TreeMap<Double, Cluster> clusterTreeMap = new TreeMap<Double, Cluster>();
-            for(Cluster cluster: this.clusters){
+            for(Cluster cluster: clusters){
                 double distance = Point.distance(truck.getPosition(), cluster.getCenter());
                 clusterTreeMap.put(distance, cluster);
             }

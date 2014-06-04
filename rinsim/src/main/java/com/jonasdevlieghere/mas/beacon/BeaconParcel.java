@@ -8,7 +8,7 @@ import rinde.sim.pdptw.common.ParcelDTO;
 
 public class BeaconParcel extends DefaultParcel implements Beacon {
 
-    private double radius;
+    private final double radius;
     private BeaconStatus status;
 
     public BeaconParcel(ParcelDTO pDto, double radius) {
@@ -66,7 +66,7 @@ public class BeaconParcel extends DefaultParcel implements Beacon {
         return getPDPModel().getTimeWindowPolicy().canPickup(this.getPickupTimeWindow(), time, originTime);
     }
 
-    public long getOriginTime(BeaconTruck truck, long currentTime){
+    long getOriginTime(BeaconTruck truck, long currentTime){
         double distance = Point.distance(truck.getPosition(), this.getPosition());
         double speed = truck.getSpeed();
         return currentTime + (long)(distance/speed) + this.getPickupDuration();

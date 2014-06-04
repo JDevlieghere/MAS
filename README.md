@@ -4,7 +4,6 @@ MAS
 Project for the course [Multi Agent Systems (B-KUL-H02H4A)](http://onderwijsaanbod.kuleuven.be/syllabi/e/H02H4AE.htm) using the [RinSim](https://github.com/rinde/RinSim) multi-agent system simulator.
 
 ## Automated Experiments
-
 The class `BulkExperiment` automates experiment execution. Based on a list containing data sets and a list containing configurations it performs an experiment for every configuration combined with every dataset. For each configuration the results are written to files in the `output` directory. Adding or removing configuration is as easy as setting the proper lists in the main method.
 
 ```java
@@ -19,4 +18,11 @@ public static void main(String[] args){
     BulkExperiment tester = new BulkExperiment(runtimeConfigurations, datasets);
     tester.run();
 }
+```
+
+## Simulation with GUI
+
+The class `BeaconSimulation` performs a single experiment accompanied by a graphical user interface for a fixed configuration. Using command line arguments, the data set and speedup value can be selected as shown below.
+```bash
+--speedup 64 --dataset req_rapide_1_240_33
 ```

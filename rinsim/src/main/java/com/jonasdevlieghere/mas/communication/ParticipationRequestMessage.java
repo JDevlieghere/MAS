@@ -13,7 +13,7 @@ public class ParticipationRequestMessage extends Message{
         setAuctionableParcel(auctionableParcel);
     }
 
-    public void setAuctionableParcel(BeaconParcel parcel){
+    void setAuctionableParcel(BeaconParcel parcel){
         this.parcel = parcel;
     }
 

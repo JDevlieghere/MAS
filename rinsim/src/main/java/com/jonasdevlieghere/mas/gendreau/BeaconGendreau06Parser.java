@@ -97,7 +97,7 @@ public final class BeaconGendreau06Parser {
    * @param file The file to add.
    * @return This, as per the builder pattern.
    */
-  public BeaconGendreau06Parser addFile(File file) {
+  BeaconGendreau06Parser addFile(File file) {
     checkValidFileName(file.getName());
     try {
       streams.put(file.getName(), new FileInputStream(file));
@@ -144,7 +144,7 @@ public final class BeaconGendreau06Parser {
    * @param dir The directory to search.
    * @return This, as per the builder pattern.
    */
-  public BeaconGendreau06Parser addDirectory(File dir) {
+  BeaconGendreau06Parser addDirectory(File dir) {
     final File[] files = dir.listFiles(
         new FileFilter() {
           @Override
@@ -278,11 +278,11 @@ public final class BeaconGendreau06Parser {
   // return parse(reader, fileName, numVehicles, tickSize, false);
   // }
 
-  static boolean isValidFileName(String name) {
+  private static boolean isValidFileName(String name) {
     return Pattern.compile(REGEX).matcher(name).matches();
   }
 
-  static void checkValidFileName(String name) {
+  private static void checkValidFileName(String name) {
     checkArgument(isValidFileName(name),
         "The filename must conform to the following regex: %s input was: %s",
         REGEX, name);
