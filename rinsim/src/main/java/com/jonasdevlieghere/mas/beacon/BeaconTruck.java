@@ -1,13 +1,10 @@
 package com.jonasdevlieghere.mas.beacon;
 
 import com.jonasdevlieghere.mas.activity.*;
-import com.jonasdevlieghere.mas.activity.ActivityStatus;
 import com.jonasdevlieghere.mas.communication.MessageStore;
-import com.jonasdevlieghere.mas.config.RuntimeConfiguration;
 import com.jonasdevlieghere.mas.simulation.BeaconModel;
 import com.jonasdevlieghere.mas.strategy.SchedulingStrategy;
 import org.apache.commons.math3.random.MersenneTwister;
-import org.apache.commons.math3.random.RandomGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rinde.sim.core.TimeLapse;
@@ -107,13 +104,13 @@ public class BeaconTruck extends DefaultVehicle implements Beacon, Communication
         final RoadModel rm = roadModel.get();
         final PDPModel pm = pdpModel.get();
 
-        if(doExchange && endsTick(exchangeActivity, rm, pm, bm, time))
-            return;
-
         if(endsTick(pickupActivity, rm, pm, bm, time))
             return;
 
         if(endsTick(deliverActivity, rm, pm, bm, time))
+            return;
+
+        if(doExchange && endsTick(exchangeActivity, rm, pm, bm, time))
             return;
 
         if(endsTick(fetchActivity, rm, pm, bm, time))
