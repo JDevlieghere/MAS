@@ -67,7 +67,10 @@ public class BulkExperiment {
     public static final List<RuntimeConfiguration> STRATEGY_CONFIGURATIONS = Arrays.asList(
             new RuntimeConfiguration("NearestDeliveryStrategy",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true),
             new RuntimeConfiguration("EarliestDeadlineStrategy",1,10,1, NearestPickupStrategy.class, EarliestDeadlineStrategy.class, true),
-            new RuntimeConfiguration("NearestOnTimeDeliveryStrategy",1,10,1, NearestPickupStrategy.class, NearestOnTimeDeliveryStrategy.class, true)
+            new RuntimeConfiguration("NearestOnTimeDeliveryStrategy",1,10,1, NearestPickupStrategy.class, NearestOnTimeDeliveryStrategy.class, true),
+            new RuntimeConfiguration("NoExNearestDeliveryStrategy",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false),
+            new RuntimeConfiguration("NoExEarliestDeadlineStrategy",1,10,1, NearestPickupStrategy.class, EarliestDeadlineStrategy.class, false),
+            new RuntimeConfiguration("NoExNearestOnTimeDeliveryStrategy",1,10,1, NearestPickupStrategy.class, NearestOnTimeDeliveryStrategy.class, false)
     );
 
 
@@ -75,9 +78,9 @@ public class BulkExperiment {
         ArrayList<RuntimeConfiguration> runtimeConfigurations = new ArrayList<RuntimeConfiguration>();
         ArrayList<String> datasets = new ArrayList<String>(GENDREAU);
 
-//        runtimeConfigurations.addAll(RADIUS_CONFIGURATIONS);
+        runtimeConfigurations.addAll(RADIUS_CONFIGURATIONS);
         runtimeConfigurations.addAll(STRATEGY_CONFIGURATIONS);
-//        runtimeConfigurations.addAll(EXCHANGE_CONFIGURATIONS);
+        runtimeConfigurations.addAll(EXCHANGE_CONFIGURATIONS);
 
         BulkExperiment tester = new BulkExperiment(runtimeConfigurations, datasets);
         tester.run();

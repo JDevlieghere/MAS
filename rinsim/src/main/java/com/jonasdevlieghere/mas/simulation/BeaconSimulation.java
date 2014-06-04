@@ -29,6 +29,7 @@ public class BeaconSimulation {
 
     final static String DEFAULT_DATASET = "req_rapide_1_240_24";
     final static Logger logger = LoggerFactory.getLogger(BeaconSimulation.class);
+    final static RuntimeConfiguration CONFIGURATION = new RuntimeConfiguration("DeliverLast",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false);
 
     private BeaconSimulation() {}
 
@@ -90,12 +91,11 @@ public class BeaconSimulation {
                 .parse().get(0);
 
         final Gendreau06ObjectiveFunction objFunc = new BeaconGendreau06ObjectiveFunction();
-        final RuntimeConfiguration runtimeConfiguration = new RuntimeConfiguration("DeliverLast",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false);
-        System.out.println(runtimeConfiguration);
+        System.out.println(CONFIGURATION);
         Experiment.ExperimentResults r = Experiment
                 .build(objFunc)
                 .withRandomSeed(123)
-                .addConfiguration(new SimulationConfiguration(runtimeConfiguration))
+                .addConfiguration(new SimulationConfiguration(CONFIGURATION))
                 .addScenario(scenario)
                 .showGui(uic)
                 .repeat(1)
