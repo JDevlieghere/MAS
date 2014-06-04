@@ -15,7 +15,8 @@ import java.util.List;
  */
 public class ExperimentWriter {
 
-    private static final String DELIMITER = " & ";
+    private static final String DELIMITER = ", ";
+    private static final String EOL_DELIM = "\n";
 
     private static final int LINE_ACCEPTED_PARCELS = 0;
     private static final int LINE_COMPUTATION_TIME = 1;
@@ -33,17 +34,17 @@ public class ExperimentWriter {
 
     public ExperimentWriter(){
         this.lines = new ArrayList<String>();
-        lines.add("Accepted Parcels \t");
-        lines.add("Computation Time \t");
-        lines.add("Pickup Tardiness \t");
-        lines.add("Delivery Tardiness \t");
-        lines.add("Overtime \t");
-        lines.add("Total Deliveries \t");
-        lines.add("Total Distance \t");
-        lines.add("Total Pickups \t");
-        lines.add("Simulation Time \t");
-        lines.add("Cost Function \t");
-        lines.add("Total Messages \t");
+        lines.add("Accepted Parcels");
+        lines.add("Computation Time");
+        lines.add("Pickup Tardiness");
+        lines.add("Delivery Tardiness");
+        lines.add("Overtime");
+        lines.add("Total Deliveries");
+        lines.add("Total Distance");
+        lines.add("Total Pickups");
+        lines.add("Simulation Time");
+        lines.add("Cost Function");
+        lines.add("Total Messages");
     }
 
     private void addToLine(int line, Object o){
@@ -89,7 +90,7 @@ public class ExperimentWriter {
     public void writeTo(File file) throws IOException {
         FileWriter fileWriter = new FileWriter(file);
         for(String line: lines){
-            fileWriter.write(line + "\\\\\n");
+            fileWriter.write(line + EOL_DELIM);
         }
         fileWriter.close();
     }

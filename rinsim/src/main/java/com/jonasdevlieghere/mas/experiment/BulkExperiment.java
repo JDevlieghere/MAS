@@ -41,19 +41,26 @@ public class BulkExperiment {
             "req_rapide_5_450_24"
     );
 
-    public static final List<RuntimeConfiguration> CONFIGURATIONS = Arrays.asList(
-            new RuntimeConfiguration("Rad_0_5",0.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
-            new RuntimeConfiguration("Rad_1",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
-            new RuntimeConfiguration("Rad_1_5",1.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
-            new RuntimeConfiguration("Rad_2",2,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
-            new RuntimeConfiguration("Rad_3",3,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
-            new RuntimeConfiguration("Rad_5",3,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true)
+    public static final List<RuntimeConfiguration> RADIUS_CONFIGURATIONS = Arrays.asList(
+            new RuntimeConfiguration("Rad05",0.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
+            new RuntimeConfiguration("Rad1",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
+            new RuntimeConfiguration("Rad15",1.5,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
+            new RuntimeConfiguration("Rad2",2,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true),
+            new RuntimeConfiguration("Rad3",3,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true)
+    );
 
+    public static final List<RuntimeConfiguration> ACTIVITY_CONFIGURATIONS = Arrays.asList(
+            new RuntimeConfiguration("ExchangeExplore",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, true, true),
+            new RuntimeConfiguration("NoExchangeExplore",1,10,1, NearestPickupStrategy.class, NearestDeliveryStrategy.class, false, true)
     );
 
     public static void main(String[] args){
-        ArrayList<RuntimeConfiguration> runtimeConfigurations = new ArrayList<RuntimeConfiguration>(CONFIGURATIONS);
+        ArrayList<RuntimeConfiguration> runtimeConfigurations = new ArrayList<RuntimeConfiguration>();
         ArrayList<String> datasets = new ArrayList<String>(GENDREAU);
+
+        runtimeConfigurations.addAll(RADIUS_CONFIGURATIONS);
+        runtimeConfigurations.addAll(ACTIVITY_CONFIGURATIONS);
+
         BulkExperiment tester = new BulkExperiment(runtimeConfigurations, datasets);
         tester.run();
     }
@@ -71,6 +78,7 @@ public class BulkExperiment {
         long startTime = System.currentTimeMillis();
         for(RuntimeConfiguration runtimeConfiguration: runtimeConfigurations){
             ExperimentWriter experimentWriter = new ExperimentWriter();
+            logger.info("Testing configuration {} \n {}.", runtimeConfiguration.getTitle(), runtimeConfiguration.toString());
             for(String dataset: datasets){
                 try {
                     Experiment.ExperimentResults r = runExperiment(runtimeConfiguration, dataset);
@@ -79,7 +87,7 @@ public class BulkExperiment {
                     experimentWriter.add("/");
                 }
             }
-            File file = new File("output/"+(runtimeConfiguration.getTitle())+".dat");
+            File file = new File("output/"+(runtimeConfiguration.getTitle())+".csv");
             try {
                 experimentWriter.writeTo(file);
                 logger.info("Output file {} created.", file.getName());
