@@ -1,5 +1,89 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
+\subsection{Agent interaction}
+Two forms of interaction are implemented between agents.
+Both forms make use of the beacons placed either on the parcels or the trucks and a messaging system.
+Beacons provide a ping interface that replies true only the first time when it is pinged (after a reset).
+Interactions require a master role that is assigned to the agent depending on the reply of the ping.
+Another important note is that regular messages (not pings) are sent at the end of each tick.
+Which means a message sent at agent A at $t=n$ is received at agent B at $t=n+1$.
+If agent B replies ASAP the reply is received by agent A at $t=n+2$.
+This implies agent A has to wait a full tick before a reply can be expected.
+Both interactions are statefull.
 
+\subsubsection{Auctions}
+Our auction system is a one-shot sealed bid auction which is started as soon as a parcel becomes available.
+The bids are dependant ont two factors:
+\begin{enumerate}
+	\item The amount of parcels the truck has picked up
+	\item The amount of planned pickups of a truck
+\end{enumerate}
+In this case a lower bid wins over a higher one since it implies the agent has less work to do.
+When an agent discovers a parcel, meaning the agent is within it's beacon radius, it is pinged.
+If the reply is true the agent becomes the auctioneer else another agent pinged first and has already received the auctioneer status. 
+Below is a chronological description of the auction protocol:
 
+\paragraph{Tick 1: UNAUCTIONED}
+The autctioneer broadcasts a message to all agents (infinite communication radius) that it wants to auction a certain parcel \texttt{P}.
+During this tick all agents within range of the parcel \texttt{P} should have discovered and thus pinged the parcel.
+\paragraph{Tick 2: PENDING}
+The auctioneer waits one tick for the messages to arrive and replies to be sent.
+Other agents receive the auction participation request for parcel \texttt{P} and check whether they have discovered that same parcel. 
+If this is the case they reply with their bid to the acutioneer.
+\paragraph{Tick 3: AUCTIONING}
+The auctioneer receives all bids from participating agents.
+It now simply extracts the best bid from all bids (including it's own bid).
+If the auctioneer wins it enqueues the parcel for pickup. 
+If another agent wins the auctioneer sends an assignment message to the winning agent.
+\paragraph{[Optional] Tick 4: ASSIGNMENT}
+The winning agent receives it's assiginment message and enqueues the parcel \texttt{P} for pickup.
+All other agents receive nothing and carry on with their other tasks 
+
+\subsubsection{Exchanges}
+As soon as two agents are within eachothers beacon range the protocol is started.
+The first agent to send a ping message to the other agent becomes the master of the exchange.
+An already pinged agent won't try to ping the other agent and becomes the slave of the exchange.
+
+MASTER
+\paragraph{Tick 1:INITIATE}
+The master agent received it's status by being the first agent to ping the other agent.
+The master sends an exchange request message to the slave agent. 
+\paragraph{Tick 2:PENDING}
+The master waits for request to be received and replied to be send.
+\paragraph{Tick 3:PLANNING}
+The master analyzes the reply to decide whether an exchange could be beneficial.
+Now two options should be considered:
+Option 1: Exchange is not beneficial.
+This can be the case if each agent has exactly one parcel or if there is only one parcel for the two agents. 
+In this case an empty assignment message is sent and the master sets it's exchange status on resetting.
+Option 2: Exchange is beneficial.
+In any other case both agents could benefit from exchanging parcels.
+The master runs a k-means clustering on all the parcels to create two groups with delivery locations clustered.
+When this is done an assignment message is sent with the meeting location which is halfway between both agents.
+The master sets it's exchange status to MEETING.
+\paragraph{Tick 3:MEETING}
+The master drives to the location it decided in the PLANNING stage and waits till the slave arrives (which shouldn't be long). 
+
+\paragraph{Tick 4:EXCHANGING}
+\paragraph{Tick 3/6:RESETTING}
+This case is for when either the exchange is succesfully completed or stopped permaturely.
+\paragraph{Tick 1-2:INITIATE}
+The slave checks for incoming exchange request messages.
+\paragraph{Tick 3:PENDING}
+The slave waits for reply to be received and for further instructions to be send.
+\paragraph{Tick 3:PLANNING}
+The slave checks for incoming assignment messages. 
+Again two options are possible.
+
+Option 1: Empty assignment message.
+This means the exchange will not take place.
+The slave resets it's status to INITIATE.
+
+Option 2: Assignment with meeting point.
+This means an exchange will take place at the given meeting point.
+The slave sets it's status to MEETING.
+\paragraph{Tick 4:MEETING}
+The slave drives to the location it decided in the PLANNING stage and waits till the master arrives (which shouldn't be long). 
+\paragraph{Tick 6:EXCHANGING}
+\paragraph{Tick 7:RESETTING}
 \end{document}
